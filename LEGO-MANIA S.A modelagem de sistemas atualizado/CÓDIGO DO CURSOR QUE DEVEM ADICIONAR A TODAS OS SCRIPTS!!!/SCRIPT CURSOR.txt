@@ -1,0 +1,110 @@
+*******ADICIONAR NO COMEÇO DO CSS, TEM Q SER OS PRIMEIROS!!*****
+html, body {
+	cursor: none;
+}
+
+.custom-cursor {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+}
+
+
+.box-bound {
+	display: block;
+	width: 30px;
+	height: 50px;
+	background-position: top left;
+	background-size: contain;
+	background-repeat: no-repeat;
+	transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
+}
+
+.box-bound.active {
+	width: 20px;
+	height: 55px;
+}
+
+
+
+
+PEGAR ARQUIVO DO CURSOR QUE EU MANDEI, E ADICIONAR NA PASTA TELA_GERAL.
+
+HTML
+
+<div class="custom-cursor site-wide">
+		<div class="pointer"></div>
+	</div>
+  <div class="boxes">
+		<div class="box">
+			<div class="custom-cursor box-bound" style="background-image: url('../tela_geral/cursor-lego.png')"></div>
+
+OBS: NÃO COLOCAR DENTRO DE NENHUMA OUTRA DIV, OU SEJA COLOQUE O SCRIPT BEM DPS DE ABRIR O BODY, COLOQUE COMO A PRIMEIRA DIV, ficando
+<body>
+*script*
+
+
+
+
+JAVASCRIPT
+
+ADICIONAR MAIN.JS PARA A TELA GERAL, E DEPOIS EM OUTROS ARQUIVOS FORA DA PASTA TELA_GERAL, COLOQUE '../tela_geral/cursor-lego.png'
+
+
+// Site wide cursor
+const site_wide_cursor = document.querySelector('.custom-cursor.site-wide');
+
+document.addEventListener('mouseenter', () => {
+	site_wide_cursor.style.display = 'block';
+});
+
+document.addEventListener('mouseleave', () => {
+	site_wide_cursor.style.display = 'none';
+});
+
+document.addEventListener('mousemove', TrackCursor);
+
+document.addEventListener('mousedown', () => site_wide_cursor.classList.add('active'));
+document.addEventListener('mouseup', () => site_wide_cursor.classList.remove('active'));
+
+function TrackCursor(evt) {
+	const w = site_wide_cursor.clientWidth;
+	const h = site_wide_cursor.clientHeight;
+
+	site_wide_cursor.style.transform = 
+		`translate(${evt.clientX - w/2}px, ${evt.clientY - h/2}px)`;
+}
+
+// Box Bound Cursors
+const boxes = document.querySelectorAll('.boxes .box');
+
+for (let i = 0; i < boxes.length; i++) {
+	const box = boxes[i];
+	const cursor = box.querySelector('.custom-cursor');
+
+	box.addEventListener('mouseenter', () => {
+		site_wide_cursor.style.display = 'none';
+	});
+
+	box.addEventListener('mouseleave', () => {
+		site_wide_cursor.style.display = 'block';
+	});
+
+	document.addEventListener('mousemove', TrackBoxCursor.bind(box));
+
+	document.addEventListener('mousedown', () => cursor.classList.add('active'));
+	document.addEventListener('mouseup', () => cursor.classList.remove('active'));
+}
+
+function TrackBoxCursor (evt) {
+	const box = this;
+	const cursor = box.querySelector('.custom-cursor');
+
+	const boxRect = box.getBoundingClientRect();
+
+	const x = evt.clientX - boxRect.left;
+	const y = evt.clientY - boxRect.top;
+
+	cursor.style.transform = `translate(${x}px, ${y}px)`;
+}

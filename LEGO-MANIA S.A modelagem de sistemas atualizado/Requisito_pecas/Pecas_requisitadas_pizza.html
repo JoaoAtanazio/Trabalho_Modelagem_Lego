@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tela inicial - LEGO MANIA</title>
+  <link rel="stylesheet" href="Pecas_requisadas.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+  <div class="custom-cursor site-wide">
+    <div class="pointer"></div> <!-- Cursor normal -->
+    <div class="custom-pointer"></div> <!-- Cursor pros botões -->
+  </div>
+  <div class="container">
+    <aside class="sidebar">
+      <h1 class="logo">LEGO - <br>MANIA O.S</h1>
+      <nav class="menu">
+        <div class="menu-container">
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
+          <div class="submenu">
+            <a id="func" href="../cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
+            <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
+            <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
+            <a id="fornecedor" href="../">Fornecedor</a>
+          </div>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
+          <div class="submenu">
+            <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
+            <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
+          </div>
+            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+          <div class="submenu">
+            <a href="#">Ganho <br>bruto/lucro</a>
+            <a href="#">Despesas</a>
+            <a href="#">Serviços <br>realizados</a>
+          </div>
+            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+          <div class="submenu">
+            <a href="#">Peças no <br>estoque</a>
+            <a href="#">Relatório <br>de uso</a>
+            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas_pizza.html">Entrada/Saída <br> de peças</a>
+          </div>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
+          <div class="submenu">
+            <a href="#">Clientes</a>
+            <a href="#">Funcionários</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+  <!--Acima é a estilização da tela-->
+
+    <main class="main-content">
+      <header class="header">
+        <div class="logout">
+          <button>Sair</button>
+          <span>👤</span>
+        </div>
+      </header>
+
+      <section class="cadastro-box">
+        <div class="cadastro-header">Peças mais requisitadas</div>
+
+        <div class="date-range">
+          <div class="date-field">
+            <label for="dataInicio">De:</label>
+            <input type="date" id="dataInicio" name="dataInicio">
+          </div>
+          <div class="date-field">
+            <label for="dataFim">Até:</label>
+            <input type="date" id="dataFim" name="dataFim">
+          </div>
+        </div>
+
+        <!-- Gráfico de Pizza -->
+        <div class="pizza-chart"></div>
+
+        <!-- Legenda do Gráfico -->
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-color red"></div>Engrenagens</div>
+          <div class="legend-item"><div class="legend-color green"></div>Blocos 4x4</div>
+          <div class="legend-item"><div class="legend-color blue"></div>Rodas</div>
+        </div>
+
+        <div class="form-buttons fixed-bottom">
+            <button type="submit" class="btn">Gráfico de barra</button>
+            <button type="button" class="btn btn-voltar">Voltar</button>
+          </div>
+          
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+      document.getElementById('funcao-dropdown').classList.toggle('open');
+    }
+
+    function selecionarFuncao(valor) {
+      document.getElementById('funcaoSelecionada').innerText = valor;
+      document.getElementById('funcao').value = valor;
+      toggleDropdown();
+    }
+  </script>
+</body>
+</html>
