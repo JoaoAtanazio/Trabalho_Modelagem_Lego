@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tela inicial - LEGO MANIA</title>
   <link rel="stylesheet" href="Pecas_requisitadas_barra.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
   <div class="custom-cursor site-wide">
@@ -38,31 +38,36 @@
             <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
           <div class="submenu">
             <a href="#">Peças no <br>estoque</a>
-            <a href="#">Relatório <br>de uso</a>
-            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas_pizza.html">Entrada/Saída <br> de peças</a>
+            <a id="peca_requisitada" href="../Requisito_pecas/Pecas_requisitadas_barra.html">Relatório <br>de uso</a>
+            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/Saída <br> de peças</a>
           </div>
           <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
           <div class="submenu">
             <a href="#">Clientes</a>
-            <a href="#">Funcionários</a>
+            <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
           </div>
         </div>
       </nav>
     </aside>
 
   <!--Acima é a estilização da tela-->
-
+<main class="main-content">
+      <header class="header">
+        <div class="logout">
+          <button>Sair</button>
+        </div>
+      </header>
       <section class="cadastro-box">
         <div class="cadastro-header">Peças mais requisitadas</div>
 
         <div class="date-range">
           <div class="date-field">
             <label for="dataInicio">De:</label>
-            <input type="date" id="dataInicio" name="dataInicio">
+            <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
           </div>
           <div class="date-field">
             <label for="dataFim">Até:</label>
-            <input type="date" id="dataFim" name="dataFim">
+            <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
           </div>
         </div>
 
@@ -101,8 +106,8 @@
   </div>
 
         <div class="form-buttons fixed-bottom">
-            <button type="submit" class="btn">Gráfico de barra</button>
-            <button type="button" class="btn btn-voltar">Voltar</button>
+            <button type="submit" class="btn" id="btnpizza">Gráfico de pizza</button>
+            <button type="button" class="btn btn-voltar" id="btnvoltar">Voltar</button>
           </div>
           
       </section>
@@ -120,5 +125,21 @@
       toggleDropdown();
     }
   </script>
+    <script src = '../tela_geral/tela_geral.js'></script>
+  <script src = '../tela_geral/main.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+<script>
+  flatpickr("#dataInicio", {
+    dateFormat: "d/m/Y",
+    locale: "pt" 
+  });
+
+  flatpickr("#dataFim", {
+    dateFormat: "d/m/Y",
+    locale: "pt"
+  });
+</script>
+
 </body>
 </html>

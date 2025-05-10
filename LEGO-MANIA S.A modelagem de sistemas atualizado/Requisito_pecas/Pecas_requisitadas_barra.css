@@ -100,7 +100,7 @@ html, body{
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
-  background-color: #F5F5F3;
+  background-color: #F0EBE3;
   color: #333;
   line-height: 1.6;
   overflow-y: hidden
@@ -154,6 +154,7 @@ body {
   padding: 2rem;
   background-color: var(--light-gray);
 }
+
 
 .header {
   display: flex;
@@ -248,16 +249,14 @@ body {
  /* todo o css acima é PADRÃO para QUASE TODAS AS TELAS, abaixo os css específicos de cada tela */
 
   .cadastro-box {
-    max-width: 500px;
+   max-width: 500px;
     margin: auto;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: #ffffff;
     padding: 2rem;
+    border-radius: 10px;
     border: 2px solid black;
     transform: translateY(-5%);
-    height: 500px;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
+    cursor:none;
   }
   
   .cadastro-box h2 {

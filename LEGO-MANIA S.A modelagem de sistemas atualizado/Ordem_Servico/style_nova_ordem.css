@@ -161,7 +161,7 @@ body {
 .main-content {
   flex: 1;
   padding: 2rem;
-  background-color: var(--light-gray);
+  background-color: #f0ebe3
 }
 
 .header {

@@ -1,84 +1,41 @@
-html, body{
-	cursor: none;
-}
-
-.custom-cursor {
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: none;
-}
-
 .custom-cursor.site-wide {
-  position: fixed;
-  pointer-events: none; /* Permite clicar através do cursor */
-  z-index: 9999; /* Garante que fique acima de tudo */
-  display: block; /* Mantém sempre visível */
-  transform: translate(-50%, -50%);
-    z-index: 9999;
+    position: fixed;
     pointer-events: none;
-}
-.pointer {
-  width: 30px;
-  height: 50px;
-  background-image: url('../tela_geral/cursor-lego.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-.background-image-container, 
-.background-image {
-  pointer-events: none; /* Permite que o cursor seja detectado */
-}
-.box-bound {
-	width: 30px;
-	height: 50px;
-	background-position: top left;
-	background-size: contain;
-	background-repeat: no-repeat;
-	transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
-  display: none;
-  position: absolute;
-  pointer-events: none;
-}
-.btn:hover{
-  background-color: #b8b5b5;
-}
-.box-bound.active {
-	width: 20px;
-	height: 55px;
-  display: block;
-}
-
-.custom-cursor {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  display: none;
-  transform: translate(-50%, -50%);
-}
-.custom-cursor.site-wide {
-  display: block;
+    z-index: 9999;
+    display: block;
+    transform: translate(-50%, -50%);
+    left: 0;
+    top: 0;
+    will-change: transform;
 }
 
 .pointer {
-  width: 30px;
-  height: 50px;
-  background-image: url('../tela_geral/cursor-lego.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  transform: translate(10px, 20px);
-
+    width: 30px;
+    height: 50px;
+    background-image: url('../tela_geral/cursor-lego.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
+
 .custom-pointer {
-  width: 30px;
-  height: 30px;
-  background-image: url('https://cdn.custom-cursor.com/db/5149/arrow2908.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  display: none; /* Inicialmente escondido */
-  transform: translate(10px, 10px);
+    width: 30px;
+    height: 30px;
+    background-image: url('https://cdn.custom-cursor.com/db/5149/arrow2908.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
+/* Garantir que nenhum elemento mostre cursor padrão */
+html, body, * {
+    cursor: none !important;
+} 
 /* Garantir que nenhum elemento mostre cursor padrão */
 * {
   cursor: none !important;
@@ -94,7 +51,7 @@ html, body{
   --success-color: #27ae60;
   --warning-color: #f39c12;
   --danger-color: #e74c3c;
-  --white: #ffffff;
+  --white: #ffffff;;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -250,14 +207,12 @@ body {
   .cadastro-box {
     max-width: 500px;
     margin: auto;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: #ffffff;
     padding: 2rem;
+    border-radius: 10px;
     border: 2px solid black;
     transform: translateY(-5%);
-    height: 500px;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
+    cursor:none;
   }
   
   .cadastro-box h2 {
@@ -347,7 +302,7 @@ body {
     gap: 20px;
     padding: 15px;
     border-top: 1px solid #ccc;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     flex-shrink: 0;
     border-radius: 5px;
   }
@@ -375,7 +330,7 @@ body {
       font-size: 24px;
       font-weight: bold;
       border-bottom: 1px solid #ccc;
-      background-color: #f9f9f9;
+      background-color: #ffffff;
       flex-shrink: 0;
     }
     
@@ -390,7 +345,7 @@ body {
       justify-content: center;
       gap: 20px;
       padding: 15px;
-      background-color: #f9f9f9;
+      background-color: #ffffff;
       border-top: 1px solid #ccc;
     }
     
