@@ -60,40 +60,86 @@
       </header>
 
       <section class="cadastro-box">
-        <div class="cadastro-header">Entrada de peças</div>
 
+        <div class="cadastro-header">Entrada de peças</div>
+        <div class="cabecalho-pecas">
+          <span class="coluna-nome">Nome</span>
+          <span class="coluna-data">Data chegada</span>
+          <span class="coluna-info">Mais informações</span>
+        </div>
+        
         <div class="form-scroll">
           <form class="form-funcionario">
-            <div class="form-group">
-              <input type="text"><br><br>
+          
+            <!-- Modal de informações -->
+            <div class="info-popup" id="infoPopup">
+              <div class="popup-content">
+
+                
+                   <span class="close-btn" onclick="toggleInfoPopup()">&times;</span>
+                   <h3>Informações sobre a Peça</h3>
+                
+
+                <div class="info-item">
+                  <label for="nomePeca">Nome da Peça:</label>
+                  <input type="text" id="nomePeca" value="Lego Bloco" readonly />
+                </div>
+            
+                <div class="info-item">
+                  <label for="codigoPeca">Código:</label>
+                  <input type="text" id="codigoPeca" value="001" readonly />
+                </div>
+            
+                <div class="info-item">
+                  <label for="tipoPeca">Tipo:</label>
+                  <input type="text" id="tipoPeca" value="Bloco" readonly />
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <input type="text"><br><br>
-            </div>
-            <div class="form-group">
-              <input type="text"><br><br>
-            </div>
-            <div class="form-group">
-              <input type="text"><br><br>
-            </div>
-            <div class="form-group">
-              <input type="text"><br><br>
-            </div>
-            <div class="form-group">
-              <input type="text"><br><br>
-            </div>
-            <div class="form-group">
-              <input type="text"><br><br>
-            </div>
+            
+<!-- Campo de entrada com botão de informações -->
+<div class="form-group">
+  <input type="text" class="expandable-input" placeholder="Digite algo...">
+  <i class="info-btn" onclick="toggleInfoPopup()">ℹ️</i>
+  <input type="text" class="data-chegada" placeholder="Digite algo...">
+
+  <input type="text" class="expandable-input-2" placeholder="Digite algo...">
+  <i class="info-btn-2" onclick="toggleInfoPopup()">ℹ️</i>
+  <input type="text" class="data-chegada-2" placeholder="Digite algo...">
+
+  <input type="text" class="expandable-input-3" placeholder="Digite algo...">
+  <i class="info-btn-3" onclick="toggleInfoPopup()">ℹ️</i>
+  <input type="text" class="data-chegada-3" placeholder="Digite algo...">
+
+  <div class="info-popup" id="infoPopup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="toggleInfoPopup()">&times;</span>
+      <h3>Informações</h3>
+      <p>Preencha esse campo com a identificação da peça recebida. Isso ajuda a rastrear seu uso e origem.</p>
+    </div>
+  </div>  
+</div>
+              
           </form>
         </div>
 
-        <div class="form-buttons fixed-bottom">
+        <div class="date-range">
+          <div class="date-field">
+            <label for="dataInicio">De:</label>
+            <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+          </div>
+          <div class="date-field">
+            <label for="dataFim">Até:</label>
+            <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+          </div>
+        </div>
+
+        <div class="form-buttons fixed-bottom">      
           <button class="btn"onclick="window.location.href='Saida_pecas_pizza.html'">Saída de peças</button>
           <button class="btn" onclick="window.history.back()">Voltar</button>
           </div>
           
-          <div class="date-range">
+          <!--<div class="date-range">
             <div class="date-field">
               <label for="dataInicio">De:</label>
               <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
@@ -102,11 +148,10 @@
               <label for="dataFim">Até:</label>
               <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
             </div>
-          </div>
-          
+          </div>-->
+      
       </section>
     </main>
-  </div>
 
   <script>
     function toggleDropdown() {
@@ -118,7 +163,30 @@
       document.getElementById('funcao').value = valor;
       toggleDropdown();
     }
-    
+
+  function toggleInfoPopup() {
+    const popup = document.getElementById('infoPopup');
+    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function abrirModal() {
+  const modal = document.getElementById("infoModal");
+  modal.classList.remove("hide");
+  modal.classList.add("show");
+  modal.style.display = "block";
+}
+
+function fecharModal() {
+  const modal = document.getElementById("infoModal");
+  modal.classList.remove("show");
+  modal.classList.add("hide");
+
+  // Aguarda a animação terminar antes de esconder
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 300); // tempo igual ao do transition no CSS
+}
+
   </script>
   <script src = '../tela_geral/main.js'></script>
   <script src = '../tela_geral/tela_geral.js'></script>
