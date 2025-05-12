@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const voltarOS = document.getElementById("btnvoltaros");
     const graficopizza = document.getElementById("btnpizza");
 	const graficobarra = document.getElementById("btnbarra");
+    const perfil = document.getElementById("btnperfil")
     
     if (conferirOS) {
         conferirOS.addEventListener('click', AbrirOS);
@@ -68,6 +69,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (graficobarra) {
 		graficobarra.addEventListener('click', abrirbarra);
 	}
+
+    if(perfil) {
+        perfil.addEventListener('click', abrirperfil);
+    }
     
     function AbrirOS(event) {
         event.preventDefault();
@@ -88,3 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		event.preventDefault();
 		window.location.href = '../Requisito_pecas/Pecas_requisitadas_barra.html';
 	}
+    function abrirperfil(event){
+        event.preventDefault();
+        window.location.href = '../Ordem_Servico/ordem_abertas.html';
+    }
