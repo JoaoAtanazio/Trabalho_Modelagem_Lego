@@ -9,20 +9,105 @@
 
   <div class="form-wrapper">
     <h2>Recuperar senha</h2>
-    <form action="#">
+    <form onsubmit="event.preventDefault(); enviarCodigo();">
       <div class="form-control-email">
         <h3 class="senhalg">Telefone</h3>
-        <input type="password" required>
-        <label>Telefone</label>
+        <input type="text" id="telefone" placeholder="Ex: +55DDXXXXXXXXX" required>
+
       </div>
 
-      <a href="esqueceu-senha.html"  class="tradetef">Tentar outro jeito</a>
+      <div id="recaptcha-container" style="margin-top: 10px;"></div>
+
+      <a href="esqueceu-senha.html" class="tradetef">Tentar outro jeito</a>
       
       <button type="submit">enviar</button>
 
       <a href="login.html" class="voltarbutton">voltar</a>
     </form>
+
+    <form onsubmit="event.preventDefault(); verificarCodigo();">
+      <div class="form-control-email">
+        <input type="text" id="codigo" placeholder="Código recebido">
+        <label>Código</label>
+      </div>
+      <button type="submit">Verificar</button>
+    </form>
+
+    <form onsubmit="event.preventDefault(); definirNovaSenha();">
+      <div class="form-control-email">
+        <input type="password" id="novaSenha" placeholder="Nova senha">
+        <label>Nova senha</label>
+      </div>
+      <button type="submit">Salvar senha</button>
+    </form>
   </div>
 
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEYdzYzpgS_dx1DqYDN47crIKLJln01lc",
+      authDomain: "lego-mania-f13cb.firebaseapp.com",
+      projectId: "lego-mania-f13cb",
+      storageBucket: "lego-mania-f13cb.firebasestorage.app",
+      messagingSenderId: "582975185873",
+      appId: "1:582975185873:web:688571b4c04db0e7a436f0",
+      measurementId: "G-3XFHE2XM8N"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    let confirmationResult;
+
+    window.onload = () => {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'normal',
+        callback: (response) => {
+          console.log('reCAPTCHA resolvido');
+        }
+      });
+    };
+
+    window.enviarCodigo = () => {
+      const telefone = document.getElementById("telefone").value;
+      signInWithPhoneNumber(auth, telefone, window.recaptchaVerifier)
+        .then((result) => {
+          confirmationResult = result;
+          alert("Código enviado para o celular!");
+        })
+        .catch((error) => {
+          alert("Erro ao enviar SMS: " + error.message);
+        });
+    };
+
+    window.verificarCodigo = () => {
+      const codigo = document.getElementById("codigo").value;
+      if (!confirmationResult) return alert("Código ainda não foi enviado.");
+      confirmationResult.confirm(codigo)
+        .then((result) => {
+          alert("Verificado com sucesso!");
+        })
+        .catch((error) => {
+          alert("Código inválido: " + error.message);
+        });
+    };
+
+    window.definirNovaSenha = () => {
+      const novaSenha = document.getElementById("novaSenha").value;
+      const user = auth.currentUser;
+      if (user) {
+        user.updatePassword(novaSenha).then(() => {
+          alert("Senha atualizada com sucesso!");
+        }).catch((error) => {
+          alert("Erro ao atualizar senha: " + error.message);
+        });
+      } else {
+        alert("Usuário não autenticado.");
+      }
+    };
+  </script>
 </body>
 </html>
