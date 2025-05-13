@@ -54,10 +54,10 @@
         <main class="main-content">
             <header class="header">
                 <div class="logout">
-                    <button>Sair</button>
+                    <button class="btnperfil" id="btnperfil"></button>
+                    <button class="btnsair">Sair</button>
                 </div>
             </header>
-
             <section class="section_conteudo">
                 <div class="section-header">
                     <h2><i class="fas fa-tasks"></i> Solicitações de Serviço</h2>
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-
+                <div class ="scroll_do_funcionario">
                 <div class="table-container">
                     <table class="service-table">
                         <thead>
@@ -83,7 +83,7 @@
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="os-table-body">
+                        <tbody id="os-table-body" class="gestao_func-body">
                             <tr data-id="1">
                                 <td>Inácio</td>
                                 <td>143.140.073-14</td>
@@ -240,7 +240,7 @@
                         </tbody>
                     </table>
                 </div>
-       
+            </div>
                 <div class="table-footer">
                     <div class="pagination">
                         <button class="pagination-btn" id="prev-page"><i class="fas fa-chevron-left"></i></button>
@@ -299,6 +299,5 @@
     <script src="../gestao_pessoas/gestao.js"></script>
     <script src="../tela_geral/tela_geral.js"></script>
     <script src="../tela_geral/main.js"></script>
-    <script src="../gestao_pessoas/gestao.js"></script>
 </body>
 </html>

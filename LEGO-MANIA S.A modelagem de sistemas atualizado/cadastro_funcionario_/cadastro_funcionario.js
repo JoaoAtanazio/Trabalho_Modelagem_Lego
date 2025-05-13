@@ -46,12 +46,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Limita o número de caracteres (11 para CPF, 14 para CNPJ)
     if (tipo === 'cpf') {
-      v = v.slice(0, 11)
+      caracteres = caracteres.slice(0, 11)
            .replace(/(\d{3})(\d)/, '$1.$2')
            .replace(/(\d{3})(\d)/, '$1.$2')
            .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     } else { // CNPJ
-      v = v.slice(0, 14)
+      caracteres = caracteres.slice(0, 14)
            .replace(/^(\d{2})(\d)/, '$1.$2')
            .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
            .replace(/\.(\d{3})(\d)/, '.$1/$2')
@@ -75,3 +75,28 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+document.getElementById('cpfCnpj').addEventListener('input', function () {
+  let caracteres = this.value.replace(/\D/g, '');
+
+  if (caracteres.length <= 11) {
+    caracteres = caracteres.replace(/(\d{3})(\d)/, '$1.$2');
+    caracteres = caracteres.replace(/(\d{3})(\d)/, '$1.$2');
+    caracteres = caracteres.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  } else {
+    caracteres = caracteres.replace(/^(\d{2})(\d)/, '$1.$2');
+    caracteres = caracteres.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+    caracteres = caracteres.replace(/\.(\d{3})(\d)/, '.$1/$2');
+    caracteres = caracteres.replace(/(\d{4})(\d)/, '$1-$2');
+  }
+
+  this.value = caracteres;
+});
+function toggleDropdown() {
+  document.getElementById('funcao-dropdown').classList.toggle('open');
+}
+
+function selecionarFuncao(valor) {
+  document.getElementById('funcaoSelecionada').innerText = valor;
+  document.getElementById('funcao').value = valor;
+  toggleDropdown();
+}
