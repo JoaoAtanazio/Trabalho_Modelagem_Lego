@@ -60,7 +60,7 @@
 
             <section class="section_conteudo">
                 <div class="section-header">
-                    <h2><i class="fas fa-tasks"></i> Entrada de peças</h2>
+                    <h2><i class="fa-solid fa-truck"></i> Entrada de peças</h2>
                     <div class="actions">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
@@ -85,10 +85,10 @@
                         </thead>
                         <tbody id="os-table-body">
                             <tr data-id="1">
-                                <td>Inácio</td>
+                                <td>2550c01</td>
                                 <td>051</td>
-                                <td>Bloco 4 bagulhos</td>
-                                <td>04/12/1988</td>
+                                <td>Peça lego</td>
+                                <td>04/12/2025</td>
 
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
@@ -101,10 +101,10 @@
                             </tr>
 
                             <tr data-id="2">
-                               <td>João Silva</td>
+                               <td>Lego batman 3</td>
                                <td>002</td>
-                               <td>Placa de vídeo</td>
-                               <td>15/03/1985</td>
+                               <td>Jogo</td>
+                               <td>15/03/2025</td>
 
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
@@ -117,10 +117,10 @@
                             </tr>
 
                             <tr data-id="3">
-                                    <td>Maria Oliveira</td>
+                                    <td>Rx 580</td>
                                     <td>088</td>
-                                    <td>Jogo xbox 360</td>
-                                    <td>22/07/1990</td>
+                                    <td>Placa de vídeo</td>
+                                    <td>22/07/2025</td>
 
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
@@ -133,9 +133,9 @@
                             </tr>
 
                                <tr data-id="4">
-                               <td>Carlos Souza</td>
+                               <td>Prego anelado</td>
                                <td>133</td>
-                               <td>Casaco fedorento do atanazio para de usar pqp</td>
+                               <td>Prego</td>
                                <td>10/11/1992</td>
 
                                 <td class="actions-cell">
@@ -148,10 +148,10 @@
                                 </td>
                             </tr>
                                <tr data-id="5">
-                              <td>Ana Costa</td>
+                              <td>Acer nitro v15</td>
                               <td>087</td>
-                              <td>Joana do Bruno do navarro nao o da sala</td>
-                              <td>05/05/1988</td>
+                              <td>Notebook</td>
+                              <td>05/05/2025</td>
 
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
@@ -241,81 +241,57 @@
                         <span class="page-number" id="page-number">1</span>
                         <button class="pagination-btn" id="next-page"><i class="fas fa-chevron-right"></i></button>
                     </div>
+
+                    <div class="date-range">
+                        <div class="date-field">
+                          <label for="dataInicio">De:</label>
+                          <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+                        </div>
+                        <div class="date-field">
+                          <label for="dataFim">Até:</label>
+                          <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+                        </div>
+                    </div>
+
                     <button class="btn btn-secondary" id="btnvoltaros">
                         <i class="fas fa-arrow-left"></i> Voltar
                     </button>
+
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- Modal de Edição -->
-    <!-- Modal de Edição -->
-<div id="edit-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h3>Editar peça</h3>
-        <form id="edit-form">
-            <input type="hidden" id="edit-id">
-            <div class="form-group">
-                <label for="edit-funcionario">Nome da peça:</label>
-                <input type="text" id="edit-funcionario" required>
-            </div>
-            <div class="form-group">
-                <label for="edit-cpf">Código:</label>
-                <input type="text" id="edit-cpf" required>
-            </div>
-            <div class="form-group">
-                <label for="edit-salario">Tipo de peça:</label>
-                <input type="text" id="edit-salario" required>
-            </div>
-            <div class="form-group">
-                <label for="edit-dataNascimento">Data de recebimento:</label>
-                <input type="text" id="edit-dataNascimento" required>
-            </div>
-            <button type="button" class="btn btn-primary">Salvar</button>
-        </form>
-    </div>
-</div>
-
-    <script src="../Entrada e saida peças/Entrada_pecas.js" defer></script>
-    <script src="../tela_geral/tela_geral.js"></script>
-    <script src="../tela_geral/main.js"></script>
-    <script src="../Entrada e saida peças/Entrada_pecas.js" defer></script>
-</body>
-</html>
 <!-- Modal de Edição -->
-<!-- Modal de Edição -->
-<div id="edit-modal" class="modal">
-<div class="modal-content">
+<div id="edit-modal" class="modal" style="display: none;">
+  <div class="modal-content">
     <span class="close-btn">&times;</span>
-    <h3>Editar Funcionário</h3>
+    <h3>Editar peça</h3>
     <form id="edit-form">
-        <input type="hidden" id="edit-id">
-        <div class="form-group">
-            <label for="edit-funcionario">Nome da peça:</label>
-            <input type="text" id="edit-funcionario" required>
-        </div>
-        <div class="form-group">
-            <label for="edit-cpf">Código:</label>
-            <input type="text" id="edit-cpf" required>
-        </div>
-        <div class="form-group">
-            <label for="edit-salario">Tipo de peça:</label>
-            <input type="text" id="edit-salario" required>
-        </div>
-        <div class="form-group">
-            <label for="edit-dataNascimento">Data de recebimento:</label>
-            <input type="text" id="edit-dataNascimento" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Salvar</button>
+      <input type="hidden" id="edit-id">
+      <div class="form-group">
+        <label for="edit-funcionario">Nome da peça:</label>
+        <input type="text" id="edit-funcionario" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-cod">Código:</label>
+        <input type="text" id="edit-cod" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-salario">Tipo de peça:</label>
+        <input type="text" id="edit-salario" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-dataRecebimento">Data de recebimento:</label>
+        <input type="text" id="edit-dataRecebimento" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Salvar</button>
     </form>
-</div>
+  </div>
 </div>
 
 <script src="../Entrada e saida peças/Entrada_pecas.js" defer></script>
 <script src="../tela_geral/tela_geral.js"></script>
 <script src="../tela_geral/main.js"></script>
-<script src="../Entrada e saida peças/Entrada_pecas.js" defer></script>
 </body>
 </html>
