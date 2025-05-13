@@ -136,7 +136,6 @@ html, body{
 body {
   font-family: 'Inter', sans-serif;
   background-color: #F0EBE3;;
-  color: #333;
   line-height: 1.6;
   overflow-y: hidden;
 }
@@ -543,7 +542,6 @@ body {
 }
 .btn-salvar:hover {
   background-color: #45a049;
-  transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 .perfil-usuario {
@@ -604,7 +602,7 @@ body {
 .btn-salvar {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: #000000;
   color: white;
   border: none;
   border-radius: 4px;
@@ -613,5 +611,7 @@ body {
   width: 100%;
 }
 .btn-salvar:hover {
-  background-color: #45a049;
+  background-color: #000000;
+  translate: scale(1.1);
+  transition: 0.3s;
 }
