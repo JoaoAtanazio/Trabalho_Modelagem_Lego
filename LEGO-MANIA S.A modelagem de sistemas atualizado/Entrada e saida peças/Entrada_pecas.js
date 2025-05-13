@@ -140,7 +140,7 @@ function salvarEdicao() {
     carregarPecas();
   }
 
-  window.alert("Você mudou!")
+  windowalert("Você alterou as informações!")
 }
 
 function excluirPeca(id) {
