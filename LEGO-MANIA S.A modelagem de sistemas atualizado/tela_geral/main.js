@@ -54,6 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const graficopizza = document.getElementById("btnpizza");
 	const graficobarra = document.getElementById("btnbarra");
     const perfil = document.getElementById("btnperfil")
+    const senha = document.querySelector('.senha-container');
+ const iconeOlho = document.querySelector('.btn-olho i');
+const senhaTexto = document.getElementById('senhaTexto');
     
     if (conferirOS) {
         conferirOS.addEventListener('click', AbrirOS);
@@ -95,5 +98,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
     function abrirperfil(event){
         event.preventDefault();
-        window.location.href = '../Ordem_Servico/ordem_abertas.html';
+        window.location.href = '../Perfil_Usuário/Perfil_Usuário.html';
     }
+ function mostrarSenha() {
+  if (senhaTexto.textContent === '***********') {
+    senhaTexto.textContent = 'admin123';
+    iconeOlho.classList.toggle('fa-eye');
+    iconeOlho.classList.toggle('fa-eye-slash'); // Alterna entre os ícones
+  } else {
+    senhaTexto.textContent = '***********';
+    iconeOlho.classList.toggle('fa-eye-slash');
+    iconeOlho.classList.toggle('fa-eye'); // Volta ao ícone original
+  }
+}
+
+// Adicionando evento ao botão corretamente
+document.querySelector('.btn-olho').addEventListener('click', mostrarSenha);
