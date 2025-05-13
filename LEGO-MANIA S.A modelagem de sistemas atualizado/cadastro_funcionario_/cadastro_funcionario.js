@@ -1,77 +1,125 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.querySelector('#formFuncionario');
   const nomeInput = document.querySelector('#nome');
-  const tipoCpfCnpjInput = document.querySelector('#tipoCpfCnpj');
   const cpfCnpjInput = document.querySelector('#cpfCnpj');
   const salarioInput = document.querySelector('#salario');
   const cepInput = document.querySelector('#cep');
   const idadeInput = document.querySelector('#idade');
   const emailInput = document.querySelector('#email');
+  const funcaoInput = document.querySelector('#funcao');
+  const dropdown = document.querySelector('.dropdown');
 
-  // Nome: não pode conter números
+  // Função para exibir erro
+  function marcarErro(input, condicaoInvalida, mensagem) {
+    const errorMessage = input.nextElementSibling;  // Assume que a mensagem de erro está após o campo
+    if (condicaoInvalida) {
+      input.classList.add('erro');
+      if (errorMessage) errorMessage.textContent = mensagem;
+      return true;
+    } else {
+      input.classList.remove('erro');
+      if (errorMessage) errorMessage.textContent = '';
+      return false;
+    }
+  }
+
   nomeInput.addEventListener('input', function () {
     this.value = this.value.replace(/[0-9]/g, '');
+    this.classList.remove('erro');
   });
 
-  // Salário: apenas números
   salarioInput.addEventListener('input', function () {
-    this.value = this.value.replace(/[^0-9,]/g, '');
+    let valor = this.value.replace(/\D/g, '');
+    valor = (parseFloat(valor) / 100).toFixed(2);
+    const valorFormatado = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(valor);
+    this.value = valorFormatado;
+
+    // Validação adicional após formatação
+    if (!valorFormatado.includes('R$')) {
+      this.classList.add('erro');
+    } else {
+      this.classList.remove('erro');
+    }
   });
 
-  // CEP: apenas números
   cepInput.addEventListener('input', function () {
     this.value = this.value.replace(/[^0-9\-]/g, '');
+    this.classList.remove('erro');
   });
 
-  // Idade: apenas números, no máximo 4 dígitos
   idadeInput.addEventListener('input', function () {
-    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);
+    this.classList.remove('erro');
   });
 
-  // Email: formato válido
   emailInput.addEventListener('input', function () {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailRegex.test(this.value)) {
       this.setCustomValidity('Por favor, insira um e-mail válido.');
+      this.classList.add('erro');
     } else {
       this.setCustomValidity('');
+      this.classList.remove('erro');
     }
   });
 
-  // Aplica a máscara para CPF ou CNPJ
-  function aplicarMascaraCpfCnpj() {
-    const tipo = tipoCpfCnpjInput.value;
-    const input = cpfCnpjInput;
-    let v = input.value.replace(/\D/g, ''); // Remove tudo o que não for número
-
-    // Limita o número de caracteres (11 para CPF, 14 para CNPJ)
-    if (tipo === 'cpf') {
-      v = v.slice(0, 11)
-           .replace(/(\d{3})(\d)/, '$1.$2')
-           .replace(/(\d{3})(\d)/, '$1.$2')
-           .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    } else { // CNPJ
-      v = v.slice(0, 14)
-           .replace(/^(\d{2})(\d)/, '$1.$2')
-           .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-           .replace(/\.(\d{3})(\d)/, '.$1/$2')
-           .replace(/(\d{4})(\d)/, '$1-$2');
+  cpfCnpjInput.addEventListener('input', function () {
+    let v = this.value.replace(/\D/g, '');
+    if (v.length <= 11) {
+      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+      v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    } else {
+      v = v.replace(/^(\d{2})(\d)/, '$1.$2');
+      v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      v = v.replace(/(\d{4})(\d)/, '$1-$2');
     }
+    this.value = v;
+    this.classList.remove('erro');
+  });
 
-    input.value = v;
+  // Função para selecionar a função e atualizar o input
+  function selecionarFuncao(funcao) {
+    funcaoInput.value = funcao;  // Atualiza o campo do input
+    dropdown.classList.remove('erro');  // Remove o erro se a função for válida
   }
 
-  // Atualiza a máscara de CPF/CNPJ ao digitar ou trocar o tipo
-  cpfCnpjInput.addEventListener('input', aplicarMascaraCpfCnpj);
-  tipoCpfCnpjInput.addEventListener('change', aplicarMascaraCpfCnpj);
-
-  // Limita o número de caracteres no campo CPF/CNPJ
-  cpfCnpjInput.addEventListener('input', function () {
-    if (tipoCpfCnpjInput.value === 'cpf' && this.value.length > 14) {
-      this.value = this.value.slice(0, 14);
-    } else if (tipoCpfCnpjInput.value === 'cnpj' && this.value.length > 18) {
-      this.value = this.value.slice(0, 18);
-    }
+  // Exemplo de como associar isso ao seu dropdown
+  document.querySelectorAll('.dropdown-options div').forEach(function(option) {
+    option.addEventListener('click', function() {
+      selecionarFuncao(option.textContent);
+    });
   });
 
+  // Validação ao enviar
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    let erro = false;
+
+    erro = marcarErro(nomeInput, nomeInput.value.trim() === '', 'Nome é obrigatório.') || erro;
+    erro = marcarErro(cpfCnpjInput, cpfCnpjInput.value.trim().length < 14, 'CPF ou CNPJ inválido.') || erro;
+    erro = marcarErro(salarioInput, salarioInput.value.trim() === '' || !salarioInput.value.includes('R$'), 'Salário inválido.') || erro;
+    erro = marcarErro(cepInput, cepInput.value.trim().length < 8, 'CEP inválido.') || erro;
+    erro = marcarErro(idadeInput, idadeInput.value.trim() === '' || idadeInput.value < 11 || idadeInput.value > 100, 'Idade inválida.') || erro;
+    erro = marcarErro(emailInput, !emailInput.checkValidity(), 'E-mail inválido.') || erro;
+
+    // Ajuste na validação de funcaoInput
+    erro = marcarErro(funcaoInput, funcaoInput.value.trim() === '', 'Selecione uma função.') || erro;
+
+    if (funcaoInput.value.trim() === '') {
+      dropdown.classList.add('erro');
+      erro = true;
+    } else {
+      dropdown.classList.remove('erro');
+    }
+
+    if (!erro) {
+      alert('Funcionário cadastrado com sucesso!');
+      form.submit();
+    }
+  });
 });

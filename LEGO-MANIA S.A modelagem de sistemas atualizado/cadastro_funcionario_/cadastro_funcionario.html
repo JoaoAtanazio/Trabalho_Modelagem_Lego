@@ -54,7 +54,8 @@
     <main class="main-content">
       <header class="header">
         <div class="logout">
-          <button>Sair</button>
+          <button class="btnperfil" id="btnperfil"></button>
+          <button onclick="window.location.href='../login/login.html'" class="btnsair">Sair</button>
         </div>
       </header>
 
@@ -69,7 +70,7 @@
 
           <div class="form-group">
             <label for="cpfCnpj">CPF/CNPJ:</label>
-            <input type="text" id="cpfCnpj" name="cpfCnpj"
+            <input type="text" id="cpfCnpj" name="cpfCnpj"maxlength="17"
                    placeholder="000.000.000-00 ou 00.000.000/0000-00" required>
           </div>
 
@@ -80,7 +81,7 @@
 
           <div class="form-group">
             <label for="cep">CEP:</label>
-            <input type="text" id="cep" name="cep" placeholder="00000-000" required>
+            <input type="text" id="cep" name="cep" maxlength='9' placeholder="00000-000" required>
           </div>
 
           <div class="form-group">
@@ -122,34 +123,6 @@
   <script src="../tela_geral/tela_geral.js"></script>
   <script src="../tela_geral/main.js"></script>
   <script src="cadastro_funcionario.js"></script>
-  <script>
-    function toggleDropdown() {
-      document.getElementById('funcao-dropdown').classList.toggle('open');
-    }
-
-    function selecionarFuncao(valor) {
-      document.getElementById('funcaoSelecionada').innerText = valor;
-      document.getElementById('funcao').value = valor;
-      toggleDropdown();
-    }
-
-    // Máscara para CPF/CNPJ
-    document.getElementById('cpfCnpj').addEventListener('input', function () {
-      let v = this.value.replace(/\D/g, '');
-
-      if (v.length <= 11) {
-        v = v.replace(/(\d{3})(\d)/, '$1.$2');
-        v = v.replace(/(\d{3})(\d)/, '$1.$2');
-        v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-      } else {
-        v = v.replace(/^(\d{2})(\d)/, '$1.$2');
-        v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
-        v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
-        v = v.replace(/(\d{4})(\d)/, '$1-$2');
-      }
-
-      this.value = v;
-    });
-  </script>
+ 
 </body>
 </html>

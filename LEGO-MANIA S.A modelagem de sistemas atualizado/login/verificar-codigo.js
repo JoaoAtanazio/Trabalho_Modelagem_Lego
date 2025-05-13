@@ -45,3 +45,10 @@ async function verifyCode() {
       document.getElementById('verify-btn').disabled = false;
   }
 }
+
+
+// Daqui para baixo é apenas javascript do recuperação via telefone //
+
+
+
+

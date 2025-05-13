@@ -55,7 +55,8 @@
     <main class="main-content">
       <header class="header">
         <div class="logout">
-          <button>Sair</button>
+          <button class="btnperfil" id="btnperfil"></button>
+          <button onclick="window.location.href='../login/login.html'" class="btnsair">Sair</button>
         </div>
       </header>
 
@@ -103,17 +104,6 @@
   </div>
   <script src = '../tela_geral/tela_geral.js'></script>
   <script src = '../tela_geral/main.js'></script>
-  <script>
-    function toggleDropdown() {
-      document.getElementById('funcao-dropdown').classList.toggle('open');
-    }
-
-    function selecionarFuncao(valor) {
-      document.getElementById('funcaoSelecionada').innerText = valor;
-      document.getElementById('funcao').value = valor;
-      toggleDropdown();
-    }
-  </script>
 
 </body>
 </html>
