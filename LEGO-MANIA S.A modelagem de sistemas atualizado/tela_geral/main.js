@@ -114,3 +114,12 @@ const senhaTexto = document.getElementById('senhaTexto');
 
 // Adicionando evento ao botão corretamente
 document.querySelector('.btn-olho').addEventListener('click', mostrarSenha);
+function toggleDropdown() {
+    document.getElementById('funcao-dropdown').classList.toggle('open');
+  }
+
+  function selecionarFuncao(valor) {
+    document.getElementById('funcaoSelecionada').innerText = valor;
+    document.getElementById('funcao').value = valor;
+    toggleDropdown();
+  }
