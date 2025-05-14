@@ -1,77 +1,203 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // =============================================
-    // CONSTANTES E VARIÁVEIS
-    // =============================================
-    const ROWS_PER_PAGE = 10;
+
+function sortTable(n) {
+    const table = document.querySelector(".service-table");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const editModal = document.getElementById('edit-modal');
+    const editForm = document.getElementById('edit-form');
+    let direction = "asc"; // direção padrão
     
-    // Elementos da DOM
-    const elements = {
-        tableBody: document.getElementById('os-table-body'),
-        editModal: document.getElementById('edit-modal'),
-        editForm: document.getElementById('edit-form'),
-        closeBtn: document.querySelector('.close-btn'),
-        searchInput: document.getElementById('search-input'),
-        novoClienteBtn: document.getElementById('nova-os-btn'),
-        prevPageBtn: document.getElementById('prev-page'),
-        nextPageBtn: document.getElementById('next-page'),
-        pageNumber: document.getElementById('page-number'),
-        btnVoltar: document.getElementById('btnvoltaros'),
-        visibilityFilter: document.getElementById('visibility-filter')
-    };
-
-    // Estado da aplicação
-    const state = {
-        currentPage: 1,
-        clientes: [
-            {
-                id: 1,
-                nome: 'JoãoGamer',
-                cpfCnpj: '123.456.789-09',
-                cep: '01234-567',
-                telefone: '(11) 98765-4321',
-                email: 'JoãoGamer@email.com',
-                visivel: true
-
-            },
-              
-
-        ],
-        filteredData: []
-    };
-
-    // Inicialização
-    state.filteredData = [...state.clientes];
-    
-    // =============================================
-    // FUNÇÕES PRINCIPAIS
-    // =============================================
-
-    function init() {
-        renderTable();
-        setupSortableHeaders();
-        setupEventListeners();
-        loadSavedData();
+    // Verifica se já está ordenado e inverte a direção
+    if (table.getAttribute("data-sort") === String(n)) {
+        direction = table.getAttribute("data-direction") === "asc" ? "desc" : "asc";
     }
-
-    function renderTable() {
-        elements.tableBody.innerHTML = '';
+    
+    // Ordena as linhas
+    rows.sort((a, b) => {
+        const aVal = a.cells[n].textContent.trim();
+        const bVal = b.cells[n].textContent.trim();
         
-        const start = (state.currentPage - 1) * ROWS_PER_PAGE;
-        const end = start + ROWS_PER_PAGE;
-        const paginatedData = state.filteredData.slice(start, end);
+        // Tratamento especial para diferentes tipos de dados
+        if (n === 2) { // Coluna de Salário
+            const numA = parseFloat(aVal.replace("R$ ", "").replace(".", "").replace(",", "."));
+            const numB = parseFloat(bVal.replace("R$ ", "").replace(".", "").replace(",", "."));
+            return direction === "asc" ? numA - numB : numB - numA;
+        } else if (n === 3) { // Coluna de Data
+            const dateA = new Date(aVal.split("/").reverse().join("-"));
+            const dateB = new Date(bVal.split("/").reverse().join("-"));
+            return direction === "asc" ? dateA - dateB : dateB - dateA;
+        } else { // Coluna de Texto
+            return direction === "asc" 
+                ? aVal.localeCompare(bVal, 'pt-BR', { sensitivity: 'base' }) 
+                : bVal.localeCompare(aVal, 'pt-BR', { sensitivity: 'base' });
+        }
+    });
+    
+    // Remove todas as linhas atuais
+    while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+    }
+    
+    // Adiciona as linhas ordenadas
+    rows.forEach(row => tbody.appendChild(row));
+    
+    // Atualiza o cabeçalho com a direção da ordenação
+    table.querySelectorAll("th").forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
+    table.querySelectorAll("th")[n].classList.add(`sorted-${direction}`);
+    
+    // Armazena o estado da ordenação
+    table.setAttribute("data-sort", n);
+    table.setAttribute("data-direction", direction);
+}
+
+// Adiciona os eventos de clique aos cabeçalhos
+document.addEventListener("DOMContentLoaded", () => {
+    const headers = document.querySelectorAll(".service-table th");
+    headers.forEach((header, index) => {
+        if (index !== headers.length - 1) { // Não adiciona à coluna Ações
+            header.style.cursor = "pointer";
+            header.addEventListener("click", () => sortTable(index));
+        }
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    // Dados iniciais de funcionários
+    let funcionarios = [
+    {
+            id: 1,
+            nome: "Gustavo Toblerone",
+            cpf: "123.456.789-00",
+            cep: "01001-000",
+            telefone: "(11) 98765-4321",
+            email: "gustavo_tobler@email.com",
+    },
+    {
+            id: 2,
+            nome: "joão oliveira",
+            cpf: "987.654.321-00",
+            cep: "20020-010",
+            telefone: "(21) 99876-5432",
+            email: "joao.oliveira@email.com",
+    },
+    {
+            id: 3,
+            nome: "tech solutions ltda",
+            cnpj: "12.345.678/0001-99",
+            cep: "30130-010",
+            telefone: "(31) 3456-7890",
+            email: "contato@techsolutions.com",
+    },
+    {
+        id: 4,
+        nome: "ana costa",
+        cpf: "456.789.123-00",
+        cep: "40010-020",
+        telefone: "(71) 91234-5678",
+        email: "ana.costa@email.com",
+    },
+    {
+        id: 5,
+        nome: "carlos souza",
+        cpf: "789.123.456-00",
+        cep: "50050-100",
+        telefone: "(81) 98765-1234",
+        email: "carlos.souza@email.com",
+    },
+    {
+        id: 6,
+        nome: "vida natural me",
+        cnpj: "98.765.432/0001-11",
+        cep: "60060-070",
+        telefone: "(85) 3344-5566",
+        email: "vendas@vidanatural.com",
+    },
+    {
+        id: 7,
+        nome: "fernanda lima",
+        cpf: "321.654.987-00",
+        cep: "70070-200",
+        telefone: "(61) 99887-6655",
+        email: "fernanda.lima@email.com",
+    },
+    {
+        id: 8,
+        nome: "global importações s.a.",
+        cnpj: "23.456.789/0001-22",
+        cep: "80010-900",
+        telefone: "(41) 3765-4321",
+        email: "financeiro@globalimport.com",
+    },
+    {
+        id: 9,
+        nome: "maria silva",
+        cpf: "123.456.789-00",
+        cep: "01001-000",
+        telefone: "(11) 98765-4321",
+        email: "maria.silva@email.com",
+    }
+];
+
+    // Elementos da DOM
+    const tableBody = document.getElementById('os-table-body');
+    const editModal = document.getElementById('edit-modal');
+    const editForm = document.getElementById('edit-form');
+    const closeBtn = document.querySelector('.close-btn');
+    const searchInput = document.getElementById('search-input');
+    const novaOsBtn = document.getElementById('nova-os-btn');
+    const prevPageBtn = document.getElementById('prev-page');
+    const nextPageBtn = document.getElementById('next-page');
+    const pageNumber = document.getElementById('page-number');
+    const btnVoltar = document.getElementById('btnvoltaros');
+
+    // Variáveis de estado
+    let currentPage = 1;
+    const rowsPerPage = 10;
+    let filteredData = [...funcionarios];
+
+
+
+    // Event Listeners
+    closeBtn.addEventListener('click', closeModal);
+    novaOsBtn.addEventListener('click', openNewFuncionarioModal);
+    prevPageBtn.addEventListener('click', goToPrevPage);
+    nextPageBtn.addEventListener('click', goToNextPage);
+    searchInput.addEventListener('input', filterTable);
+    editForm.addEventListener('submit', handleFormSubmit);
+    btnVoltar.addEventListener('click', () => {
+        window.location.href = "../tela_geral/tela_geral.html";
+    });
+
+    // Fechar modal ao clicar fora
+    window.addEventListener('click', function(event) {
+        if (event.target === editModal) {
+            closeModal();
+        }
+    });
+
+    // Funções principais
+    function renderTable() {
+        tableBody.innerHTML = '';
+        
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const paginatedData = filteredData.slice(start, end);
 
         if (paginatedData.length === 0) {
-            elements.tableBody.innerHTML = '<tr><td colspan="6" class="no-results">Nenhum cliente encontrado</td></tr>';
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="8" class="no-results">Nenhum funcionário encontrado</td>`;
+            tableBody.appendChild(row);
             return;
         }
 
-        elements.tableBody.innerHTML = paginatedData.map(cliente => `
-            <tr data-id="${cliente.id}">
-                <td>${cliente.nome}</td>
-                <td>${cliente.cpfCnpj}</td>
-                <td>${cliente.cep}</td>
-                <td>${cliente.telefone}</td>
-                <td>${cliente.email}</td>
+        paginatedData.forEach(func => {
+            const row = document.createElement('tr');
+            row.dataset.id = func.id;
+            row.innerHTML = `
+                <td>${func.nome}</td>
+                <td>${func.cpf/cnpj}</td>
+                <td>${func.cep}</td>
+                <td>${func.telefone}</td>
+                <td>${func.email}</td>
                 <td class="actions-cell">
                     <button class="action-btn edit-btn" title="Editar">
                         <i class="fas fa-edit"></i>
@@ -80,88 +206,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </td>
-            </tr>
-        `).join('');
+            `;
+            tableBody.appendChild(row);
+        });
 
+        // Atualizar eventos dos botões
         addEditEvents();
         addDeleteEvents();
         updatePagination();
-    }
-
-    function setupSortableHeaders() {
-        document.querySelectorAll(".service-table th").forEach((header, index) => {
-            if (index !== headers.length - 1) {
-                header.style.cursor = "pointer";
-                header.addEventListener("click", () => sortTable(index));
-            }
-        });
-    }
-
-    function sortTable(columnIndex) {
-        const table = document.querySelector(".service-table");
-        const direction = table.getAttribute("data-direction") === "asc" ? "desc" : "asc";
-        
-        state.filteredData.sort((a, b) => {
-            const aVal = getCellValue(a, columnIndex);
-            const bVal = getCellValue(b, columnIndex);
-
-            switch(columnIndex) {
-                case 2: // CEP
-                    return direction === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-                case 3: // Telefone
-                    return direction === "asc" 
-                        ? aVal.replace(/\D/g, '') - bVal.replace(/\D/g, '') 
-                        : bVal.replace(/\D/g, '') - aVal.replace(/\D/g, '');
-                default: // Texto
-                    return direction === "asc" 
-                        ? aVal.localeCompare(bVal, 'pt-BR', { sensitivity: 'base' }) 
-                        : bVal.localeCompare(aVal, 'pt-BR', { sensitivity: 'base' });
-            }
-        });
-
-        updateSortIndicators(columnIndex, direction);
-        renderTable();
-    }
-
-    function updateSortIndicators(columnIndex, direction) {
-        const headers = document.querySelectorAll(".service-table th");
-        headers.forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
-        headers[columnIndex].classList.add(`sorted-${direction}`);
-        
-        const table = document.querySelector(".service-table");
-        table.setAttribute("data-sort", columnIndex);
-        table.setAttribute("data-direction", direction);
-    }
-
-    // =============================================
-    // FUNÇÕES DE EVENTOS
-    // =============================================
-
-    function setupEventListeners() {
-        // Eventos de UI
-        elements.closeBtn.addEventListener('click', closeModal);
-        elements.novoClienteBtn.addEventListener('click', openNovoClienteModal);
-        elements.prevPageBtn.addEventListener('click', goToPrevPage);
-        elements.nextPageBtn.addEventListener('click', goToNextPage);
-        elements.searchInput.addEventListener('input', filterTable);
-        elements.editForm.addEventListener('submit', handleFormSubmit);
-        elements.btnVoltar.addEventListener('click', () => {
-            window.location.href = "../tela_geral/tela_geral.html";
-        });
-
-        if (elements.visibilityFilter) {
-            elements.visibilityFilter.addEventListener('change', filterVisibility);
-        }
-
-        // Fechar modal ao clicar fora
-        window.addEventListener('click', function(event) {
-            if (event.target === elements.editModal) {
-                closeModal();
-            }
-        });
-
-        // Salvar dados antes de sair
-        window.addEventListener('beforeunload', saveData);
     }
 
     function addEditEvents() {
@@ -169,10 +221,15 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
                 const id = parseInt(row.dataset.id);
-                const cliente = state.clientes.find(item => item.id === id);
+                const func = funcionarios.find(item => item.id === id);
                 
-                if (cliente) {
-                    fillEditForm(cliente);
+                if (func) {
+                    document.getElementById('edit-id').value = func.id;
+                    document.getElementById('edit-cpf/cnpj').value = func.nome;
+                    document.getElementById('edit-cep').value = func.cpf;
+                    document.getElementById('edit-telefone').value = func.salario;
+                    document.getElementById('edit-email').value = func.dataNascimento;
+                    
                     openModal();
                 }
             });
@@ -185,69 +242,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 const row = this.closest('tr');
                 const id = parseInt(row.dataset.id);
                 
-                if (confirm('Tem certeza que deseja excluir este cliente?')) {
-                    deleteClient(id);
+                if (confirm('Tem certeza que deseja excluir este funcionário?')) {
+                    funcionarios = funcionarios.filter(func => func.id !== id);
+                    filteredData = filteredData.filter(func => func.id !== id);
+                    renderTable();
                 }
             });
         });
     }
 
-    // =============================================
-    // FUNÇÕES AUXILIARES
-    // =============================================
-
-    function getCellValue(cliente, columnIndex) {
-        switch(columnIndex) {
-            case 0: return cliente.nome;
-            case 1: return cliente.cpfCnpj;
-            case 2: return cliente.cep;
-            case 3: return cliente.telefone;
-            case 4: return cliente.email;
-            default: return '';
-        }
-    }
-
-    function fillEditForm(cliente) {
-        document.getElementById('edit-id').value = cliente.id;
-        document.getElementById('edit-nome').value = cliente.nome;
-        document.getElementById('edit-cpfCnpj').value = cliente.cpfCnpj;
-        document.getElementById('edit-cep').value = cliente.cep;
-        document.getElementById('edit-telefone').value = cliente.telefone;
-        document.getElementById('edit-email').value = cliente.email;
-    }
-
-    function deleteClient(id) {
-        state.clientes = state.clientes.filter(cliente => cliente.id !== id);
-        state.filteredData = state.filteredData.filter(cliente => cliente.id !== id);
-        renderTable();
-    }
-
     function filterTable() {
-        const searchTerm = elements.searchInput.value.toLowerCase();
+        const searchTerm = searchInput.value.toLowerCase();
         
-        state.filteredData = searchTerm === '' 
-            ? [...state.clientes] 
-            : state.clientes.filter(cliente => 
-                cliente.nome.toLowerCase().includes(searchTerm) ||
-                cliente.cpfCnpj.toLowerCase().includes(searchTerm) ||
-                cliente.telefone.toLowerCase().includes(searchTerm) ||
-                cliente.email.toLowerCase().includes(searchTerm)
+        if (searchTerm === '') {
+            filteredData = [...funcionarios];
+        } else {
+            filteredData = funcionarios.filter(func => 
+                func.nome.toLowerCase().includes(searchTerm) ||
+                func.cpf.toLowerCase().includes(searchTerm) ||
+                func.funcao.toLowerCase().includes(searchTerm) ||
+                func.email.toLowerCase().includes(searchTerm)
             );
+        }
         
-        state.currentPage = 1;
-        renderTable();
-    }
-
-    function filterVisibility() {
-        const filter = this.value;
-        
-        state.filteredData = filter === 'visible'
-            ? state.clientes.filter(cliente => cliente.visivel !== false)
-            : filter === 'hidden'
-                ? state.clientes.filter(cliente => cliente.visivel === false)
-                : [...state.clientes];
-        
-        state.currentPage = 1;
+        currentPage = 1;
         renderTable();
     }
 
@@ -255,97 +273,75 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         const id = parseInt(document.getElementById('edit-id').value);
-        const clienteIndex = state.clientes.findIndex(cliente => cliente.id === id);
+        const funcIndex = funcionarios.findIndex(func => func.id === id);
         
-        if (clienteIndex !== -1) {
-            // Atualizar cliente existente
-            state.clientes[clienteIndex] = {
-                ...state.clientes[clienteIndex],
-                nome: document.getElementById('edit-nome').value,
-                cpfCnpj: document.getElementById('edit-cpfCnpj').value,
-                cep: document.getElementById('edit-cep').value,
-                telefone: document.getElementById('edit-telefone').value,
-                email: document.getElementById('edit-email').value
+        if (funcIndex !== -1) {
+            // Atualizar funcionário existente
+            funcionarios[funcIndex] = {
+                ...funcionarios[funcIndex],
+                nome: document.getElementById('edit-cliente').value,
+                cpf: document.getElementById('edit-cpf/cnpj').value,
+                salario: document.getElementById('edit-cep').value,
+                dataNascimento: document.getElementById('edit-telefone').value,
+                cep: document.getElementById('edit-email').value,
             };
         } else {
-            // Criar novo cliente
-            const newId = state.clientes.length > 0 
-                ? Math.max(...state.clientes.map(cliente => cliente.id)) + 1 
-                : 1;
-                
-            state.clientes.push({
+            // Criar novo funcionário
+            const newId = funcionarios.length > 0 ? Math.max(...funcionarios.map(func => func.id)) + 1 : 1;
+            funcionarios.push({
                 id: newId,
-                nome: document.getElementById('edit-nome').value,
-                cpfCnpj: document.getElementById('edit-cpfCnpj').value,
+                nome: document.getElementById('edit-funcionario').value,
+                cpf: document.getElementById('edit-cpf').value,
+                salario: document.getElementById('edit-salario').value,
+                dataNascimento: document.getElementById('edit-dataNascimento').value,
                 cep: document.getElementById('edit-cep').value,
-                telefone: document.getElementById('edit-telefone').value,
-                email: document.getElementById('edit-email').value,
-                visivel: true
+                funcao: document.getElementById('edit-funcao').value,
+                email: document.getElementById('edit-email').value
             });
         }
         
-        state.filteredData = [...state.clientes];
+        filteredData = [...funcionarios];
         renderTable();
         closeModal();
     }
 
+    // Funções auxiliares
     function openModal() {
-        elements.editModal.style.display = 'block';
+        editModal.style.display = 'block';
     }
 
     function closeModal() {
-        elements.editModal.style.display = 'none';
-        elements.editForm.reset();
+        editModal.style.display = 'none';
+        editForm.reset();
     }
 
-    function openNovoClienteModal() {
-        elements.editForm.reset();
+    function openNewFuncionarioModal() {
+        // Limpa o formulário e define o ID como vazio para novo cadastro
+        editForm.reset();
         document.getElementById('edit-id').value = '';
         openModal();
     }
 
     function goToPrevPage() {
-        if (state.currentPage > 1) {
-            state.currentPage--;
+        if (currentPage > 1) {
+            currentPage--;
             renderTable();
         }
     }
 
     function goToNextPage() {
-        const totalPages = Math.ceil(state.filteredData.length / ROWS_PER_PAGE);
-        if (state.currentPage < totalPages) {
-            state.currentPage++;
+        const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
             renderTable();
         }
     }
 
     function updatePagination() {
-        const totalPages = Math.ceil(state.filteredData.length / ROWS_PER_PAGE);
-        elements.pageNumber.textContent = state.currentPage;
+        const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+        pageNumber.textContent = currentPage;
         
-        elements.prevPageBtn.disabled = state.currentPage === 1;
-        elements.nextPageBtn.disabled = state.currentPage === totalPages || totalPages === 0;
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
     }
-
-    function saveData() {
-        localStorage.setItem('clientesData', JSON.stringify({
-            clientes: state.clientes,
-            filteredData: state.filteredData,
-            currentPage: state.currentPage
-        }));
-    }
-
-    function loadSavedData() {
-        const savedData = localStorage.getItem('clientesData');
-        if (savedData) {
-            const parsedData = JSON.parse(savedData);
-            state.clientes = parsedData.clientes || state.clientes;
-            state.filteredData = parsedData.filteredData || [...state.clientes];
-            state.currentPage = parsedData.currentPage || 1;
-            renderTable();
-        }
-    }
-
-    // Inicializar a aplicação
-    init();
 });
