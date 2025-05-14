@@ -237,8 +237,9 @@ body {
   }
   
   .submenu a {
+    margin-top:4.5px;
+    margin-bottom:7px;
     display: block;
-    cursor: none;
     padding: 3px 0;
     text-decoration: none;
     color: #333;

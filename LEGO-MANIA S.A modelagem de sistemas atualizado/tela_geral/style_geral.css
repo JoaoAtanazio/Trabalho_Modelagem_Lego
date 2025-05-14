@@ -259,6 +259,8 @@ body {
       cursor: none !important;
     }
   .submenu a {
+    margin-top:0.8px;
+    margin-bottom:1px;
     display: block;
     padding: 3px 0;
     text-decoration: none;

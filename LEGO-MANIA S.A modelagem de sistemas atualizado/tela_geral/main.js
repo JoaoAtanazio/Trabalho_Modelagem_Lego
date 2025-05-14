@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const conferirOS = document.getElementById("conferir");
     const voltarOS = document.getElementById("btnvoltaros");
     const graficopizza = document.getElementById("btnpizza");
+<<<<<<< HEAD
     const graficobarra = document.getElementById("btnbarra");
     const perfil = document.getElementById("btnperfil");
   
@@ -106,6 +107,20 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       iconeOlho.classList.toggle('fa-eye');
       iconeOlho.classList.toggle('fa-eye-slash');
+=======
+	const graficobarra = document.getElementById("btnbarra");
+    const perfil = document.getElementById("btnperfil")
+    const senha = document.querySelector('.senha-container');
+    const iconeOlho = document.querySelector('.btn-olho');
+    const senhaTexto = document.getElementById('senhaTexto');
+    
+    if (iconeOlho) {
+        iconeOlho.addEventListener('click', mostrarSenha);
+    }
+    
+    if (conferirOS) {
+        conferirOS.addEventListener('click', AbrirOS);
+>>>>>>> 466476bff05732cdfdfc3fc46a0bb9859002ad84
     }
   
     const btnOlho = document.querySelector('.btn-olho');
@@ -205,6 +220,7 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
 
+<<<<<<< HEAD
     if (telefoneInput) {
         // Impede a digitação de letras e caracteres inválidos
         telefoneInput.addEventListener('keydown', function (e) {
@@ -277,6 +293,54 @@ document.addEventListener("DOMContentLoaded", function() {
   function toggleDropdown() {
     const dropdown = document.getElementById('funcao-dropdown');
     if (dropdown) dropdown.classList.toggle('open');
+=======
+    if(perfil) {
+        perfil.addEventListener('click', abrirperfil);
+    }
+    
+    function AbrirOS(event) {
+        event.preventDefault();
+        window.location.href = '../Ordem_Servico/ordem_abertas.html';
+    }
+    
+    function VoltarOS(event) {
+        event.preventDefault();
+        window.location.href = '../tela_geral/tela_geral.html';
+    }
+    
+    function abrirpizza(event) {
+        event.preventDefault();
+        window.location.href = '../Requisito_pecas/Pecas_requisitadas_pizza.html';
+    }
+	
+	function abrirbarra(event) {
+		event.preventDefault();
+		window.location.href = '../Requisito_pecas/Pecas_requisitadas_barra.html';
+	}
+    function abrirperfil(event){
+        event.preventDefault();
+        window.location.href = '../Perfil_Usuário/Perfil_Usuário.html';
+    }
+ function mostrarSenha() {
+  if (senhaTexto.textContent === 'BANANA') {
+    senhaTexto.textContent = 'teste123';
+    iconeOlho.classList.remove('fa-eye');
+    iconeOlho.classList.toggle('fa-eye-slash'); // Alterna entre os ícones
+  } 
+  else {
+    senhaTexto.textContent = 'admin123'; // Esconde a senha
+    iconeOlho.classList.remove('fa-eye-slash'); // Remove o ícone de olho fechado
+    iconeOlho.classList.add('fa-eye'); // Adiciona o ícone de olho aberto
+  }
+}
+
+// Adicionando evento ao botão corretamente
+
+
+
+function toggleDropdown() {
+    document.getElementById('funcao-dropdown').classList.toggle('open');
+>>>>>>> 466476bff05732cdfdfc3fc46a0bb9859002ad84
   }
 
   function selecionarFuncao(valor) {
@@ -286,6 +350,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (funcao) funcao.value = valor;
     toggleDropdown();
   }
+<<<<<<< HEAD
   form.addEventListener('submit', function (e) {
     let erro = false;
   
@@ -299,3 +364,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
   
+=======
+  let informações = [
+    {
+    Nome_usuario: 'bananinhas123',
+    Senha: 'admin123',
+    Telefone: '47 98432-9882'
+  }
+]
+>>>>>>> 466476bff05732cdfdfc3fc46a0bb9859002ad84

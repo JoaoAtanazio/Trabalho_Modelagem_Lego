@@ -503,14 +503,13 @@ body {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s;
   transform: translateY(58px);
   border-color: black;
   width:260px;
   transform: translateX(110px)translateY(60PX); 
 }
 .btn-salvar:hover {
-  background-color: rgb(164, 16, 16);
+  background-color: rgb(37, 37, 37);
 }
 .perfil-usuario {
   max-width: 500px;
@@ -566,4 +565,8 @@ body {
   margin-top: 20px;
   text-align: center;
 }
-
+.btn-editar{
+  transform:translate(8px, -0px);
+  border:none;
+  color:#666
+}
