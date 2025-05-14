@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tela inicial - LEGO MANIA</title>
-  <link rel="stylesheet" href="style_cliente.css" />
+  <link rel="stylesheet" href="cadastro_cliente.css" />
 </head>
 <body>
   <!-- Manter APENAS este cursor principal -->
@@ -62,31 +62,39 @@
       <section class="cadastro-box">
         <h2>Cadastro de Cliente</h2>
 
-        <form class="form-funcionario">
-          <div class="form-group">
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" placeholder="Nome completo">
-          </div>
+        <form id="formFuncionario" class="form-funcionario">
+        <div class="form-group">
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" name="nome" placeholder="Nome completo" required>
+        </div>
 
+<<<<<<< Updated upstream
           <div class="form-group">
             <label for="cpf">CPF/CNPJ:</label>
             <input type="text" id="cpfCnpj" name="cpf" placeholder="000.000.000-00 ou 00.000.000/0000-00">
           </div>
+=======
+        <div class="form-group">
+          <label for="cpfCnpj">CPF/CNPJ:</label>
+          <input type="text" id="cpfCnpj" name="cpfCnpj"maxlength="17"
+                 placeholder="000.000.000-00 ou 00.000.000/0000-00" required>
+        </div>
+>>>>>>> Stashed changes
 
-          <div class="form-group">
-            <label for="cep">CEP:</label>
-            <input type="text" id="cep" name="cep" placeholder="00000-000">
-          </div>
+        <div class="form-group">
+          <label for="cep">CEP:</label>
+          <input type="text" id="cep" name="cep" maxlength='9' placeholder="00000-000" required>
+        </div>
 
           <div class="form-group">
             <label for="cep">Telefone:</label>
-            <input type="text" id="cep" name="cep" placeholder="(00) 00000-0000">
-          </div>
+            <input type="text" id="telefone" name="telefone" maxlength="15"placeholder="(00) 0 0000-0000" />
 
+          </div>
 
           <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="exemplo@email.com">
+            <input type="email" id="email" name="email" placeholder="exemplo@email.com"required>
           </div>
 
           <div class="form-buttons">
@@ -97,10 +105,9 @@
       </section>
     </main>
   </div>
+
+  <!-- Scripts -->
   <script src="../tela_geral/main.js"></script>
   <script src="../tela_geral/tela_geral.js"></script>
-  <script>
-  </script>
-
 </body>
 </html>
