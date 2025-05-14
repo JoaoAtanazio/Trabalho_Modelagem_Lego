@@ -23,7 +23,7 @@
                     <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
                     <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
                     <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
-                    <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html">Fornecedor</a>
+                    <a id="fornecedor" href="../">Fornecedor</a>
                   </div>
                   <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
                   <div class="submenu">
@@ -60,7 +60,7 @@
 
             <section class="section_conteudo">
                 <div class="section-header">
-                    <h2><i class="fas fa-tasks"></i> Solicitações de Serviço</h2>
+                    <h2><i class="fas fa-tasks"></i> Gestão de Clientes</h2>
                     <div class="actions">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
@@ -73,12 +73,10 @@
                     <table class="service-table">
                         <thead>
                             <tr>
-                                <th>Funcionário</th>
-                                <th>CPF</th>
-                                <th>Salário</th>
-                                <th>Data de nascimento</th>
+                                <th>Cliente</th>
+                                <th>CPF/CPNJ</th>
                                 <th>CEP</th>
-                                <th>Função</th>
+                                <th>Telefone</th>
                                 <th>Email</th>
                                 <th>Ações</th>
                             </tr>
@@ -90,8 +88,6 @@
                                 <td>10000,00</td>
                                 <td>04/12/1988</td>
                                 <td>46288-123</td>
-                                <td>Administrador</td>
-                                <td>inacio@gmail.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -107,8 +103,6 @@
                                <td>R$ 4.500,00</td>
                                <td>15/03/1985</td>
                                <td>01234-567</td>
-                               <td>Atendente</td>
-                               <td>joao.silva@empresa.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -124,8 +118,6 @@
                                     <td>R$ 5.200,00</td>
                                     <td>22/07/1990</td>
                                     <td>04567-890</td>
-                                    <td>Atendente</td>
-                                    <td>maria.oliveira@empresa.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -141,8 +133,6 @@
                                <td>R$ 3.800,00</td>
                                <td>10/11/1992</td>
                                <td>07890-123</td>
-                               <td>Técnico</td>
-                               <td>carlos.souza@empresa.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -158,8 +148,6 @@
                               <td>R$ 6.000,00</td>
                               <td>05/05/1988</td>
                               <td>03456-789</td>
-                              <td>Estoquista</td>
-                              <td>ana.costa@empresa.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -175,8 +163,6 @@
                                <td>R$ 4.200,00</td>
                                <td>30/09/1995</td>
                                <td>06789-012</td>
-                               <td>Estoquista</td>
-                               <td>pedro.rocha@empresa.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -192,8 +178,6 @@
                                 <td>R$ 5.800,00</td>
                                 <td>12/12/1987</td>
                                 <td>08901-234</td>
-                                <td>Técnico</td>
-                                <td>juliana.almeida@empresa.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -209,8 +193,6 @@
                               <td>R$ 3.500,00</td>
                               <td>18/04/1993</td>
                               <td>04512-378</td>
-                              <td>Atendente</td>
-                              <td>fernando.lima@empresa.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -226,8 +208,6 @@
                               <td>R$ 7.200,00</td>
                               <td>27/10/1984</td>
                               <td>07845-612</td>
-                              <td>Estoquista</td>
-                              <td>patricia.santos@empresa.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -240,6 +220,14 @@
                         </tbody>
                     </table>
                 </div>
+                 <div class="filter-controls">
+                         <label>Mostrar:</label>
+                       <select id="visibility-filter">
+                             <option value="all">Todos</option>
+                             <option value="visible">Apenas visíveis</option>
+                             <option value="hidden">Apenas ocultos</option>
+                       </select>
+                     </div>
        
                 <div class="table-footer">
                     <div class="pagination">
@@ -295,8 +283,8 @@
         </form>
     </div>
 </div>
-    <script src="../gestao_pessoas/gestao.js"></script>
     <script src="../tela_geral/tela_geral.js"></script>
     <script src="../tela_geral/main.js"></script>
+    <script src="../gestao_pessoas/gestao_clnt.js"></script>
 </body>
 </html>
