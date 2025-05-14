@@ -2,7 +2,9 @@
 html, body{
 	cursor: none;
 }
-
+.data{
+  font-family: 'Roboto', 'sans-serif';
+}
 .custom-cursor {
 	position: absolute;
 	top: 0;
@@ -138,7 +140,9 @@ body {
   background-color: #F0EBE3;;
   color: #333;
   line-height: 1.6;
+  overflow: hidden;
 }
+
 
 .container {
   display: flex;

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="entrada_peca.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <div class="custom-cursor site-wide">
@@ -245,11 +246,11 @@
                     <div class="date-range">
                         <div class="date-field">
                           <label for="dataInicio">De:</label>
-                          <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+                          <input type="text" id="data" placeholder="dd/mm/aaaa" class="data" readonly>
                         </div>
                         <div class="date-field">
                           <label for="dataFim">Até:</label>
-                          <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+                          <input type="text" id="data" placeholder="dd/mm/aaaa" class="data" readonly>  
                         </div>
                     </div>
 
@@ -293,5 +294,8 @@
 <script src="../Entrada e saida peças/Entrada_pecas.js" defer></script>
 <script src="../tela_geral/tela_geral.js"></script>
 <script src="../tela_geral/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+
 </body>
 </html>

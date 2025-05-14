@@ -1,63 +1,27 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Configuração dos datepickers
-  flatpickr(".data", {
-    dateFormat: "d/m/Y",
-    locale: "pt"
-  });
-
-  // Configurar datepicker do modal
-  flatpickr("#edit-dataRecebimento", {
-    dateFormat: "d/m/Y",
-    locale: "pt"
-  });
-
-  // Carregar peças ao iniciar
-  carregarPecas();
 
   // Botão voltar
   document.getElementById('btnvoltaros').addEventListener('click', function() {
-    window.location.href = '../cadastro_pecas_/cadastro_pecas.html';
+    window.location.href = '../tela_geral/tela_geral.html'; // Ajuste o caminho
   });
 
   // Pesquisa
   document.getElementById('search-input').addEventListener('input', function() {
     filtrarTabela(this.value.toLowerCase());
   });
-});
 
-function carregarPecas() {
-  const pecas = JSON.parse(localStorage.getItem('pecas')) || [];
-  const tbody = document.getElementById('os-table-body');
-  
-  tbody.innerHTML = '';
-  
-  pecas.forEach((peca, index) => {
-    const tr = document.createElement('tr');
-    tr.setAttribute('data-id', index + 1);
-    
-    tr.innerHTML = `
-      <td>${peca.nome}</td>
-      <td>${peca.id}</td>
-      <td>${peca.tipo}</td>
-      <td>${peca.data}</td>
-      <td class="actions-cell">
-        <button class="action-btn edit-btn" title="Editar">
-          <i class="fas fa-edit"></i>
-        </button>
-        <button class="action-btn delete-btn" title="Excluir">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-      </td>
-    `;
-    
-    tbody.appendChild(tr);
+  // Paginação (exemplo básico)
+  document.getElementById('prev-page').addEventListener('click', function() {
+    // Lógica para página anterior
+    console.log('Página anterior');
   });
-  
-  adicionarEventListeners();
-}
 
-function adicionarEventListeners() {
-  // Botões de editar
+  document.getElementById('next-page').addEventListener('click', function() {
+    // Lógica para próxima página
+    console.log('Próxima página');
+  });
+
+  // Modal de edição
   document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const row = this.closest('tr');
@@ -65,48 +29,41 @@ function adicionarEventListeners() {
       abrirModalEdicao(id);
     });
   });
-  
+
   // Botões de excluir
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const row = this.closest('tr');
       const id = row.getAttribute('data-id');
-      excluirPeca(id);
+      if (confirm('Tem certeza que deseja excluir esta peça?')) {
+        row.remove();
+        // Aqui você deveria também remover do localStorage ou banco de dados
+      }
     });
   });
-  
-  // Fechar modal quando clicar no X
+
+  // Fechar modal
   document.querySelector('.close-btn').addEventListener('click', fecharModal);
-  
-  // Fechar modal quando clicar fora dele
-  window.addEventListener('click', function(event) {
-    const modal = document.getElementById('edit-modal');
-    if (event.target === modal) {
-      fecharModal();
-    }
-  });
-  
+
   // Formulário de edição
   document.getElementById('edit-form').addEventListener('submit', function(e) {
     e.preventDefault();
     salvarEdicao();
   });
-}
+});
 
 function abrirModalEdicao(id) {
-  const pecas = JSON.parse(localStorage.getItem('pecas')) || [];
-  const index = parseInt(id) - 1;
-  
-  if (index >= 0 && index < pecas.length) {
-    const peca = pecas[index];
+  const row = document.querySelector(`tr[data-id="${id}"]`);
+  if (row) {
+    const cells = row.cells;
     const modal = document.getElementById('edit-modal');
     
-    // Preencher o formulário com os dados da peça
+    // Preencher o formulário com os dados da linha
     document.getElementById('edit-id').value = id;
-    document.getElementById('edit-funcionario').value = peca.nome;
-    document.getElementById('edit-cod').value = peca.id;
-    document.getElementById('edit-salario').value = peca.tipo;
-    document.getElementById('edit-dataRecebimento').value = peca.data;
+    document.getElementById('edit-funcionario').value = cells[0].textContent;
+    document.getElementById('edit-cod').value = cells[1].textContent;
+    document.getElementById('edit-salario').value = cells[2].textContent;
+    document.getElementById('edit-dataRecebimento').value = cells[3].textContent;
     
     // Mostrar o modal
     modal.style.display = 'block';
@@ -119,40 +76,19 @@ function fecharModal() {
 
 function salvarEdicao() {
   const id = document.getElementById('edit-id').value;
-  const index = parseInt(id) - 1;
+  const row = document.querySelector(`tr[data-id="${id}"]`);
   
-  let pecas = JSON.parse(localStorage.getItem('pecas')) || [];
-  
-  if (index >= 0 && index < pecas.length) {
-    // Atualizar os dados da peça
-    pecas[index] = {
-      nome: document.getElementById('edit-funcionario').value,
-      id: document.getElementById('edit-cod').value,
-      tipo: document.getElementById('edit-salario').value,
-      data: document.getElementById('edit-dataRecebimento').value
-    };
+  if (row) {
+    const cells = row.cells;
+    cells[0].textContent = document.getElementById('edit-funcionario').value;
+    cells[1].textContent = document.getElementById('edit-cod').value;
+    cells[2].textContent = document.getElementById('edit-salario').value;
+    cells[3].textContent = document.getElementById('edit-dataRecebimento').value;
     
-    // Salvar no localStorage
-    localStorage.setItem('pecas', JSON.stringify(pecas));
-    
-    // Fechar o modal e recarregar a tabela
     fecharModal();
-    carregarPecas();
-  }
-
-  window.alert("Você mudou!")
-}
-
-function excluirPeca(id) {
-  if (confirm('Tem certeza que deseja excluir esta peça?')) {
-    let pecas = JSON.parse(localStorage.getItem('pecas')) || [];
-    const index = parseInt(id) - 1;
+    alert("Alterações salvas com sucesso!");
     
-    if (index >= 0 && index < pecas.length) {
-      pecas.splice(index, 1);
-      localStorage.setItem('pecas', JSON.stringify(pecas));
-      carregarPecas();
-    }
+    // Aqui você deveria também salvar no localStorage ou banco de dados
   }
 }
 

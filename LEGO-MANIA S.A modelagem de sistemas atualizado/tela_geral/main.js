@@ -38,15 +38,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Restante do seu código...
 });
-    // Configuração do Flatpickr
-    if (typeof flatpickr !== 'undefined' && document.getElementById("data-recebimento")) {
-        flatpickr("#data-recebimento", {
-            dateFormat: "d/m/Y",
-            locale: "pt",
-            allowInput: true,
-            clickOpens: true,
-        });
-    }
+document.addEventListener("DOMContentLoaded", function() {
+    flatpickr("#data", {
+      dateFormat: "d/m/Y",
+      locale: "pt"
+    });
+  });
+
+    
 
     // Event listeners para os botões
     const conferirOS = document.getElementById("conferir");
