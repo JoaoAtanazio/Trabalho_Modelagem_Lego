@@ -54,8 +54,12 @@ document.addEventListener("DOMContentLoaded", function() {
 	const graficobarra = document.getElementById("btnbarra");
     const perfil = document.getElementById("btnperfil")
     const senha = document.querySelector('.senha-container');
- const iconeOlho = document.querySelector('.btn-olho i');
-const senhaTexto = document.getElementById('senhaTexto');
+    const iconeOlho = document.querySelector('.btn-olho');
+    const senhaTexto = document.getElementById('senhaTexto');
+    
+    if (iconeOlho) {
+        iconeOlho.addEventListener('click', mostrarSenha);
+    }
     
     if (conferirOS) {
         conferirOS.addEventListener('click', AbrirOS);
@@ -100,19 +104,22 @@ const senhaTexto = document.getElementById('senhaTexto');
         window.location.href = '../Perfil_Usuário/Perfil_Usuário.html';
     }
  function mostrarSenha() {
-  if (senhaTexto.textContent === '***********') {
-    senhaTexto.textContent = 'admin123';
-    iconeOlho.classList.toggle('fa-eye');
+  if (senhaTexto.textContent === 'BANANA') {
+    senhaTexto.textContent = 'teste123';
+    iconeOlho.classList.remove('fa-eye');
     iconeOlho.classList.toggle('fa-eye-slash'); // Alterna entre os ícones
-  } else {
-    senhaTexto.textContent = '***********';
-    iconeOlho.classList.toggle('fa-eye-slash');
-    iconeOlho.classList.toggle('fa-eye'); // Volta ao ícone original
+  } 
+  else {
+    senhaTexto.textContent = 'admin123'; // Esconde a senha
+    iconeOlho.classList.remove('fa-eye-slash'); // Remove o ícone de olho fechado
+    iconeOlho.classList.add('fa-eye'); // Adiciona o ícone de olho aberto
   }
 }
 
 // Adicionando evento ao botão corretamente
-document.querySelector('.btn-olho').addEventListener('click', mostrarSenha);
+
+
+
 function toggleDropdown() {
     document.getElementById('funcao-dropdown').classList.toggle('open');
   }
@@ -122,3 +129,10 @@ function toggleDropdown() {
     document.getElementById('funcao').value = valor;
     toggleDropdown();
   }
+  let informações = [
+    {
+    Nome_usuario: 'bananinhas123',
+    Senha: 'admin123',
+    Telefone: '47 98432-9882'
+  }
+]
