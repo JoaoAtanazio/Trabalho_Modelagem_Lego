@@ -348,6 +348,29 @@ function toggleDropdown() {
     document.getElementById('funcao-dropdown').classList.toggle('open');
   }
 
+  document.addEventListener('DOMContentLoaded', function () {
+    function atualizarHorario() {
+      const elementoHorario = document.querySelector('.horario');
+      if (!elementoHorario) return;
+  
+      const agora = new Date();
+  
+      const dia = String(agora.getDate()).padStart(2, '0');
+      const mes = String(agora.getMonth() + 1).padStart(2, '0');
+      const ano = agora.getFullYear();
+  
+      const horas = String(agora.getHours()).padStart(2, '0');
+      const minutos = String(agora.getMinutes()).padStart(2, '0');
+      const segundos = String(agora.getSeconds()).padStart(2, '0');
+  
+      elementoHorario.innerHTML = `<p>Data: ${dia}/${mes}/${ano} <br>
+       Hora: ${horas}:${minutos}:${segundos}</p>`;
+    }
+   
+    atualizarHorario();
+    setInterval(atualizarHorario, 1000);
+  });
+
   function selecionarFuncao(valor) {
     const funcaoSelecionada = document.getElementById('funcaoSelecionada');
     const funcao = document.getElementById('funcao');
