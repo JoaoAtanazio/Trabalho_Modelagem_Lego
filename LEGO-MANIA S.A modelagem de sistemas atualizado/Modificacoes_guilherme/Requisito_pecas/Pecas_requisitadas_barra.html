@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tela inicial - LEGO MANIA</title>
+  <link rel="stylesheet" href="Pecas_requisitadas_barra.css" />
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+  <div class="custom-cursor site-wide">
+    <div class="pointer"></div> <!-- Cursor normal -->
+    <div class="custom-pointer"></div> <!-- Cursor pros botões -->
+  </div>
+  <div class="container">
+    <aside class="sidebar">
+      <h1 class="logo">LEGO - <br>MANIA O.S</h1>
+      <nav class="menu">
+        <div class="menu-container">
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
+          <div class="submenu">
+            <a id="func" href="../cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
+            <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
+            <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
+            <a id="fornecedor" href="../">Fornecedor</a>
+          </div>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
+          <div class="submenu">
+            <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
+            <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
+          </div>
+            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+          <div class="submenu">
+            <a href="#">Ganho <br>bruto/lucro</a>
+            <a href="#">Despesas</a>
+            <a href="#">Serviços <br>realizados</a>
+          </div>
+            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+          <div class="submenu">
+            <a href="#">Peças no <br>estoque</a>
+            <a id="peca_requisitada" href="../Requisito_pecas/Pecas_requisitadas_barra.html">Relatório <br>de uso</a>
+            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/Saída <br> de peças</a>
+          </div>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
+          <div class="submenu">
+            <a href="#">Clientes</a>
+            <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+  <!--Acima é a estilização da tela-->
+<main class="main-content">
+      <header class="header">
+        <div class="logout">
+          <button>Sair</button>
+        </div>
+      </header>
+      <section class="cadastro-box">
+        <div class="cadastro-header">Peças mais requisitadas</div>
+
+        <div class="date-range">
+          <div class="date-field">
+            <label for="dataInicio">De:</label>
+            <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+          </div>
+          <div class="date-field">
+            <label for="dataFim">Até:</label>
+            <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+          </div>
+        </div>
+
+<!-- Gráfico de Barras Verticais com Legenda -->
+<div class="bar-chart-vertical">
+    <div style="display: flex;">
+      <div class="legend">
+        <div class="legend-item"><span class="legend-color fixa"></span> Fixa</div>
+        <div class="legend-item"><span class="legend-color variavel"></span> Variáveis</div>
+      </div>
+  
+      <div class="chart-area">
+        <div class="bar-group">
+          <div class="bar-set">
+            <div class="bar fixa" style="height: 30%;"></div>
+            <div class="bar variavel" style="height: 40%;"></div>
+          </div>
+          <span class="label">Item 1</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-set">
+            <div class="bar fixa" style="height: 60%;"></div>
+            <div class="bar variavel" style="height: 75%;"></div>
+          </div>
+          <span class="label">Item 2</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-set">
+            <div class="bar fixa" style="height: 90%;"></div>
+            <div class="bar variavel" style="height: 95%;"></div>
+          </div>
+          <span class="label">Item 3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <div class="form-buttons fixed-bottom">
+            <button type="submit" class="btn" id="btnpizza">Gráfico de pizza</button>
+            <button type="button" class="btn btn-voltar" id="btnvoltar">Voltar</button>
+          </div>
+          
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function toggleDropdown() {
+      document.getElementById('funcao-dropdown').classList.toggle('open');
+    }
+
+    function selecionarFuncao(valor) {
+      document.getElementById('funcaoSelecionada').innerText = valor;
+      document.getElementById('funcao').value = valor;
+      toggleDropdown();
+    }
+  </script>
+    <script src = '../tela_geral/tela_geral.js'></script>
+  <script src = '../tela_geral/main.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+<script>
+  flatpickr("#dataInicio", {
+    dateFormat: "d/m/Y",
+    locale: "pt" 
+  });
+
+  flatpickr("#dataFim", {
+    dateFormat: "d/m/Y",
+    locale: "pt"
+  });
+</script>
+
+</body>
+</html>

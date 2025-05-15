@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de OS - LEGO MANIA</title>
+    <link rel="stylesheet" href="Perfil_Usuário_css.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="custom-cursor site-wide">
+        <div class="pointer"></div> <!-- Cursor normal -->
+        <div class="custom-pointer"></div> <!-- Cursor pros botões -->
+      </div>
+          <div class="container">
+        <aside class="sidebar">
+
+            <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
+          <h1 class="logo">
+            <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
+              LEGO - <br>MANIA O.S
+            </a>
+         </h1>
+
+            <nav class="menu">
+                <div class="menu-container">
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
+                  <div class="submenu">
+                    <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
+                    <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
+                    <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
+                    <a id="fornecedor" href="../Cadastro_fornecedor/Cadastro_fornecedor">Fornecedor</a>
+                  </div>
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
+                  <div class="submenu">
+                    <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
+                    <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
+                  </div>
+                    <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+                  <div class="submenu">
+                    <a href="#">Ganho <br>bruto/lucro</a>
+                    <a href="#">Despesas</a>
+                    <a href="#">Serviços <br>realizados</a>
+                  </div>
+                    <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+                  <div class="submenu">
+                    <a href="#">Peças no <br>estoque</a>
+                    <a id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html">Relatório <br>de uso</a>
+                    <a a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
+                  </div>
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
+                  <div class="submenu">
+                    <a href="../gestao_pessoas/gestao_clnt.html">Clientes</a>
+                    <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
+                  </div>
+                </div>
+              </nav>
+        </aside>
+        
+     <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
+
+        <main class="main-content">
+            <header class="header">
+                <div class="logout">
+                    <button>Sair</button>
+                </div>
+            </header>
+
+<div class="cadastro-box">
+  <h2><i class="fa-solid fa-user"></i> Perfil do Usuário</h2>
+<div class="perfil-container">
+  <div class="foto-perfil">
+    <label for="inputFoto">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Foto do usuário" id="fotoUsuario">
+      <span class="btn-trocar-foto">Trocar foto</span>
+    </label>
+    <input type="file" id="inputFoto" accept="image/*" style="display: none;">
+  </div>
+  
+   <div class="detalhes-perfil">
+    <div class="campo-perfil">
+      <label>Nome de usuário:</label>
+      <div class="valor-campo">bananinhas123</div>
+    </div>
+    
+    <div class="campo-perfil">
+      <label>Senha:</label>
+      <div class="valor-campo senha-container" id="senhaTexto">
+        BANANA
+        <button class="btn-olho" id="icone-olho">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+      <button class="btn-editar">
+          <i class="fa-solid fa-pen"></i>
+        </button>
+    </div>
+    
+    <div class="campo-perfil">
+      <label>Telefone:</label>
+      <div class="valor-campo">47 8432-XXXX</div>
+    </div>
+    
+    <button class="btn-salvar">Salvar Alterações</button>
+  </div>
+</div>
+
+     <div class="table-footer">
+     </div>
+
+     <button class="btn-secondary" id="btnvoltaros" onclick="window.history.back()">Voltar</button>
+
+    <script src="ordem_aberta_jcp.js"></script>
+    <script src="../tela_geral/tela_geral.js"></script>
+    <script src="../tela_geral/main.js"></script>
+</body>
