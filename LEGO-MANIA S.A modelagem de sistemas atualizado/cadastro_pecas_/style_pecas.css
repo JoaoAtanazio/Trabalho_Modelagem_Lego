@@ -102,6 +102,7 @@ body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
   background-color: #F5F5F3;
+  line-height: 1.6;
   overflow-y: hidden;
 }
 
@@ -160,7 +161,6 @@ body {
   margin-bottom: 2rem;
 }
 
-
 .logout button {
   border-radius: 15px;
    background-color: var(--secondary-color);
@@ -187,6 +187,7 @@ body {
   
 .buttons {
   display: flex;
+  flex-direction: column;
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
