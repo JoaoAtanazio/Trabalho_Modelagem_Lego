@@ -54,7 +54,7 @@
         <main class="main-content">
             <header class="header">
                 <div class="logout">
-                    <button>Sair</button>
+                    <button onclick="window.location.href='../login/login.html'">Sair</button>
                 </div>
             </header>
 
@@ -62,11 +62,13 @@
   <h2><i class="fa-solid fa-user"></i> Perfil do Usuário</h2>
 <div class="perfil-container">
   <div class="foto-perfil">
-    <label for="inputFoto">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Foto do usuário" id="fotoUsuario">
+    <label for="inputFoto" class="foto-container">
+      <div class="troca-foto">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Foto do usuário" id="fotoUsuario" class="foto-usuario">
       <span class="btn-trocar-foto">Trocar foto</span>
+    </div>
     </label>
-    <input type="file" id="inputFoto" accept="image/*" style="display: none;">
+    <input type="file" id="inputFoto" accept="image/*" class="input-foto" style="display: none">
   </div>
   
    <div class="detalhes-perfil">

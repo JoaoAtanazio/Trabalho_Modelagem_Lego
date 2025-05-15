@@ -63,9 +63,16 @@ document.addEventListener("DOMContentLoaded", function() {
     const conferirOS = document.getElementById("conferir");
     const voltarOS = document.getElementById("btnvoltaros");
     const graficopizza = document.getElementById("btnpizza");
-
     const graficobarra = document.getElementById("btnbarra");
     const perfil = document.getElementById("btnperfil");
+    const senhaTexto = document.getElementById('senhaTexto');
+    const iconeOlho = document.querySelector('.btn-olho i');
+    const inputFoto = document.getElementById('inputFoto');
+    const fotoUsuario = document.getElementById('fotoUsuario');
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    if(inputFoto)
+      inputFoto.addEventListener('change', TrocaFoto)
   
     if (conferirOS) conferirOS.addEventListener('click', (e) => {
       e.preventDefault();
@@ -91,37 +98,15 @@ document.addEventListener("DOMContentLoaded", function() {
       e.preventDefault();
       window.location.href = '../Perfil_Usuário/Perfil_Usuário.html';
     });
-  
-    // Mostrar/ocultar senha
-    const senhaTexto = document.getElementById('senhaTexto');
-    const iconeOlho = document.querySelector('.btn-olho i');
-  
-    function mostrarSenha() {
-      if (!senhaTexto || !iconeOlho) return;
-      if (senhaTexto.textContent === '***********') {
-        senhaTexto.textContent = 'admin123';
-      } else {
-        senhaTexto.textContent = '***********';
-      }
-      iconeOlho.classList.toggle('fa-eye');
-      iconeOlho.classList.toggle('fa-eye-slash');
-	const graficobarra = document.getElementById("btnbarra");
-    const perfil = document.getElementById("btnperfil")
-    const senha = document.querySelector('.senha-container');
-    const iconeOlho = document.querySelector('.btn-olho');
-    const senhaTexto = document.getElementById('senhaTexto');
-    }
 
     if (iconeOlho) {
-        iconeOlho.addEventListener('click', mostrarSenha);
-    }
-    
-    if (conferirOS) {
-        conferirOS.addEventListener('click', AbrirOS);
+      iconeOlho.addEventListener('click', mostrarSenha);
     }
   
-    const btnOlho = document.querySelector('.btn-olho');
-    if (btnOlho) btnOlho.addEventListener('click', mostrarSenha);
+    if (conferirOS) {
+      conferirOS.addEventListener('click', AbrirOS);
+    }
+
     // Validação de formulário
     const form = document.querySelector('#formFuncionario');
     const nomeInput = document.querySelector('#nome');
@@ -371,6 +356,58 @@ function toggleDropdown() {
     toggleDropdown();
   }
 
+   function TrocaFoto(e) {
+    if (e.target.files && e.target.files[0]) {
+      file = e.target.files[0];
+      
+      // Validações
+      if (!file.type.match('image.*')) {
+          alert('Por favor, selecione uma imagem válida (JPEG, PNG, etc.)');
+          return;
+      }
+      
+      if (file.size > 2 * 1024 * 1024) { // 2MB
+          alert('A imagem deve ter menos de 2MB');
+          return;
+      }
+      
+      // Criar preview da imagem
+      const reader = new FileReader();
+      
+      reader.onload = function(event) {
+          fotoUsuario.src = event.target.result;
+          
+          // Aqui você pode chamar a função para enviar ao servidor
+          // uploadFotoPerfil(file);
+      };
+      
+      reader.readAsDataURL(file);
+  }
+};
+async function uploadFotoPerfil(file) {
+  const formData = new FormData();
+  formData.append('fotoPerfil', file);
+  
+  try {
+      const response = await fetch('/upload-foto-perfil', {
+          method: 'POST',
+          body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+          throw new Error(data.message || 'Erro ao atualizar foto');
+      }
+      
+      console.log('Foto atualizada com sucesso:', data);
+  } catch (error) {
+      console.error('Erro:', error);
+      alert('Erro ao enviar foto: ' + error.message);
+  }
+}
+
+
   form.addEventListener('submit', function (e) {
     let erro = false;
   
@@ -392,3 +429,7 @@ function toggleDropdown() {
     Telefone: '47 98432-9882'
   }
 ]
+
+
+
+
