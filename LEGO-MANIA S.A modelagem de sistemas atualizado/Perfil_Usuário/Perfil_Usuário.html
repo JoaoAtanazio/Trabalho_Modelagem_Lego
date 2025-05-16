@@ -48,13 +48,14 @@
                     <a href="#">Funcionários</a>
                   </div>
                 </div>
+                <div class="horario"></div>
               </nav>
         </aside>
 
         <main class="main-content">
             <header class="header">
                 <div class="logout">
-                    <button>Sair</button>
+                    <button onclick="window.location.href='../login/login.html'">Sair</button>
                 </div>
             </header>
 
@@ -62,11 +63,13 @@
   <h2><i class="fa-solid fa-user"></i> Perfil do Usuário</h2>
 <div class="perfil-container">
   <div class="foto-perfil">
-    <label for="inputFoto">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Foto do usuário" id="fotoUsuario">
+    <label for="inputFoto" class="foto-container">
+      <div class="troca-foto">
+      <img src="https://media.tenor.com/7LyCsZEyAtsAAAAe/yorkshire-cringe-feast.png" alt="Foto do usuário" id="fotoUsuario" class="foto-usuario">
       <span class="btn-trocar-foto">Trocar foto</span>
+    </div>
     </label>
-    <input type="file" id="inputFoto" accept="image/*" style="display: none;">
+    <input type="file" id="inputFoto" accept="image/*" class="input-foto" style="display: none">
   </div>
   
    <div class="detalhes-perfil">
@@ -77,8 +80,8 @@
     
     <div class="campo-perfil">
       <label>Senha:</label>
-      <div class="valor-campo senha-container" id="senhaTexto">
-        BANANA
+      <div class="valor-campo senha-container">
+        <span id="senhaTexto">••••••</span>
         <button class="btn-olho" id="icone-olho">
           <i class="fas fa-eye"></i>
         </button>
@@ -108,4 +111,26 @@
     <script src="ordem_aberta_jcp.js"></script>
     <script src="../tela_geral/tela_geral.js"></script>
     <script src="../tela_geral/main.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const iconeOlho   = document.getElementById('icone-olho');
+        const senhaTexto  = document.getElementById('senhaTexto');
+  
+        const senhaReal      = 'admin123';   // defina aqui a senha real da sua aplicação
+        const senhaMascarada = '••••••';     // Definir uma senha para apresentar
+  
+        iconeOlho.addEventListener('click', () => {
+          const icon = iconeOlho.querySelector('i');
+          if (icon.classList.contains('fa-eye')) {
+            // mostrar senha
+            senhaTexto.textContent = senhaReal;
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+          } else {
+            // esconder senha
+            senhaTexto.textContent = senhaMascarada;
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+          }
+        });
+      });
+      </script>
 </body>

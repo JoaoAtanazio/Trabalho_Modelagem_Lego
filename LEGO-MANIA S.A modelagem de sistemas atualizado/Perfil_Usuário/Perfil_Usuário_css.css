@@ -239,6 +239,7 @@ body {
    align-items: center;
    gap: 10px;
    transform: translateX(-20px);
+   transform: translate(-32px, -2px);
    font-family:'Roboto', sans-serif;
  }
  .logout {
@@ -246,10 +247,12 @@ body {
    align-items: center; /* Alinha verticalmente */
    gap: 10px; /* Espaço entre os botões */
    transform: translate(-16px, -17px); /* Ajuste de posição se necessário */
+   transform: translate(-4px, -16px); /* Ajuste de posição se necessário */
  }
  .logout button:hover {
    background-color:#303030 ;
  }
+
 .section_conteudo {
   background-color: var(--white);
   border-radius: 10px;

@@ -161,14 +161,6 @@ body {
   margin-bottom: 2rem;
 }
 
-.horario {
-  color: var(--white);
-  padding: 10px;
-  border-radius: 10px;
-  margin-right: auto;
-  width: 5px;
-}
-
 .logout button {
   border-radius: 15px;
    background-color: var(--secondary-color);
