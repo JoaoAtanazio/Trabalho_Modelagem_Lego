@@ -6,17 +6,29 @@
   <title>Tela inicial - LEGO MANIA</title>
   <link rel="stylesheet" href="peca_requisitada.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
+  <!-- Manter APENAS este cursor principal -->
   <div class="custom-cursor site-wide">
     <div class="pointer"></div> <!-- Cursor normal -->
     <div class="custom-pointer"></div> <!-- Cursor pros botões -->
   </div>
+  
   <div class="container">
     <aside class="sidebar">
-      <h1 class="logo">LEGO - <br>MANIA O.S</h1>
+
+      <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
+      <h1 class="logo">
+          <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
+            LEGO - <br>MANIA O.S
+          </a>
+      </h1>
+
       <nav class="menu">
         <div class="menu-container">
+
           <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
           <div class="submenu">
             <a id="func" href="../cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
@@ -24,34 +36,42 @@
             <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
             <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html">Fornecedor</a>
           </div>
+
           <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
           <div class="submenu">
             <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
             <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
           </div>
+
             <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
           <div class="submenu">
             <a href="#">Ganho <br>bruto/lucro</a>
             <a href="#">Despesas</a>
             <a href="#">Serviços <br>realizados</a>
           </div>
+
             <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
           <div class="submenu">
             <a href="#">Peças no <br>estoque</a>
-            <a id="peca_requisitada" href="../Requisito_pecas/Pecas_requisitadas_barra.html">Relatório <br>de uso</a>
-            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas_pizza.html">Entrada/Saída <br> de peças</a>
+            <a  id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html">Relatório <br>de uso</a>
+            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
           </div>
+
           <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
           <div class="submenu">
             <a href="#">Clientes</a>
-            <a id="gestao_func" href="../gestao_pessoas/gestao_func.html" >Funcionários</a>
+            <a a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
           </div>
+
+          <div class="horario">
+          <p>Data: </p>
         </div>
-        <div class="horario"></div>
+        
+        </div>
       </nav>
     </aside>
 
-  <!--Acima é a estilização da tela-->
+    <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
 
     <main class="main-content">
       <header class="header">
@@ -62,14 +82,53 @@
 
       <section class="cadastro-box">
         <div class="cadastro-header">Peças mais requisitadas</div>
+        <div class="form-funcionario">
+        <canvas id="myChart" width="400" height="400"></canvas>
 
-        <div class="form-scroll">    
-            <div class="chart-container">
-                <div class="slice slice1" ></div>
-                <div class="slice slice2" ></div>
-                <div class="slice slice3" ></div>
-                <div class="slice slice4" ></div>
-            </div>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const originalColors = [
+            'rgba(255, 99, 132, 1)',   // #FF6384
+            'rgba(54, 162, 235, 1)',   // #36A2EB
+            'rgba(255, 206, 86, 1)',    // #FFCE56
+            'rgba(75, 192, 192, 1)',    // #4BC0C0
+            'rgba(153, 102, 255, 1)'    // #9966FF
+        ];
+        
+        const myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Bloco c2550c01', 'Dalton', 'Mousepad', 'Logitech g403', 'Smartphone'],
+                datasets: [{
+                    data: [30, 20, 15, 25, 10],
+                    backgroundColor: originalColors,
+                    hoverBackgroundColor: originalColors,
+                    hoverBorderWidth: 2,
+                    hoverBorderColor: 'white'
+                }]
+            },
+            options: {
+                onHover: (event, chartElement) => {
+                    if (chartElement.length) {
+                        const index = chartElement[0].index;
+                        const newColors = originalColors.map((color, i) => 
+                            i === index ? color : color.replace(', 1)', ', 0.3)')
+                        );
+                        myChart.data.datasets[0].backgroundColor = newColors;
+                        myChart.update();
+                    } else {
+                        myChart.data.datasets[0].backgroundColor = originalColors;
+                        myChart.update();
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        enabled: true
+                    }
+                }
+            }
+        });
+    </script>
         </div>
 
         <!-- Tentando fazer aparecer mensagem quando passar o mouse por cima do gráfico
@@ -100,9 +159,9 @@
     </main>
   </div>
 
-  <script src = '../tela_geral/main.js'></script>
-  <script src = '../tela_geral/tela_geral.js'></script>
+  <script src="../tela_geral/main.js"></script>
+  <script src="../tela_geral/tela_geral.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 </body>
 </html>
