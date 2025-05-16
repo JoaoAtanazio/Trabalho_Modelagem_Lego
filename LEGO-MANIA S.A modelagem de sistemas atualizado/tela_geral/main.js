@@ -359,8 +359,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 // Adicionando evento ao botão corretamente
 
-
-
   function selecionarFuncao(valor) {
     const funcaoSelecionada = document.getElementById('funcaoSelecionada');
     const funcao = document.getElementById('funcao');
