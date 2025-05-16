@@ -7,12 +7,11 @@
   <link rel="stylesheet" href="fornecedor.css" />
 </head>
 <body>
-  <!-- Manter APENAS este cursor principal -->
   <div class="custom-cursor site-wide">
-    <div class="pointer"></div> <!-- Cursor normal -->
+    <div class="pointer"></div>  <!-- Cursor normal -->
     <div class="custom-pointer"></div> <!-- Cursor pros botões -->
   </div>
-  
+
   <div class="container">
     <aside class="sidebar">
       <h1 class="logo">LEGO - <br>MANIA O.S</h1>
@@ -28,24 +27,24 @@
           <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
           <div class="submenu">
             <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
-            <a href="#">Consultar O.S</a>
+            <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
           </div>
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
           <div class="submenu">
             <a href="#">Ganho <br>bruto/lucro</a>
             <a href="#">Despesas</a>
             <a href="#">Serviços <br>realizados</a>
           </div>
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
           <div class="submenu">
             <a href="#">Peças no <br>estoque</a>
-            <a href="#">Relatório <br>de uso</a>
-            <a href="#">Entrada/saída <br>de peças</a>
+            <a id="peca_requisitada" href="../Requisito_pecas/Pecas_requisitadas_barra.html">Relatório <br>de uso</a>
+            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
           </div>
           <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
           <div class="submenu">
             <a href="#">Clientes</a>
-            <a href="#">Funcionários</a>
+            <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
           </div>
         </div>
         <div class="horario"></div>
