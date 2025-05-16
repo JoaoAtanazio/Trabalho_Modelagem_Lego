@@ -240,6 +240,7 @@ body {
   border: 2px solid black;
   padding: 20px;
   margin-bottom: 20px;
+  transform: translateY(10px);
 }
 
 .section-header {
@@ -288,6 +289,7 @@ body {
 .table-container {
   overflow-x: auto;
   margin-bottom: 20px;
+
 }
 
 .service-table {
@@ -581,6 +583,7 @@ body {
   border-radius: 15px;
   font-weight: 500;
   cursor: none;
+  transform:translateY(20px);
 }
 
   .icon-sair {

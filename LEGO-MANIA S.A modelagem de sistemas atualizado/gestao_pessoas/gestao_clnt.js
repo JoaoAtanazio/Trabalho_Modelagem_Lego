@@ -345,3 +345,60 @@ document.addEventListener('DOMContentLoaded', function() {
         nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
     }
 });
+// gestao_clnt.js - Script para filtro de pesquisa na tabela de clientes
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos da DOM
+    const searchInput = document.getElementById('search-input');
+    const tableBody = document.getElementById('os-table-body');
+    const rows = tableBody.querySelectorAll('tr');
+    const visibilityFilter = document.getElementById('visibility-filter');
+
+    // Função para filtrar os clientes
+    function filterClients() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const filterOption = visibilityFilter.value;
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            let matchesSearch = false;
+            let isVisible = row.style.display !== 'none';
+
+            // Verifica cada célula (exceto a última coluna de ações)
+            for (let i = 0; i < cells.length - 1; i++) {
+                const cellText = cells[i].textContent.toLowerCase();
+                if (cellText.includes(searchTerm)) {
+                    matchesSearch = true;
+                    break;
+                }
+            }
+
+            // Aplica os filtros combinados
+            let shouldShow = matchesSearch;
+            
+            if (filterOption === 'visible') {
+                shouldShow = shouldShow && isVisible;
+            } else if (filterOption === 'hidden') {
+                shouldShow = shouldShow && !isVisible;
+            }
+
+            row.style.display = shouldShow ? '' : 'none';
+        });
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', filterClients);
+    visibilityFilter.addEventListener('change', filterClients);
+
+    // Função auxiliar para debounce (otimização de performance)
+    function debounce(func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+
+    // Aplica debounce ao input para melhor performance
+    searchInput.addEventListener('input', debounce(filterClients));
+});

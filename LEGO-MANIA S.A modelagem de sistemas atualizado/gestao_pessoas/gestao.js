@@ -276,22 +276,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function filterTable() {
         const searchTerm = searchInput.value.toLowerCase();
+        const rows = tableBody.querySelectorAll('tr');
         
-        if (searchTerm === '') {
-            filteredData = [...funcionarios];
-        } else {
-            filteredData = funcionarios.filter(func => 
-                func.nome.toLowerCase().includes(searchTerm) ||
-                func.cpf.toLowerCase().includes(searchTerm) ||
-                func.funcao.toLowerCase().includes(searchTerm) ||
-                func.email.toLowerCase().includes(searchTerm)
-            );
-        }
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td:not(.actions-cell)');
+            let shouldShow = false;
+            
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                    shouldShow = true;
+                }
+            });
+            
+            row.style.display = shouldShow ? '' : 'none';
+        });
         
-        currentPage = 1;
-        renderTable();
+        // Atualiza a paginação sem re-renderizar
+        updatePagination();
     }
-
+    searchInput.addEventListener('input', debounce(filterTable, 300));
+    function debounce(func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
     function handleFormSubmit(e) {
         e.preventDefault();
         
@@ -369,4 +379,55 @@ document.addEventListener('DOMContentLoaded', function() {
         prevPageBtn.disabled = currentPage === 1;
         nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
     }
+});
+// gestao_func.js - Script completo e testado para filtro de pesquisa
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Selecionar elementos
+    const searchInput = document.getElementById('search-input');
+    const tableBody = document.getElementById('os-table-body');
+    
+    // Verificar se os elementos existem
+    if (!searchInput || !tableBody) {
+        console.error('Elementos não encontrados! Verifique os IDs no HTML.');
+        return;
+    }
+
+    // Função principal de filtragem
+    const filterTable = () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const rows = tableBody.querySelectorAll('tr');
+        
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td:not(.actions-cell)'); // Ignora coluna de ações
+            let shouldShow = false;
+            
+            // Verifica cada célula
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                    shouldShow = true;
+                }
+            });
+            
+            // Aplica visibilidade
+            row.style.display = shouldShow ? '' : 'none';
+        });
+    };
+
+    // Adicionar eventos
+    searchInput.addEventListener('input', () => {
+        // Debounce para melhor performance
+        clearTimeout(window.searchTimeout);
+        window.searchTimeout = setTimeout(filterTable, 300);
+    });
+
+    // Opcional: Limpar pesquisa ao clicar no ícone
+    document.querySelector('.search-box i')?.addEventListener('click', () => {
+        if (searchInput.value) {
+            searchInput.value = '';
+            filterTable();
+            searchInput.focus();
+        }
+    });
+
 });
