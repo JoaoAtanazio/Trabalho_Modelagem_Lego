@@ -21,6 +21,27 @@ document.addEventListener('DOMContentLoaded', function () {
   setInterval(atualizarHorario, 1000);
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const iconeOlho   = document.getElementById('icone-olho');
+  const senhaTexto  = document.getElementById('senhaTexto');
+
+  const senhaReal      = 'admin123';   // defina aqui a senha real da sua aplicação
+  const senhaMascarada = '••••••';     // Definir uma senha para apresentar
+
+  iconeOlho.addEventListener('click', () => {
+    const icon = iconeOlho.querySelector('i');
+    if (icon.classList.contains('fa-eye')) {
+      // mostrar senha
+      senhaTexto.textContent = senhaReal;
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      // esconder senha
+      senhaTexto.textContent = senhaMascarada;
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     // Cursor personalizado
     const cursor = document.querySelector('.custom-cursor');
@@ -65,7 +86,15 @@ document.addEventListener("DOMContentLoaded", function() {
       locale: "pt"
     });
   });
-
+ 
+  document.querySelectorAll('.dropdown-options div').forEach(function (option) {
+    option.addEventListener('click', function () {
+      if (funcaoInput && dropdown) {
+        funcaoInput.value = option.textContent;
+        dropdown.classList.remove('erro');
+      }
+    });
+  });
     
     if (typeof flatpickr !== 'undefined' && document.getElementById("data-recebimento")) {
       flatpickr("#data-recebimento", {
@@ -274,16 +303,6 @@ document.addEventListener("DOMContentLoaded", function() {
           });
         }
         
-
-    document.querySelectorAll('.dropdown-options div').forEach(function (option) {
-      option.addEventListener('click', function () {
-        if (funcaoInput && dropdown) {
-          funcaoInput.value = option.textContent;
-          dropdown.classList.remove('erro');
-        }
-      });
-    });
-  
     if (form) {
       form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -297,7 +316,6 @@ document.addEventListener("DOMContentLoaded", function() {
         erro = marcarErro(emailInput, !emailInput.checkValidity(), 'E-mail inválido.') || erro;
         erro = marcarErro(funcaoInput, funcaoInput.value.trim() === '', 'Selecione uma função.') || erro;
         erro = marcarErro(telefoneInput, telefoneInput.value.trim().length < 14, 'Telefone inválido.') || erro;
-
    
         if (funcaoInput.value.trim() === '') {
           dropdown.classList.add('erro');
@@ -418,7 +436,6 @@ async function uploadFotoPerfil(file) {
   }
 }
 
-
   form.addEventListener('submit', function (e) {
     let erro = false;
   
@@ -432,7 +449,6 @@ async function uploadFotoPerfil(file) {
     }
   });
   
-
   let informações = [
     {
     Nome_usuario: 'bananinhas123',
