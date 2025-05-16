@@ -364,3 +364,6 @@ body {
     height: 40px;
     object-fit: contain;
   }
+  .horario{
+    transform: translateY(2px)
+  }
