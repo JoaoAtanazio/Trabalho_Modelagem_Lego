@@ -29,7 +29,7 @@
                   <div class="submenu">
                     <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
                     <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
-                    <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html">Forma de pagamento</a>
+                    <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html">pagamento</a>
                   </div>
                     <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
                   <div class="submenu">
@@ -106,32 +106,7 @@
      <button class="btn-secondary" id="btnvoltaros" onclick="window.history.back()">Voltar</button>
      </button>
 
-
-
-
     <script src="ordem_aberta_jcp.js"></script>
     <script src="../tela_geral/tela_geral.js"></script>
-    <script src="../tela_geral/main.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const iconeOlho   = document.getElementById('icone-olho');
-        const senhaTexto  = document.getElementById('senhaTexto');
-  
-        const senhaReal      = 'admin123';   // defina aqui a senha real da sua aplicação
-        const senhaMascarada = '••••••';     // Definir uma senha para apresentar
-  
-        iconeOlho.addEventListener('click', () => {
-          const icon = iconeOlho.querySelector('i');
-          if (icon.classList.contains('fa-eye')) {
-            // mostrar senha
-            senhaTexto.textContent = senhaReal;
-            icon.classList.replace('fa-eye', 'fa-eye-slash');
-          } else {
-            // esconder senha
-            senhaTexto.textContent = senhaMascarada;
-            icon.classList.replace('fa-eye-slash', 'fa-eye');
-          }
-        });
-      });
-      </script>
+    <script src="../tela_geral/main.js"></script>  
 </body>
