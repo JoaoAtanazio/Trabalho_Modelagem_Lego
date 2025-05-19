@@ -61,70 +61,139 @@
         </div>
       </header>
         
-
       <div class="pagamento-box">
         <div class="hpag">Forma de Pagamento</div>
         <div class="section">
             <div class="row">
                 <div class="col">
                     <label>Nº da Ordem</label>
-                    <input type="text"  class="txtinput" placeholder="OS-2023-00542">
+                    <input type="text" class="txtinput" placeholder="OS-2023-00542" id="numeroOrdem">
                 </div>
                 <div class="col">
                     <label>Cliente</label>
-                    <input type="text" class="txtinput" placeholder="Maria Silva">
+                    <input type="text" class="txtinput" placeholder="Maria Silva" id="nomeCliente">
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <label>Valor Total</label>
-                    <input type="text" class="txtinput" placeholder="R$ 1.250,00">
+                    <input type="text" class="txtinput" placeholder="R$ 1.250,00" id="valorTotal">
                 </div>
                 <div class="col">
                     <label>Data de Vencimento</label>
-                    <input type="text"  class="txtinput" placeholder="15/11/2023">
+                    <input type="text" class="txtinput" placeholder="15/11/2023" id="dataVencimento">
                 </div>
             </div>
         </div>
 
         <div class="section-forma">
-
             <div class="section-title">Método de Pagamento</div>
             <div class="payment-methods">
-
-                <div class="payment-card">
+                <button class="payment-card" id="btnCartao">
                     <div>Cartão</div>
                     <img src="../forma_pagamento/Imagem-cartao.png" alt="Cartão">
-                </div>
+                </button>
 
-                <div class="payment-card">
+                <button class="payment-card" id="btnPix">
                     <div>PIX</div>
-                    <img src="../forma_pagamento/imagem-pix.png">
-                </div>
+                    <img src="../forma_pagamento/imagem-pix.png" alt="PIX">
+                </button>
 
-                <div class="payment-card">
-                    <div>Boleto</div>
+                <button class="payment-card" id="btnBoleto">
+                    <div class="Boleto">Boleto</div>
                     <img src="../forma_pagamento/imagem-boleto.png" alt="Boleto">
-                </div>
+                </button>
 
-                <div class="payment-card">
+                <button class="payment-card" id="btnDinheiro">
                     <div>Dinheiro</div>
                     <img src="../forma_pagamento/imagem-dinheiro.png" alt="Dinheiro">
-                </div>
+                </button>
+            </div>
 
-                <div class="form-buttons">
-                        <button type="submit" class="btn">Finalizar</button>
-                        <button type="button" class="btn btn-voltar" id="btnvoltar">Voltar</button>
-                </div>
-          
-        
-      </section>
+            <div class="form-buttons">
+                <button type="submit" class="btn" id="btnFinalizar">Finalizar</button>
+                <button type="button" class="btn btn-voltar" id="btnvoltar">Voltar</button>
+            </div>
+        </div>
+      </div>
+
+      <!-- Modal do Cartão -->
+      <div id="modalCartao" class="modal-cartao">
+          <div class="modal-content-cartao">
+              <span class="close-modal">&times;</span>
+              <h2 class="pag-card">Pagamento com Cartão</h2>
+              
+              <div class="info-pagamento">
+                  <p><strong>Ordem:</strong> <span id="numeroOrdemModal"></span></p>
+                  <p><strong>Valor Total:</strong> <span id="valorTotalModal"></span></p>
+              </div>
+              
+              <form id="formCartao">
+                  <div class="form-group-cartao">
+                      <label for="tipoCartao">Tipo de Cartão:</label>
+                      <select  id="tipoCartao" required>
+                          <option value="">Selecione...</option>
+                          <option value="debito">Débito</option>
+                          <option value="credito">Crédito</option>
+                      </select>
+                  </div>
+                  
+                  <div class="form-group-cartao">
+                      <label class="tipo-card" for="parcelas">Parcelamento:</label>
+                      <select class="tipo-card" id="parcelas" required>
+                          <option value="1">1x (à vista)</option>
+                          <option value="2">2x</option>
+                          <option value="3">3x</option>
+                          <option value="4">4x</option>
+                          <option value="5">5x</option>
+                          <option value="6">6x</option>
+                          <option value="7">7x</option>
+                          <option value="8">8x</option>
+                          <option value="9">9x</option>
+                          <option value="10">10x</option>
+                          <option value="11">11x</option>
+                          <option value="12">12x</option>
+                      </select>
+                  </div>
+                  
+                  <div class="form-group-cartao">
+                      <label for="valorParcela">Valor da Parcela:</label>
+                      <input type="text" id="valorParcela" readonly>
+                  </div>
+                  
+                  <div class="form-group-cartao">
+                      <label for="nomeTitular">Nome do Titular:</label>
+                      <input type="text" id="nomeTitular" required>
+                  </div>
+                  
+                  <div class="form-group-cartao">
+                      <label for="numeroCartao">Número do Cartão:</label>
+                      <input type="text" id="numeroCartao" placeholder="0000 0000 0000 0000" required>
+                  </div>
+                  
+                  <div class="form-group-duplo">
+                      <div>
+                          <label for="validade">Validade:</label>
+                          <input type="text" id="validade" placeholder="MM/AA" required>
+                      </div>
+                      <div>
+                          <label for="cvv">CVV:</label>
+                          <input type="text" id="cvv" placeholder="000" required>
+                      </div>
+                  </div>
+                  
+                  <div class="form-buttons-cartao">
+                      <button type="button" class="btn btn-voltar-modal">Voltar</button>
+                      <button type="submit" class="btn btn-confirmar">Confirmar Pagamento</button>
+                  </div>
+              </form>
+          </div>
+      </div>
     </main>
   </div>
+
   <script src="../../tela_geral/main.js"></script>
   <script src="../../tela_geral/tela_geral.js"></script>
-  <script>
-  </script>
-
+  <script src="../../Ordem_Servico/forma_pagamento/pagamento_forma.js"></script>
 </body>
 </html>

@@ -486,10 +486,12 @@ body {
     text-align: center;
     cursor: pointer;
     transition: all 0.3s;
+    background-color: transparent;
 }
 .payment-card:hover {
     border-color: #5a5a5a;
     background-color: #f9f9f9;
+    transform: scale(1.1);
 }
 .payment-card img {
     height: 30px;
@@ -527,4 +529,147 @@ label {
     color: #666;
 }
 
+          /* Estilos do Modal do Cartão */
 
+
+.modal-cartao {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  cursor: none;
+}
+
+.modal-content-cartao {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 25px;
+  border: 2px solid #5a5a5a;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
+  height: 700px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.close-modal {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: none;
+}
+
+.close-modal:hover {
+  color: #5a5a5a;
+}
+
+.info-pagamento {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  transform: translateY(-20px);
+  text-align: center;
+}
+
+.info-pagamento p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.form-group-cartao {
+  margin-bottom: 20px;
+  transform: translateY(-30px);
+}
+
+
+
+.form-group-cartao label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #5a5a5a;
+}
+
+
+
+.form-group-cartao-tipo{
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #fafafa;
+}
+.form-group-cartao input{
+  width: 47%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #fafafa;
+}
+
+.form-group-cartao select {
+  width: 47%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #fafafa;
+}
+
+.tipo-card{
+  transform: translate(370px , -94px);
+}
+
+.form-group-duplo {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.form-group-duplo > div {
+  flex: 1;
+}
+
+.form-buttons-cartao {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.btn-voltar-modal {
+  background-color: #aaa;
+  color: #333;
+  padding: 10px 20px;
+  border: 1px solid #5a5a5a;
+}
+
+.btn-confirmar {
+  background-color: #5a5a5a;
+  color: white;
+  padding: 10px 20px;
+}
+
+.pag-card{
+  text-align: center;
+}
+
+
+/* Efeitos para os campos do cartão */
+
+
+#numeroCartao {
+  letter-spacing: 2px;
+  font-family: monospace;
+}
+
+#validade, #cvv {
+  text-align: center;
+}
