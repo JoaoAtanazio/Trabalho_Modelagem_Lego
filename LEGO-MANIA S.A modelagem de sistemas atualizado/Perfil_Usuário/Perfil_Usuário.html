@@ -9,56 +9,70 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="custom-cursor site-wide">
-        <div class="pointer"></div> <!-- Cursor normal -->
-        <div class="custom-pointer"></div> <!-- Cursor pros botões -->
-      </div>
-          <div class="container">
-        <aside class="sidebar">
-            <h1 class="logo">LEGO - <br>MANIA O.S</h1>
-            <nav class="menu">
-                <div class="menu-container">
-                  <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
-                  <div class="submenu">
-                    <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
-                    <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
-                    <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
-                    <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html">Fornecedor</a>
-                  </div>
-                  <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
-                  <div class="submenu">
-                    <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
-                    <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
-                    <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html">pagamento</a>
-                  </div>
-                    <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
-                  <div class="submenu">
-                    <a href="#">Ganho <br>bruto/lucro</a>
-                    <a href="#">Despesas</a>
-                    <a href="#">Serviços <br>realizados</a>
-                  </div>
-                    <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
-                  <div class="submenu">
-                    <a href="#">Peças no <br>estoque</a>
-                    <a id="peca_requisitada" href="../Requisito_pecas/peca_requisitada.html">Relatório <br>de uso</a>
-                    <a id="peça_estoque" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
-                  </div>
-                  <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
-                  <div class="submenu">
-                    <a href="#">Clientes</a>
-                    <a href="#">Funcionários</a>
-                  </div>
-                </div>
-                <div class="horario"></div>
-              </nav>
-        </aside>
+  <div class="custom-cursor site-wide">
+    <div class="pointer"></div>  <!-- Cursor normal -->
+    <div class="custom-pointer"></div> <!-- Cursor pros botões -->
+  </div>
 
-        <main class="main-content">
-            <header class="header">
-                <div class="logout">
-                    <button onclick="window.location.href='../login/login.html'">Sair</button>
-                </div>
-            </header>
+  <div class="container">
+    <aside class="sidebar">
+
+      <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
+      <h1 class="logo">
+        <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
+         LEGO - <br>MANIA O.S
+        </a>
+    </h1>
+
+      <nav class="menu">
+        <div class="menu-container">
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
+          <div class="submenu">
+            <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
+            <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
+            <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
+            <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html">Fornecedor</a>
+          </div>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
+          <div class="submenu">
+            <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
+            <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
+            <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html">pagamento</a>
+          </div>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+          <div class="submenu">
+            <a href="#">Ganho <br>bruto/lucro</a>
+            <a href="#">Despesas</a>
+            <a href="#">Serviços <br>realizados</a>
+          </div>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+          <div class="submenu">
+            <a href="#">Peças no <br>estoque</a>
+            <a id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html">Relatório <br>de uso</a>
+            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
+          </div>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
+          <div class="submenu">
+            <a href="../gestao_pessoas/gestao_clnt.html">Clientes</a>
+            <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
+          </div>
+        </div>
+
+        <!-- Data e horário -->
+        <div class="horario"></div>
+
+      </nav>
+    </aside>
+
+    <!-- Botão de sair -->
+    <main class="main-content">
+      <header class="header">
+          <div class="logout">
+              <button onclick="window.location.href='../login/login.html'">Sair</button>
+          </div>
+      </header>
+
+     <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
 
 <div class="cadastro-box">
   <h2><i class="fa-solid fa-user"></i> Perfil do Usuário</h2>
@@ -76,7 +90,7 @@
    <div class="detalhes-perfil">
     <div class="campo-perfil">
       <label>Nome de usuário:</label>
-      <div class="valor-campo" id="banana">bananinhas123</div>
+      <div class="valor-campo">bananinhas123</div>
     </div>
     
     <div class="campo-perfil">
@@ -93,46 +107,42 @@
     </div>
     
     <div class="campo-perfil">
-      <label>Email:</label>
-      <div class="valor-campo">bananinhas@gmail.com</div>
+      <label>Telefone:</label>
+      <div class="valor-campo">47 8432-XXXX</div>
     </div>
     
+    <button class="btn-salvar">Salvar Alterações</button>
   </div>
 </div>
 
      <div class="table-footer">
-      <button class="btn-salvar">Salvar Alterações</button>
-      <button class="btn-secondary" id="btnvoltaros" onclick="window.history.back()">Voltar</button>
      </div>
+     <button class="btn-secondary" id="btnvoltaros" onclick="window.history.back()">Voltar</button>
      </button>
-    </main>
-    <div id="edit-modal" class="modal">
-      <div class="modal-content">
-          <span class="close-btn">&times;</span>
-          <h3>Editar Informações</h3>
-          <form id="edit-form">
-              <input type="hidden" id="edit-id">
-              <div class="form-group">
-                  <label for="edit-Nome">Nome de usuário novo:</label>
-                  <input type="text" id="edit-Nome" required>
-              </div>
-              <div class="form-group">
-                  <label for="edit-Senha">Senha Antiga:</label>
-                  <input type="text" id="edit-Senha" required>
-              </div>
-              <div class="form-group">
-                  <label for="edit-SenhaNova">Senha Nova:</label>
-                  <input type="text" id="edit-SenhaNova" required>
-              </div>
-              <button type="submit" class="btn btn-primary" id="btnsalva">Salvar</button>
-          </form>
-      </div>
-  </div>
-    
 
-    <script src="usuario.js"></script>
+    <script src="ordem_aberta_jcp.js"></script>
     <script src="../tela_geral/tela_geral.js"></script>
-    <script src="../tela_geral/main.js"></script>  
-    
+    <script src="../tela_geral/main.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const iconeOlho   = document.getElementById('icone-olho');
+        const senhaTexto  = document.getElementById('senhaTexto');
+  
+        const senhaReal      = 'admin123';   // defina aqui a senha real da sua aplicação
+        const senhaMascarada = '••••••';     // Definir uma senha para apresentar
+  
+        iconeOlho.addEventListener('click', () => {
+          const icon = iconeOlho.querySelector('i');
+          if (icon.classList.contains('fa-eye')) {
+            // mostrar senha
+            senhaTexto.textContent = senhaReal;
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+          } else {
+            // esconder senha
+            senhaTexto.textContent = senhaMascarada;
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+          }
+        });
+      });
+      </script>
 </body>
-

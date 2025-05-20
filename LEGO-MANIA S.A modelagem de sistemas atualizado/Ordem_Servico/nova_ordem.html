@@ -8,15 +8,21 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
-  <!-- Manter APENAS este cursor principal -->
   <div class="custom-cursor site-wide">
-    <div class="pointer"></div> <!-- Cursor normal -->
+    <div class="pointer"></div>  <!-- Cursor normal -->
     <div class="custom-pointer"></div> <!-- Cursor pros botões -->
   </div>
-  
+
   <div class="container">
     <aside class="sidebar">
-      <h1 class="logo">LEGO - <br>MANIA O.S</h1>
+
+      <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
+      <h1 class="logo">
+        <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
+         LEGO - <br>MANIA O.S
+        </a>
+    </h1>
+
       <nav class="menu">
         <div class="menu-container">
           <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
@@ -32,13 +38,13 @@
             <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
             <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html">pagamento</a>
           </div>
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
           <div class="submenu">
             <a href="#">Ganho <br>bruto/lucro</a>
             <a href="#">Despesas</a>
             <a href="#">Serviços <br>realizados</a>
           </div>
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+          <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
           <div class="submenu">
             <a href="#">Peças no <br>estoque</a>
             <a id="peca_requisitada" href="../Requisito_pecas/peca_requisitada.html">Relatório <br>de uso</a>
@@ -46,15 +52,18 @@
           </div>
           <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
           <div class="submenu">
-            <a href="#">Clientes</a>
+            <a href="../gestao_pessoas/gestao_clnt.html">Clientes</a>
             <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
           </div>
         </div>
+
+        <!-- Data e horário -->
         <div class="horario"></div>
+
       </nav>
     </aside>
-    <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
 
+    <!-- Botões de sair e do perfil -->
     <main class="main-content">
       <header class="header">
         <div class="logout">
@@ -62,6 +71,8 @@
           <button onclick="window.location.href='../login/login.html'" class="btnsair">Sair</button>
         </div>
       </header>
+
+     <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
 
       <section class="cadastro-box">
         <h2>Nova Ordem de Serviço</h2>
@@ -99,7 +110,12 @@
 
           <div class="form-buttons">
             <button type="submit" class="btn">Cadastrar</button>
-            <button type="button" class="btn btn-voltar" id="btnvoltaros">Voltar</button>
+
+            <!-- Botão Voltar -->
+            <button class="btn btn-secondary" id="btnvoltaros">
+              <i class="fas fa-arrow-left"></i> Voltar
+          </button>
+          
             <button type="button"  class=btn id="conferir">Conferir O.S</button>
           </div>
         </form>
