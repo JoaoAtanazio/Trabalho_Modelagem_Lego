@@ -134,7 +134,7 @@ html, body{
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #F0EBE3;;
   color: #333;
   line-height: 1.6;
@@ -164,6 +164,7 @@ body {
   .logo {
     font-size: 1.8rem;
     font-weight: 700;
+    margin-top:24px;
     margin-bottom: 3rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -172,27 +173,52 @@ body {
 
 .menu button {
   display: block;
-  width: 100%;
-  margin-bottom: 1rem;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.75rem;
-  cursor: pointer;
-  border-radius: 6px;
+  width: 87.5%; 
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #303030 0%,  rgba(255,255,255,0.1) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
   color: var(--white);
   font-weight: 500;
-  transition: all 0.3s ease;
+  font-size: 1rem;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   text-align: left;
+  cursor: pointer; 
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 
 .menu button:hover {
   background-color: rgba(255, 255, 255, 0.1);
   transform: translateX(5px);
 }
 
-.menu button.active {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-left: 3px solid var(--accent-color);
+
+.menu button:hover::before {
+  left: 100%;
+}
+
+/* Efeito de clique */
+.menu button:active {
+  transform: translateX(8px) scale(0.98);
+}
+
+/* Ícone opcional (usando pseudo-elemento) */
+.menu button::after {
+  content: '→';
+  position: absolute;
+  right: 1.5rem;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.menu button:hover::after {
+  opacity: 1;
+  transform: translateX(3px);
 }
 
 .main-content {
@@ -220,7 +246,7 @@ body {
    display: flex;
    align-items: center;
    gap: 10px;
-   transform: translateX(-20px);
+   transform: translateX(-20px) translateY(1px);
    font-family:'Roboto', sans-serif;
  }
  .logout {
@@ -627,4 +653,7 @@ body {
     width: 40px;
     height: 40px;
     object-fit: contain;
+  }
+  .horario{
+    transform: translateY(-4px)
   }
