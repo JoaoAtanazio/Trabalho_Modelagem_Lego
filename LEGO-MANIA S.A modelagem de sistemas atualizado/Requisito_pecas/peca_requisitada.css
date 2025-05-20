@@ -241,7 +241,7 @@ body {
     transform: translateY(0px);
   }
   .submenu a:hover {
-    background-color: #bdc3c7;
+    background-color: #86898b;
   }
   
   .submenu.active {
@@ -258,14 +258,17 @@ body {
 }*/
 
 .cadastro-box {
-  max-width: 500px;
+  width: 40vw;
   margin: auto;
   background-color: rgba(255, 255, 255, 0.95);
   padding: 2rem;
+  border-radius: 15px;
   border: 2px solid black;
-  transform: translateY(-5%);
-  height: 595px;  
-  border-radius: 10px;
+  transform: translateY(-11.4%);
+  height: 42vw;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
   
 }
 
@@ -286,6 +289,8 @@ body {
   background-color: #f9f9f9;
   flex-shrink: 0;
   border-radius: 5px;
+  transform: translateY(-10px);
+ /* border-bottom: 2px solid black; */
 }
 
 /*.btn {
@@ -306,11 +311,13 @@ body {
 /* NOVOS estilos para layout fixo do título e botões */
   
   .cadastro-header {
-    padding: 20px;
+    padding: 13px;
     text-align: center;
     font-size: 24px;
     font-weight: bold;
     border-bottom: 1px solid #ccc;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
     background-color: #f9f9f9;
     flex-shrink: 0;
   }
@@ -323,6 +330,7 @@ body {
 
   #myChart {
     margin: auto;
+    box-sizing: border-box;
   }
 
   .date-range {
@@ -351,4 +359,69 @@ body {
     border-radius: 5px;
   }
   
+  .perfil button{
+    padding: 0.5rem 1.4rem;
+    border: none;
+    display: flex;
+    background-color: #F0EBE3;
+    background-image: url('https://cdn-icons-png.freepik.com/512/64/64572.png');
+    background-size: cover;
+    object-fit: contain;
+    width: 16px;
+    height: 16px;
+    gap: 8px;
+    justify-content: center;
+    }
+    
+  .btnsair {
+    background-color: rgb(0, 0, 0) !important;
+    color: rgb(255, 255, 255) !important;
+    padding: 0.5rem 1.2rem;
+    border: none;
+    border-radius: 15px;
+    font-weight: 500;
+    cursor: none;
+  }
   
+    .icon-sair {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      display: inline-block;
+    }
+  
+    .btnperfil {
+    width: 33px; /* Tamanho igual ao do ícone */
+    height: 33px;
+    background-image: url('https://cdn-icons-png.freepik.com/512/64/64572.png');
+    background-size: contain; /* Mantém a proporção sem cortar */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent !important;
+    border: none;
+    cursor: none;
+    flex-shrink: 0; /* Impede que o botão encolha */
+  }
+    .perfil button {
+       background-color: transparent;
+       color: white;
+       padding: 0.5rem 1.4rem;
+       border: none;
+       font-weight: 500;
+       cursor: none;
+       background-color:transparent;
+       display: flex;
+       align-items: center;
+       gap: 10px;
+       transform: translateX(-20px);
+     }
+     .perfil {
+       display: flex;
+       align-items: center;
+       gap: 16px; /* espaço entre o botão de perfil e o botão de sair */
+     }
+     .icon-perfil {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
