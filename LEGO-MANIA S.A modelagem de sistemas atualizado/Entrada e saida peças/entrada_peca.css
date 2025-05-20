@@ -134,7 +134,7 @@ html, body{
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #F0EBE3;;
   color: #333;
   line-height: 1.6;
@@ -164,6 +164,7 @@ body {
   .logo {
     font-size: 1.8rem;
     font-weight: 700;
+    margin-top:24px;
     margin-bottom: 3rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -172,27 +173,52 @@ body {
 
 .menu button {
   display: block;
-  width: 100%;
-  margin-bottom: 1rem;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.75rem;
-  cursor: pointer;
-  border-radius: 6px;
+  width: 87.5%; 
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #303030 0%,  rgba(255,255,255,0.1) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
   color: var(--white);
   font-weight: 500;
-  transition: all 0.3s ease;
+  font-size: 1rem;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   text-align: left;
+  cursor: pointer; 
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
 
 .menu button:hover {
   background-color: rgba(255, 255, 255, 0.1);
   transform: translateX(5px);
 }
 
-.menu button.active {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-left: 3px solid var(--accent-color);
+
+.menu button:hover::before {
+  left: 100%;
+}
+
+/* Efeito de clique */
+.menu button:active {
+  transform: translateX(8px) scale(0.98);
+}
+
+/* Ícone opcional (usando pseudo-elemento) */
+.menu button::after {
+  content: '→';
+  position: absolute;
+  right: 1.5rem;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.menu button:hover::after {
+  opacity: 1;
+  transform: translateX(3px);
 }
 
 .main-content {
@@ -210,18 +236,27 @@ body {
 }
 
 .logout button {
-  border-radius: 20px;
-  background-color: black;
+  border-radius: 15px;
+  background-color: var(--secondary-color);
   color: white;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1.4rem;
   border: none;
   font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  cursor: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateX(-20px);
+  font-family:'Roboto', sans-serif;
 }
-
+.logout {
+  display: flex;
+  align-items: center; 
+  gap: 10px; 
+  transform: translateX(-16px) translateY(-17px); 
+}
 .logout button:hover {
-  background-color: var(--primary-color);
+  background-color:#303030 ;
 }
 
 .section_conteudo {
@@ -517,45 +552,6 @@ body {
   resize: vertical;
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-      width: 60px;
-      overflow: hidden;
-  }
-
-  .logo, .menu button span {
-      display: none;
-  }
-
-  .menu button {
-      justify-content: center;
-      padding: 15px 0;
-  }
-
-  .menu button i {
-      margin-right: 0;
-      font-size: 1.1rem;
-  }
-
-  .main-content {
-      margin-left: 60px;
-  }
-
-  .section-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 15px;
-  }
-
-  .actions {
-      width: 100%;
-      flex-direction: column;
-  }
-
-  .search-box input {
-      width: 100%;
-  }
-}
 .service-table th {
     position: relative;
     padding-right: 25px !important;
@@ -668,4 +664,8 @@ body {
       width: 40px;
       height: 40px;
       object-fit: contain;
+    }
+    .horario{
+      transform: translateY(-4px);
+      line-height:25px;
     }
