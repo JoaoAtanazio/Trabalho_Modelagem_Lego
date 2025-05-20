@@ -76,7 +76,7 @@
    <div class="detalhes-perfil">
     <div class="campo-perfil">
       <label>Nome de usuário:</label>
-      <div class="valor-campo">bananinhas123</div>
+      <div class="valor-campo" id="banana">bananinhas123</div>
     </div>
     
     <div class="campo-perfil">
@@ -93,20 +93,46 @@
     </div>
     
     <div class="campo-perfil">
-      <label>Telefone:</label>
-      <div class="valor-campo">47 8432-XXXX</div>
+      <label>Email:</label>
+      <div class="valor-campo">bananinhas@gmail.com</div>
     </div>
     
-    <button class="btn-salvar">Salvar Alterações</button>
   </div>
 </div>
 
      <div class="table-footer">
+      <button class="btn-salvar">Salvar Alterações</button>
+      <button class="btn-secondary" id="btnvoltaros" onclick="window.history.back()">Voltar</button>
      </div>
-     <button class="btn-secondary" id="btnvoltaros" onclick="window.history.back()">Voltar</button>
      </button>
+    </main>
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+          <span class="close-btn">&times;</span>
+          <h3>Editar Informações</h3>
+          <form id="edit-form">
+              <input type="hidden" id="edit-id">
+              <div class="form-group">
+                  <label for="edit-Nome">Nome de usuário novo:</label>
+                  <input type="text" id="edit-Nome" required>
+              </div>
+              <div class="form-group">
+                  <label for="edit-Senha">Senha Antiga:</label>
+                  <input type="text" id="edit-Senha" required>
+              </div>
+              <div class="form-group">
+                  <label for="edit-SenhaNova">Senha Nova:</label>
+                  <input type="text" id="edit-SenhaNova" required>
+              </div>
+              <button type="submit" class="btn btn-primary" id="btnsalva">Salvar</button>
+          </form>
+      </div>
+  </div>
+    
 
-    <script src="ordem_aberta_jcp.js"></script>
+    <script src="usuario.js"></script>
     <script src="../tela_geral/tela_geral.js"></script>
     <script src="../tela_geral/main.js"></script>  
+    
 </body>
+
