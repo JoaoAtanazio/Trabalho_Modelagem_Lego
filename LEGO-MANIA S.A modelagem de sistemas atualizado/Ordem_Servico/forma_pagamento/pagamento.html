@@ -40,7 +40,7 @@
             <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
           <div class="submenu">
             <a href="#">Peças no <br>estoque</a>
-            <a id="peca_requisitada" href="../../Requisito_pecas/Pecas_requisitadas_barra.html">Relatório <br>de uso</a>
+            <a id="peca_requisitada" href="../../Requisito_pecas/Peca_requisitada.html">Relatório <br>de uso</a>
             <a id="entsaida_peca" href="../../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
           </div>
           <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
@@ -49,17 +49,23 @@
             <a id="gestao_func" href="../../gestao_pessoas/gestao_func.html">Funcionários</a>
           </div>
         </div>
+
+        <!-- Data e horário -->
         <div class="horario"></div>
+
       </nav>
     </aside>
-    <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
+
+    <!-- Botões de sair e do perfil -->
     <main class="main-content">
       <header class="header">
         <div class="logout">
-          <button class="btnperfil" onclick="window.location.href='../../Perfil_Usuário/Perfil_Usuário.html'"></button>
-          <button onclick="window.location.href='../../login/login.html'" class="btnsair">Sair</button>
+          <button class="btnperfil" id="btnperfil"></button>
+          <button onclick="window.location.href='../login/login.html'" class="btnsair">Sair</button>
         </div>
       </header>
+
+    <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
         
       <div class="pagamento-box">
         <div class="hpag">Forma de Pagamento</div>
