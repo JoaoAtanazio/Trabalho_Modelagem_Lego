@@ -161,6 +161,16 @@ body {
   margin-bottom: 2rem;
 }
 
+.horario {
+  color: var(--white);
+  padding: 10px;
+  border-radius: 10px;
+  width: 5px;
+  white-space: nowrap;
+  margin: auto;
+  margin-left: -11px;
+}
+
 .logout button {
   border-radius: 15px;
    background-color: var(--secondary-color);
@@ -237,8 +247,6 @@ body {
   }
   
   .submenu a {
-    margin-top:0.8px;
-    margin-bottom:1px;
     display: block;
     padding: 3px 0;
     text-decoration: none;
