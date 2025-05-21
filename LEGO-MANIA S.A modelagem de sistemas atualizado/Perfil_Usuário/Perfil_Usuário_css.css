@@ -660,3 +660,7 @@ body {
   background-color: #444444;
   border-color: #000000;
 }
+.horario{
+  transform: translateY(-4px);
+  line-height:25px;
+}
