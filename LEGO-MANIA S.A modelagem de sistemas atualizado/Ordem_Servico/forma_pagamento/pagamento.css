@@ -287,7 +287,7 @@ body {
 
   .pagamento-box {
     max-width: 800px;
-    max-height: 500px;
+    max-height: 460px;
     margin: auto;
     background-color: rgba(255, 255, 255, 0.95);
     padding: 3rem;
@@ -387,7 +387,7 @@ body {
     justify-content: space-between;
     margin-top: 2rem;
     cursor:none;
-    transform: translate(-0px ,30px);
+    transform: translate(-0px ,-15px);
   }
   
   .btn {
@@ -472,15 +472,29 @@ body {
     /* DAQUI PARA BAIXO É ESTILIZAÇÃO DA FORMA DE PAGAMENTO */
  
     .hpag {
-      background-color: #5a5a5a;
-      color: white;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: 600;
-  }   
-
+    background-color: #5a5a5a;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    background: linear-gradient(45deg, #c2bdbd, #3a3737, #aaa, #303030);
+    background-size: 400% 400%; /* Amplia o gradiente para permitir a animação */
+    animation: gradientAnimation 15s ease infinite;
+  }
+  
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 .txtinput {
     width: 94%;
     padding: 10px;
@@ -532,7 +546,9 @@ body {
     border-bottom: 1px solid #e0e0e0;
     padding-bottom: 15px;
     transform: translateY(-70px);
+    
 }
+
 .section-forma {
   margin-bottom: 25px;
   border-bottom: 1px solid #e0e0e0;
