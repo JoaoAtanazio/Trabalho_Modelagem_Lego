@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrade de peças - LEGO MANIA</title>
+    <link rel="stylesheet" href="servicos_realizados.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="custom-cursor site-wide">
+        <div class="pointer"></div> <!-- Cursor normal -->
+        <div class="custom-pointer"></div> <!-- Cursor pros botões -->
+      </div>
+          <div class="container">
+        <aside class="sidebar">
+
+          <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
+          <h1 class="logo">
+              <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
+               LEGO - <br>MANIA O.S
+              </a>
+          </h1>
+
+            <nav class="menu">
+                <div class="menu-container">
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
+                  <div class="submenu">
+                    <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
+                    <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
+                    <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
+                    <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html">Fornecedor</a>
+                  </div>
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
+                  <div class="submenu">
+                    <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
+                    <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
+                  </div>
+                    <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+                  <div class="submenu">
+                    <a href="#">Ganho <br>bruto/lucro</a>
+                    <a href="#">Despesas</a>
+                    <a href="#">Serviços <br>realizados</a>
+                  </div>
+                    <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+                  <div class="submenu">
+                    <a href="#">Peças no <br>estoque</a>
+                    <a  id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html">Relatório <br>de uso</a>
+                    <a a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
+                  </div>
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
+                  <div class="submenu">
+                    <a href="#">Clientes</a>
+                    <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
+                  </div>
+                </div>
+              </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="logout">
+                    <button>Sair</button>
+                </div>
+            </header>
+
+            <section class="section_conteudo">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-face-smile"></i>Serviços realizados</h2>
+                    <div class="actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Pesquisar..." id="search-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="service-table">
+                        <thead>
+                            <tr>
+                                <th>Trabalho feito</th>
+                                <th>Técnico</th>
+                                <th>Tipo de peça</th>
+                                <th>Data de início</th>
+                                <th>Data de término</th>
+                                <th>Ações</th> 
+                            </tr>
+                        </thead>
+                        <tbody id="os-table-body">
+                            
+                                <td class="actions-cell">
+                                    <button class="action-btn edit-btn" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Excluir">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            
+                        </tbody>
+                    </table>
+                </div>
+       
+                <div class="table-footer">
+                    <div class="pagination">
+                        <button class="pagination-btn" id="prev-page"><i class="fas fa-chevron-left"></i></button>
+                        <span class="page-number" id="page-number">1</span>
+                        <button class="pagination-btn" id="next-page"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+
+                    <div class="date-range">
+                        <div class="date-field">
+                          <label for="dataInicio">De:</label>
+                          <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+                        </div>
+                        <div class="date-field">
+                          <label for="dataFim">Até:</label>
+                          <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-secondary" id="btnvoltaros">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+<!-- Modal de Edição -->
+<div id="edit-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h3>Editar peça</h3>
+    <form id="edit-form">
+      <input type="hidden" id="edit-id">
+      <div class="form-group">
+        <label for="edit-funcionario">Nome da peça:</label>
+        <input type="text" id="edit-funcionario" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-cod">Código:</label>
+        <input type="text" id="edit-cod" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-salario">Tipo de peça:</label>
+        <input type="text" id="edit-salario" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-dataRecebimento">Data de recebimento:</label>
+        <input type="text" id="edit-dataRecebimento" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts -->
+
+<script src="../tela_geral/tela_geral.js"></script>
+<script src="../servicos_realizadoss/servicos_realizados.js"></script>
+<script src="../tela_geral/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+</body>
+</html>

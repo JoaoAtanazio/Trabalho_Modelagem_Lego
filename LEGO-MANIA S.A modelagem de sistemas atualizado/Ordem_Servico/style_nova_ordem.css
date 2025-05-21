@@ -292,6 +292,7 @@ body {
   .cadastro-box {
     max-width: 500px;
     margin: auto;
+    margin-top: -3.7%;
     background-color: rgba(255, 255, 255, 0.95);
     padding: 2rem;
     border-radius: 10px;
