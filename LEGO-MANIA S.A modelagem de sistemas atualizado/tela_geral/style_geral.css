@@ -174,7 +174,7 @@ body {
 
 /* Ícone opcional (usando pseudo-elemento) */
 .menu button::after {
-  content: '→';
+  content: '⬇';
   position: absolute;
   right: 1.5rem;
   opacity: 0;
@@ -281,19 +281,31 @@ body {
   }
   
   .submenu {
+    width: 60%;
     display: none;       
     padding-left: 15px;   
     overflow-y:auto;
     display: none;
     margin-top: 5px;
     padding: 10px;
-    background-color:	gray;
+    background: linear-gradient(135deg, #303030 0%,  rgba(255,255,255,0.1) 100%);
     border: 1px solid #ccc;
     border-radius: 4px;
     transform: translateX(20px);
     transform: translateY(-20px);
     cursor: none !important;
-    }
+    /*Efeito de animação de abertura do submenu */
+    animation: fadeIn 0.5s forwards; 
+    transform-origin: top;
+    opacity: 0;
+    } 
+   /*Efeito de animação de abertura do submenu */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-25px); }
+      to   { opacity: 1; transform: translateY(-20px); }
+  }
+
+
     .submenu, .submenu * {
       cursor: none !important;
     }
@@ -303,15 +315,17 @@ body {
     display: block;
     padding: 3px 0;
     text-decoration: none;
-    color: #333;
+    color: rgb(226, 220, 220);
     transform: translateX(20px);
     transform: translateY(0px);
     cursor: none;
     pointer-events: auto;
-    max-width: 100%;
+    width: 100%;
+    
+    
   }
   .submenu a:hover {
-    background-color: #86898b;
+    background-color: #434242;
     border-radius: 10%;
   }
   
@@ -319,6 +333,7 @@ body {
     display: block;
     cursor: none;
   }
+  
 
   .submenu .box-bound {
     display: none !important;
@@ -326,7 +341,8 @@ body {
   .custom-cursor.site-wide.active .pointer {
     transform: scale(0.8);
   }
-  /* todo o css acima é PADRÃO para QUASE TODAS AS TELAS, abaixo os css específicos de cada tela */
+
+  
   .perfil button{
   padding: 0.5rem 1.4rem;
   border: none;
