@@ -209,7 +209,7 @@ body {
 
 /* Ícone opcional (usando pseudo-elemento) */
 .menu button::after {
-  content: '→';
+  content: '⬇';
   position: absolute;
   right: 1.5rem;
   opacity: 0;
