@@ -7,26 +7,20 @@
   <link rel="stylesheet" href="cadastro_cliente.css" />
 </head>
 <body>
+  <!-- Manter APENAS este cursor principal -->
   <div class="custom-cursor site-wide">
-    <div class="pointer"></div>  <!-- Cursor normal -->
+    <div class="pointer"></div> <!-- Cursor normal -->
     <div class="custom-pointer"></div> <!-- Cursor pros botões -->
   </div>
-
+  
   <div class="container">
     <aside class="sidebar">
-
-      <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
-      <h1 class="logo">
-        <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
-         LEGO - <br>MANIA O.S
-        </a>
-    </h1>
-
+      <h1 class="logo">LEGO - <br>MANIA O.S</h1>
       <nav class="menu">
         <div class="menu-container">
           <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
           <div class="submenu">
-            <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
+            <a id="func" href="../cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
             <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
             <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
             <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html">Fornecedor</a>
@@ -37,32 +31,28 @@
             <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
             <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html">pagamento</a>
           </div>
-          <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
           <div class="submenu">
             <a href="#">Ganho <br>bruto/lucro</a>
             <a href="#">Despesas</a>
             <a href="#">Serviços <br>realizados</a>
           </div>
-          <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
           <div class="submenu">
             <a href="#">Peças no <br>estoque</a>
-            <a id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html">Relatório <br>de uso</a>
+            <a id="peca_requisitada" href="../Requisito_pecas/peca_requisitada.html">Relatório <br>de uso</a>
             <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
           </div>
           <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
           <div class="submenu">
-            <a href="../gestao_pessoas/gestao_clnt.html">Clientes</a>
+            <a href="#">Clientes</a>
             <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
           </div>
         </div>
-
-        <!-- Data e horário -->
         <div class="horario"></div>
-
       </nav>
     </aside>
-
-    <!-- Botões de sair e do perfil -->
+    <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
     <main class="main-content">
       <header class="header">
         <div class="logout">
@@ -71,10 +61,8 @@
         </div>
       </header>
 
-     <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
-
       <section class="cadastro-box">
-        <h2>Cadastro de Cliente</h2>
+        <h2 class="htxt">Cadastro de Cliente</h2>
 
         <form id="formFuncionario" class="form-funcionario">
         <div class="form-group">
@@ -108,12 +96,7 @@
 
           <div class="form-buttons">
             <button type="submit" class="btn">Cadastrar</button>
-            
-            <!-- Botão Voltar -->
-            <button class="btn btn-secondary" id="btnvoltaros">
-              <i class="fas fa-arrow-left"></i> Voltar
-          </button>
-
+            <button type="button" class="btn btn-voltar" id="btnvoltar">Voltar</button>
           </div>
 
         </form>

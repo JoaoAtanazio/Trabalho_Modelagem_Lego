@@ -385,7 +385,28 @@ body {
     margin-top: 1rem;
     cursor:none;
   }
+
+.htxt{
+  border-radius: 8px;
+  font-size: 24px;
+  font-weight: 600;
+  background: linear-gradient(45deg, #c2bdbd, #3a3737, #aaa, #303030);
+  background-size: 400% 400%; /* Amplia o gradiente para permitir a animação */
+  animation: gradientAnimation 15s ease infinite;
+  }
   
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
   .btn {
     background-color: #aaa;
     border: 1px solid black;
