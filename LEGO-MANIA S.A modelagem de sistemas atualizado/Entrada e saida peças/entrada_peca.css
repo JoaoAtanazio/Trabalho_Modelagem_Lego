@@ -418,7 +418,7 @@ body {
 .delete-btn:hover {
   background-color: rgba(231, 76, 60, 0.1);
 }
-
+   
 .btn {
   padding: 8px 15px;
   border-radius: var(--border-radius);
