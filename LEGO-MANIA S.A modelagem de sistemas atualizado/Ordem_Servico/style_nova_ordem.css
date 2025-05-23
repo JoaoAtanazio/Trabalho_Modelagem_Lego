@@ -198,6 +198,10 @@ body {
   margin-bottom: 2rem;
 }
 
+.logo_mania{
+  width: 93%;
+}
+
 .logout button {
   border-radius: 15px;
    background-color: var(--secondary-color);

@@ -190,6 +190,10 @@ body {
   margin-bottom: 2rem;
 }
 
+.logo_mania{
+  width: 93%;
+}
+
 .horario {
   color: var(--white);
   padding: 10px;
