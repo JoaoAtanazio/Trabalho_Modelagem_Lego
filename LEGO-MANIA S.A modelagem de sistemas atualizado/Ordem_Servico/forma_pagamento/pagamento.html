@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tela inicial - LEGO MANIA</title>
-  <link rel="stylesheet" href="pagamento.css" />
+  <link rel="stylesheet" href="pagamento.css"/>
+  <link rel="stylesheet" href="../../tela_geral/style_geral.css"/>
 </head>
 <body>
   <!-- Manter APENAS este cursor principal -->
@@ -58,12 +59,14 @@
         </div>
 
         <!-- Data e horário -->
+
         <div class="horario"></div>
 
       </nav>
     </aside>
 
     <!-- Botões de sair e do perfil -->
+
     <main class="main-content">
       <header class="header">
         <div class="logout">
@@ -130,7 +133,10 @@
         </div>
       </div>
 
+
       <!-- Modal do Cartão -->
+
+
       <div id="modalCartao" class="modal-cartao">
           <div class="modal-content-cartao">
               <span class="close-modal">&times;</span>
@@ -197,13 +203,16 @@
                   
                   <div class="form-buttons-cartao">
                       <button type="button" class="btn btn-voltar-modal">Voltar</button>
-                      <button type="submit" class="btn btn-confirmar">Confirmar Pagamento</button>
+                      <button type="submit" class="btn btn-confirmar" id="btn-confirmapag">Confirmar Pagamento</button>
                   </div>
               </form>
           </div>
       </div>
 
+
       <!-- Modal do PIX -->
+
+
       <div id="modalPix" class="modal-cartao">
         <div class="modal-content-cartao">
             <span class="close-modal">&times;</span>
@@ -246,7 +255,7 @@
                 
                 <div class="form-buttons-Pix">
                     <button type="button" class="btn btn-voltar-modal">Voltar</button>
-                    <button type="submit" class="btn btn-confirmar">Confirmar Pagamento</button>
+                    <button type="submit" class="btn btn-confirmar" id="pagpix">Confirmar Pagamento</button>
                 </div>
             </form>
         </div>

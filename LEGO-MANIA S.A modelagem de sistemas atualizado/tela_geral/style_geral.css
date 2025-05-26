@@ -28,9 +28,22 @@ html, body{
   background-repeat: no-repeat;
 }
 
-.background-image-container, 
 .background-image {
   pointer-events: none; /* Permite que o cursor seja detectado */
+}
+
+.logo-texto{
+  font-size: 130px;
+  text-align: center;
+  margin: 22%;
+  color: black;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.logo-texto::before{
+  content: "LEGO";
+  color: orange;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .box-bound {
@@ -221,6 +234,22 @@ body {
   font-family:'Roboto', sans-serif;
 }
 
+.logout-home button {
+  border-radius: 15px;
+  background-color: black;
+  color: white;
+  padding: 0.5rem 1.4rem;
+  border: none;
+  font-weight: 500;
+  cursor: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translate(-20px , -933px);
+  font-family:'Roboto', sans-serif;
+}
+
+.logout-home,
 .logout {
   display: flex;
   align-items: center; /* Alinha verticalmente */
