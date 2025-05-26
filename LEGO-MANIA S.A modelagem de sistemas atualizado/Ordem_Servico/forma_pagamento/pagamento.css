@@ -20,7 +20,6 @@
   text-align: center;
 }
 
-<<<<<<< HEAD
 .form-funcionario {
   display: flex;
   flex-direction: column;
@@ -110,13 +109,6 @@ input::placeholder {
   background-color: #aaa;
   border: 1px solid black;
   padding: 0.7rem;
-=======
-.logo_mania{
-  width: 93%;
-}
-
-.logout button {
->>>>>>> 07827f7de0e2f620bdc9edb25c820a34151a6644
   border-radius: 15px;
   font-size: 1rem;
   cursor: none;
