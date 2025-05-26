@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${os.dataConclusao || os.dataRecebimento}</td>
                 <td class="actions-cell">
                     <button class="action-btn view-btn" title="Visualizar">
-                        <i class="fas fa-eye"></i>
+                        <i class="fas fa-edit"></i>
                     </button>
                     <button class="action-btn delete-btn" title="Excluir">
                         <i class="fas fa-trash-alt"></i>
@@ -61,16 +61,41 @@ document.addEventListener('DOMContentLoaded', function() {
         const os = ordens.find(o => o.id === id);
         if (!os) return;
         
-        // Aqui você pode abrir um modal ou página com os detalhes completos
-        alert(`Detalhes da OS:\n
-Cliente: ${os.nome}\n
-Equipamento: ${os.marca}\n
-Problema: ${os.problema}\n
-Observações: ${os.observacao}\n
-Data de recebimento: ${os.dataRecebimento}\n
-Data de conclusão: ${os.dataConclusao}\n
-Técnico: ${os.tecnico}`);
+        // Preenche o modal com os dados da OS
+        document.getElementById('view-cliente').textContent = os.nome || 'Não informado';
+        document.getElementById('view-equipamento').textContent = os.equipamento || 'Não informado';
+        document.getElementById('view-marca').textContent = `${os.marca || ''} ${os.modelo || ''}`.trim() || 'Não informado';
+        document.getElementById('view-problema').textContent = os.problema || 'Não informado';
+        document.getElementById('view-observacoes').textContent = os.observacao || 'Nenhuma observação';
+        document.getElementById('view-tecnico').textContent = os.tecnico || 'Não informado';
+        document.getElementById('view-data-recebimento').textContent = os.dataRecebimento || 'Não informado';
+        document.getElementById('view-data-conclusao').textContent = os.dataConclusao || 'Não informado';
+        document.getElementById('view-pecas').textContent = os.pecasUtilizadas || 'Nenhuma peça registrada';
+        
+        // Exibe o modal
+        const modal = document.getElementById('view-modal');
+        modal.style.display = 'block';
+        
+        // Fecha o modal quando clicar no X
+        modal.querySelector('.close-btn').onclick = function() {
+            modal.style.display = 'none';
+        };
+        
+        // Fecha o modal quando clicar fora dele
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
     }
+
+    // Adicione isso no final do seu DOMContentLoaded
+document.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('view-modal');
+    if (event.key === 'Escape' && modal.style.display === 'block') {
+        modal.style.display = 'none';
+    }
+});
     
     function excluirOS(id) {
         const novasOrdens = ordens.filter(o => o.id !== id);
