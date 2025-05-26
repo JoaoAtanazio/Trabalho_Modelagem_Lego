@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tela inicial - LEGO MANIA</title>
   <link rel="stylesheet" href="style_geral.css" />
+  <link rel="stylesheet" href="style_tela_geral.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -21,7 +22,7 @@
       <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
       <h1 class="logo">
         <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
-          <i class="fa-solid fa-house"></i> LEGO - <br>MANIA O.S
+          <img class="logo_mania" src="../tela_geral/img/logo_mania.png">
         </a>
     </h1>
 
@@ -56,21 +57,22 @@
             <a id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html"><i class="fa-solid fa-folder-open"></i> Relatório <br>de uso</a>
             <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html"><i class="fa-solid fa-right-to-bracket"></i> Entrada/saída <br>de peças</a>
           </div>
-          
+        
           <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-user-large"></i> Gestão de pessoas</button>
           <div class="submenu">
-            <a href="../gestao_pessoas/gestao_clnt.html"><i class="fa-solid fa-circle-user"></i> Clientes</a>
+            <a id="gestao_clnt" href="../gestao_pessoas/gestao_clnt.html"><i class="fa-solid fa-circle-user"></i> Clientes</a>
             <a id="gestao_func" href="../gestao_pessoas/gestao_func.html"><i class="fa-solid fa-address-card"></i> Funcionários</a>
           </div>
         </div>
 
         <!-- Data e horário -->
         <div class="horario"></div>
-
       </nav>
     </aside>
 
+     <!--____________________________________-->
      <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
+     <!--____________________________________-->
 
     <header>
         <div class="cabecalho">
@@ -78,7 +80,7 @@
     </header>
     <main class="main-content">
       <div class="background-image-container">
-        <img src="../tela_geral/skibire.png" alt="Background LEGO" class="background-image">
+        <img src="../tela_geral/img/skibire.png" alt="Background LEGO" class="background-image">
       </div>
       <header class="header">
         <div class="logout">
@@ -86,10 +88,8 @@
           <button onclick="window.location.href='../login/login.html'" class="btnsair">Sair</button>
         </div>
       </header>
-
     </main>
   </div>
-
   <script src = '../tela_geral/tela_geral.js'></script>
   <script src = '../tela_geral/main.js'></script>
 </body>

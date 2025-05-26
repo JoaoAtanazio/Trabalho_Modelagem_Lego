@@ -1,69 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de OS - LEGO MANIA</title>
-    <link rel="stylesheet" href="style_ordem_abertas.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tela inicial - LEGO MANIA</title>
+  <link rel="stylesheet" href="../tela_geral/style_geral.css" />
+  <link rel="stylesheet" href="style_ordem_abertas.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
-    <div class="custom-cursor site-wide">
-      <div class="pointer"></div>  <!-- Cursor normal -->
-      <div class="custom-pointer"></div> <!-- Cursor pros botões -->
-    </div>
-  
-    <div class="container">
-      <aside class="sidebar">
-  
-        <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
-        <h1 class="logo">
-          <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
-           LEGO - <br>MANIA O.S
-          </a>
-      </h1>
-  
-        <nav class="menu">
-          <div class="menu-container">
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
-            <div class="submenu">
-              <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
-              <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
-              <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
-              <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html">Fornecedor</a>
-            </div>
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
-            <div class="submenu">
-              <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
-              <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
-              <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html">pagamento</a>
-            </div>
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
-            <div class="submenu">
-              <a href="#">Ganho <br>bruto/lucro</a>
-              <a href="#">Despesas</a>
-              <a href="../servicos_realizadoss/servicos_realizados.html">Serviços <br>realizados</a>
-            </div>
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
-            <div class="submenu">
-              <a href="#">Peças no <br>estoque</a>
-              <a id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html">Relatório <br>de uso</a>
-              <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
-            </div>
-            <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
-            <div class="submenu">
-                <a href="../gestao_pessoas/gestao_clnt.html">Clientes</a>
-              <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
-            </div>
+  <div class="custom-cursor site-wide">
+    <div class="pointer"></div>  <!-- Cursor normal -->
+    <div class="custom-pointer"></div> <!-- Cursor pros botões -->
+  </div>
+
+  <div class="container">
+    <aside class="sidebar">
+
+      <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
+      <h1 class="logo">
+        <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
+          <img class="logo_mania" src="../tela_geral/img/logo_mania.png">
+        </a>
+    </h1>
+
+      <nav class="menu">
+        <div class="menu-container">
+
+          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-clipboard"></i></i> Cadastros</button>
+          <div class="submenu">
+            <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html"><i class="fa-solid fa-address-card"></i> Funcionários</a>
+            <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html"><i class="fa-solid fa-circle-user"> </i> Clientes</a>
+            <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html"><i class="fa-solid fa-gears"></i> Peças     no estoque</a>
+            <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html"><i class="fa-solid fa-address-book"></i> Fornecedor</a>
           </div>
-  
-          <!-- Data e horário -->
+
+          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-gears"></i> Ordem de Serviço</button>
+          <div class="submenu">
+            <a id="botao_os" href="../Ordem_Servico/nova_ordem.html"><i class="fa-solid fa-plus"></i> Nova O.S</a>
+            <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html"><i class="fa-solid fa-magnifying-glass"></i> Consultar O.S</a>
+            <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html"><i class="fa-solid fa-credit-card"></i> Pagamento</a>
+          </div>
+          
+          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-clipboard"></i> Relatório de finanças</button>
+          <div class="submenu">
+            <a href="#"><i class="fa-solid fa-database"></i> Ganho <br> bruto/lucro</a>
+            <a href="#"><i class="fa-solid fa-coins"></i> Despesas</a>
+            <a href><i class="fa-solid fa-file-invoice"></i> Serviços <br>realizados</a>
+          </div>
+
+          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-truck"></i> Relatório do estoque</button>
+          <div class="submenu">
+            <a href="#"><i class="fa-solid fa-bolt"></i> Peças no <br>estoque</a>
+            <a id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html"><i class="fa-solid fa-folder-open"></i> Relatório <br>de uso</a>
+            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html"><i class="fa-solid fa-right-to-bracket"></i> Entrada/saída <br>de peças</a>
+          </div>
+        
+          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-user-large"></i> Gestão de pessoas</button>
+          <div class="submenu">
+            <a id="gestao_clnt" href="../gestao_pessoas/gestao_clnt.html"><i class="fa-solid fa-circle-user"></i> Clientes</a>
+            <a id="gestao_func" href="../gestao_pessoas/gestao_func.html"><i class="fa-solid fa-address-card"></i> Funcionários</a>
+          </div>
+        </div>
+
+        <!-- Data e horário -->
         <div class="horario"></div>
+      </nav>
+    </aside>
 
-    </nav>
-  </aside>
-
+     <!--____________________________________-->
+     <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
+     <!--____________________________________-->
+    
   <!-- Botões de sair e do perfil -->
   <main class="main-content">
     <header class="header">

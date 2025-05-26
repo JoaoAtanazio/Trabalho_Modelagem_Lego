@@ -125,10 +125,18 @@ document.addEventListener("DOMContentLoaded", function() {
       window.location.href = '../Ordem_Servico/ordem_abertas.html';
     });
   
-    if (voltarOS) voltarOS.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = '../tela_geral/tela_geral.html';
-    });
+    if (voltarOS) {
+      voltarOS.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Verifica se há histórico de navegação (mais que 1 página no histórico)
+        if (window.history.length > 1) {
+          window.history.back(); // Volta para a página anterior
+        } else {
+          window.location.href = '../tela_geral/tela_geral.html'; // Fallback
+        }
+      });
+    }
   
     if (graficopizza) graficopizza.addEventListener('click', (e) => {
       e.preventDefault();
