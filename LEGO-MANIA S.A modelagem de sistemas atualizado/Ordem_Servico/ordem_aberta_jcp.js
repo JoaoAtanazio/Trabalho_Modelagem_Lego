@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             tr.innerHTML = `
                 <td>${os.tecnico || 'Não atribuído'}</td>
-                <td><span class="priority-badge ${(os.prioridade || 'MÉDIA').toLowerCase()}">${os.prioridade || 'MÉDIA'}</span></td>
+                <td><span class="priority-badge ${(os.prioridade || 'MÉDIA').toLowerCase()}">${os.prioridade}</span></td>
                 <td>${os.marca || ''}</td>
                 <td>${os.problema || ''}</td>
                 <td><span class="status-badge ${getStatusClass(os.status || 'ABERTA')}">${os.status || 'ABERTA'}</span></td>
