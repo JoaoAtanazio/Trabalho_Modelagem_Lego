@@ -19,6 +19,46 @@
   margin: 20px auto;
   transform: translateY(-40px);
 }
+<<<<<<< HEAD
+=======
+.header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: var(--header-height);
+  margin-bottom: 20px;
+}
+
+.logo_mania{
+  width: 93%;
+}
+
+.logout button {
+  border-radius: 15px;
+   background-color: black;
+   color: white;
+   padding: 0.5rem 1.4rem;
+   border: none;
+   font-weight: 500;
+   cursor: none;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   transform: translateX(-20px);
+   transform: translate(-32px, -1px);
+   font-family:'Roboto', sans-serif;
+ }
+ .logout {
+   display: flex;
+   align-items: center; /* Alinha verticalmente */
+   gap: 10px; /* Espaço entre os botões */
+   transform: translate(-16px, -17px); /* Ajuste de posição se necessário */
+   transform: translate(-4px, -16px); /* Ajuste de posição se necessário */
+ }
+ .logout button:hover {
+   background-color:#303030 ;
+ }
+>>>>>>> 07827f7de0e2f620bdc9edb25c820a34151a6644
 
 .section_conteudo {
   background-color: var(--white);

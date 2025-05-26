@@ -25,7 +25,12 @@
           <img class="logo_mania" src="../tela_geral/img/logo_mania.png">
         </a>
     </h1>
-
+        <h1 class="logo">
+        <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
+          <img class="logo_mania" src="../tela_geral/logo_mania.png">
+        </a>
+      </h1>
+      
       <nav class="menu">
         <div class="menu-container">
 
@@ -84,7 +89,7 @@
       <section class="cadastro-box">
         <h2 class="htxt">Cadastro de Cliente</h2>
 
-        <form id="formFuncionario" class="form-funcionario">
+        <form id="formCliente" class="form-cliente">
         <div class="form-group">
           <label for="nome">Nome:</label>
           <input type="text" id="nome" name="nome" placeholder="Nome completo" required>
@@ -102,10 +107,7 @@
 
           <div class="form-group">
             <label for="cep">Telefone:</label>
-
-            <input type="text" id="telefone" name="telefone" maxlength="15"placeholder="(00) 0 0000-0000" />
-
-            <input type="text" id="telefone" name="telefone" maxlength="15"placeholder="(00) 0 0000-0000" required/>
+            <input type="text" id="telefone" name="telefone" maxlength="19"placeholder="+00 (00) 0 0000-0000" required/>
 
           </div>
 
@@ -128,6 +130,7 @@
   <script src="../tela_geral/main.js"></script>
   <script src="../tela_geral/tela_geral.js"></script>
   <script src="cad_clnt.js"></script>
+  <script scr="cad_cliente.js"></script>
 
 </body>
 </html>
