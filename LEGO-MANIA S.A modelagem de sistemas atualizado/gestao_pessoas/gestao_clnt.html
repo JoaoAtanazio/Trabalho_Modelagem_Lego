@@ -124,124 +124,6 @@
                                     </button>
                                 </td>
                             </tr>
-                            <tr data-id="2">
-                               <td>João Silva</td>
-                               <td>987.654.321-00</td>
-                               <td>20020-010</td>
-                               <td>(21) 99876-5432</td>
-                               <td>joao.oliveira@email.com</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr data-id="3">
-                                    <td>tech solutions ltda</td>
-                                    <td>12.345.678/0001-99</td>
-                                    <td>30130-010</td>
-                                    <td>(31) 3456-7890</td>
-                                    <td>contato@techsolutions.com</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                               <tr data-id="4">
-                               <td>ana costa</td>
-                               <td>456.789.123-00</td>
-                               <td>40010-020</td>
-                               <td>(71) 91234-5678</td>
-                               <td>ana.costa@email.com</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                               <tr data-id="5">
-                              <td>carlos souza</td>
-                              <td>789.123.456-00</td>
-                              <td>50050-100</td>
-                              <td>(81) 98765-1234</td>
-                              <td>carlos.souza@email.com</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                               <tr data-id="6">
-                               <td>vida natural me</td>
-                               <td>98.765.432/0001-11</td>
-                               <td>60060-070</td>
-                               <td>(85) 3344-5566</td>
-                               <td>vendas@vidanatural.com</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                               <tr data-id="7">
-                                <td>fernanda lima</td>
-                                <td>321.654.987-00</td>
-                                <td>70070-200</td>
-                                <td>(61) 99887-6655</td>
-                                <td>fernanda.lima@email.com</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr data-id="8">
-                              <td>global importações s.a.</td>
-                              <td>23.456.789/0001-22</td>
-                              <td>80010-900</td>
-                              <td>(41) 33765-4321</td>
-                              <td>financeiro@globalimport.com</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" tdsitle="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                               <tr data-id="9">
-                              <td>maria silva</td>
-                              <td>183.466.709-10</td>
-                              <td>01001-000</td>
-                              <td>(11) 98765-4321</td>
-                              <td>maria.silva@email.com</td>
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -278,36 +160,28 @@
 <div id="edit-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
-        <h3>Editar Funcionário</h3>
+        <h3>Editar Cliente</h3>
         <form id="edit-form">
             <input type="hidden" id="edit-id">
             <div class="form-group">
                 <label for="edit-funcionario">Nome:</label>
-                <input type="text" id="edit-funcionario" required>
+                <input type="text" id="edit-nome" required>
             </div>
             <div class="form-group">
-                <label for="edit-cpf">CPF:</label>
-                <input type="text" id="edit-cpf" required>
+                <label for="edit-cpf">CPF/CNPJ:</label>
+                <input type="text" id="edit-cpf_cnpj" required>
             </div>
             <div class="form-group">
-                <label for="edit-salario">Salário:</label>
-                <input type="text" id="edit-salario" required>
-            </div>
-            <div class="form-group">
-                <label for="edit-dataNascimento">Data de nascimento:</label>
-                <input type="text" id="edit-dataNascimento" required>
-            </div>
-            <div class="form-group">
-                <label for="edit-cep">CEP:</label>
+                <label for="edit-salario">CEP:</label>
                 <input type="text" id="edit-cep" required>
             </div>
             <div class="form-group">
-                <label for="edit-funcao">Função:</label>
-                <input type="text" id="edit-funcao" required>
+                <label for="edit-dataNascimento">Telefone:</label>
+                <input type="text" id="edit-telefone" required>
             </div>
             <div class="form-group">
-                <label for="edit-email">Email:</label>
-                <input type="email" id="edit-email" required>
+                <label for="edit-cep">Email:</label>
+                <input type="text" id="edit-email" required>
             </div>
             <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
