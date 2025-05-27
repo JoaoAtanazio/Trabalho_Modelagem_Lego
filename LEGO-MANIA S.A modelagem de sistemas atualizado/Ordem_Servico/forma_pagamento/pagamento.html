@@ -222,9 +222,10 @@
             <h2 class="pag-card">Pagamento PIX</h2>
             
             <div class="info-pagamento">
-                <p><strong>Ordem:</strong> <span id="numeroOrdemModal"></span></p>
-                <p><strong>Valor Total:</strong> <span id="valorTotalModal"></span></p>
-            </div>
+              <p><strong>Ordem:</strong> <span id="numeroOrdemModal"></span></p>
+              <p><strong>Valor Total:</strong> <span id="valorTotalModal"></span></p>
+          </div>
+          
             
             <form id="formCartao">    
 
@@ -246,7 +247,7 @@
                     </select>
                 </div>
                 
-                <div class="form-group-cartao">
+                <div class="form-group-cartao-valor">
                     <label class="form-group-cartao-txt" for="valorParcela">Valor da Parcela:</label>
                     <input class="form-group-cartao-parcelas" type="text" id="valorParcela" readonly>
                 </div>
@@ -254,8 +255,11 @@
                 <div class="form-group-cartao">
                     <label class="NomeCartao" for="nomeTitular">Nome do Titular:</label>
                     <input class="NomeCartao" type="text" id="nomeTitular" required>
-                </div>                 
-                
+                </div>
+
+                <div id="qrcodePix" class="qr-code"></div>              
+                <p class="chave-pix">Email: LegoMania@gmail.com
+                <br>Chave-aleatória: a1b2c3d4-e5f6-7890-abcd-ef1234567890</p>
                 <div class="form-buttons-Pix">
                     <button type="button" class="btn btn-voltar-modal">Voltar</button>
                     <button type="submit" class="btn btn-confirmar" id="pagpix">Confirmar Pagamento</button>
@@ -270,5 +274,6 @@
   <script src="../../tela_geral/main.js"></script>
   <script src="../../tela_geral/tela_geral.js"></script>
   <script src="../../Ordem_Servico/forma_pagamento/pagamento_forma.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </body>
 </html>
