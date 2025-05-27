@@ -168,13 +168,14 @@ body {
   cursor: pointer; 
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(1px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-30px);
 }
 
 .menu button:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
+  transform: translate(5px, -30px);
 }
 
 .menu button:hover::before {
@@ -183,7 +184,7 @@ body {
 
 /* Efeito de clique */
 .menu button:active {
-  transform: translateX(8px) scale(0.98);
+  transform: translateY(-28px) scale(0.98);
 }
 
 /* Ícone opcional (usando pseudo-elemento) */
@@ -197,7 +198,7 @@ body {
 
 .menu button:hover::after {
   opacity: 1;
-  transform: translateX(3px);
+  transform: translateX(0px);
 }
 
 .main-content {
@@ -303,13 +304,12 @@ body {
     padding-left: 15px;   
     overflow-y:auto;
     display: none;
-    margin-top: 5px;
     padding: 10px;
     background: linear-gradient(135deg, #303030 0%,  rgba(255,255,255,0.1) 100%);
     border: 1px solid #ccc;
     border-radius: 4px;
-    transform: translateX(20px);
-    transform: translateY(-20px);
+    transform: translateX(20px) !important;
+    transform: translateY(-50px) !important;
     cursor: none !important;
     /*Efeito de animação de abertura do submenu */
     animation: fadeIn 0.5s forwards; 
@@ -319,7 +319,7 @@ body {
 
 /*Efeito de animação de abertura do submenu */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-25px); }
+    from { opacity: 0; transform: translateY(-30px); }
     to   { opacity: 1; transform: translateY(-20px); }
 }
 
@@ -430,7 +430,7 @@ body {
 }
 
 .horario{
-    transform: translateY(-20px)
+    transform: translateY(-50px)
 }
 
 
