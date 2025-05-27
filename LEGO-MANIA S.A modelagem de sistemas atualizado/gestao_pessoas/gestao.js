@@ -1,66 +1,48 @@
-
 function sortTable(n) {
     const table = document.querySelector(".service-table");
     const tbody = table.querySelector("tbody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
     const editModal = document.getElementById('edit-modal');
     const editForm = document.getElementById('edit-form');
-    let direction = "asc"; // direção padrão
+    let direction = "asc";
     
-    // Verifica se já está ordenado e inverte a direção
     if (table.getAttribute("data-sort") === String(n)) {
         direction = table.getAttribute("data-direction") === "asc" ? "desc" : "asc";
     }
     
-    // Ordena as linhas
     rows.sort((a, b) => {
         const aVal = a.cells[n].textContent.trim();
         const bVal = b.cells[n].textContent.trim();
         
-        // Tratamento especial para diferentes tipos de dados
-        if (n === 2) { // Coluna de Salário
+        if (n === 2) {
             const numA = parseFloat(aVal.replace("R$ ", "").replace(".", "").replace(",", "."));
             const numB = parseFloat(bVal.replace("R$ ", "").replace(".", "").replace(",", "."));
             return direction === "asc" ? numA - numB : numB - numA;
-        } else if (n === 3) { // Coluna de Data
+        } else if (n === 3) {
             const dateA = new Date(aVal.split("/").reverse().join("-"));
             const dateB = new Date(bVal.split("/").reverse().join("-"));
             return direction === "asc" ? dateA - dateB : dateB - dateA;
-        } else { // Coluna de Texto
+        } else {
             return direction === "asc" 
                 ? aVal.localeCompare(bVal, 'pt-BR', { sensitivity: 'base' }) 
                 : bVal.localeCompare(aVal, 'pt-BR', { sensitivity: 'base' });
         }
     });
     
-    // Remove todas as linhas atuais
     while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
     }
     
-    // Adiciona as linhas ordenadas
     rows.forEach(row => tbody.appendChild(row));
     
-    // Atualiza o cabeçalho com a direção da ordenação
     table.querySelectorAll("th").forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
     table.querySelectorAll("th")[n].classList.add(`sorted-${direction}`);
     
-    // Armazena o estado da ordenação
     table.setAttribute("data-sort", n);
     table.setAttribute("data-direction", direction);
 }
 
-// Adiciona os eventos de clique aos cabeçalhos
 document.addEventListener("DOMContentLoaded", () => {
-    const headers = document.querySelectorAll(".service-table th");
-    headers.forEach((header, index) => {
-        if (index !== headers.length - 1) { // Não adiciona à coluna Ações
-            header.style.cursor = "pointer";
-            header.addEventListener("click", () => sortTable(index));
-        }
-    });
-});
-document.addEventListener('DOMContentLoaded', function() {
     // Dados iniciais de funcionários
     let funcionarios = [
         {
@@ -71,88 +53,10 @@ document.addEventListener('DOMContentLoaded', function() {
             dataNascimento: '04/12/1988',
             cep: '46288-123',
             funcao: 'Administrador',
-            email: 'inacio@gmail.com'
+            email: 'inacio@gmail.com',
+            visivel: true
         },
-        {
-            id: 2,
-            nome: 'João Silva',
-            cpf: '123.456.789-00',
-            salario: 'R$ 4.500,00',
-            dataNascimento: '15/03/1985',
-            cep: '01234-567',
-            funcao: 'Atendente',
-            email: 'joao.silva@empresa.com'
-        },
-        {
-            nome: 'Maria Oliveira',
-            cpf: '987.654.321-00',
-            salario: 'R$ 5.200,00',
-            dataNascimento: '22/07/1990',
-            cep: '04567-890',
-            funcao: 'Atendente',
-            email: 'maria.oliveira@empresa.com'
-        },
-         {
-        id: 4,
-        nome: 'Carlos Souza',
-        cpf: '456.789.123-00',
-        salario: 'R$ 3.800,00',
-        dataNascimento: '10/11/1992',
-        cep: '07890-123',
-        funcao: 'Técnico',
-        email: 'carlos.souza@empresa.com'
-    },
-    {
-        id: 5,
-        nome: 'Ana Costa',
-        cpf: '789.123.456-00',
-        salario: 'R$ 6.000,00',
-        dataNascimento: '05/05/1988',
-        cep: '03456-789',
-        funcao: 'Estoquista',
-        email: 'ana.costa@empresa.com'
-    },
-    {
-        id: 6,
-        nome: 'Pedro Rocha',
-        cpf: '321.654.987-00',
-        salario: 'R$ 4.200,00',
-        dataNascimento: '30/09/1995',
-        cep: '06789-012',
-        funcao: 'Estoquista',
-        email: 'pedro.rocha@empresa.com'
-    },
-    {
-        id: 7,
-        nome: 'Juliana Almeida',
-        cpf: '654.321.987-00',
-        salario: 'R$ 5.800,00',
-        dataNascimento: '12/12/1987',
-        cep: '08901-234',
-        funcao: 'Técnico',
-        email: 'juliana.almeida@empresa.com'
-    },
-    {
-        id: 8,
-        nome: 'Fernando Lima',
-        cpf: '147.258.369-00',
-        salario: 'R$ 3.500,00',
-        dataNascimento: '18/04/1993',
-        cep: '04512-378',
-        funcao: 'Atendente',
-        email: 'fernando.lima@empresa.com'
-    },
-    {
-        id: 9,
-        nome: 'Patrícia Santos',
-        cpf: '258.369.147-00',
-        salario: 'R$ 7.200,00',
-        dataNascimento: '27/10/1984',
-        cep: '07845-612',
-        funcao: 'Estoquista',
-        email: 'patricia.santos@empresa.com'
-    }
-];
+    ];
 
     // Elementos da DOM
     const tableBody = document.getElementById('os-table-body');
@@ -165,11 +69,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextPageBtn = document.getElementById('next-page');
     const pageNumber = document.getElementById('page-number');
     const btnVoltar = document.getElementById('btnvoltaros');
+    const mostrarOcultosBtn = document.getElementById('mostrar-ocultos');
 
     // Variáveis de estado
     let currentPage = 1;
     const rowsPerPage = 10;
     let filteredData = [...funcionarios];
+    let mostrarTodos = false;
 
     // Inicialização
     renderTable();
@@ -179,11 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
     novaOsBtn.addEventListener('click', openNewFuncionarioModal);
     prevPageBtn.addEventListener('click', goToPrevPage);
     nextPageBtn.addEventListener('click', goToNextPage);
-    searchInput.addEventListener('input', filterTable);
+    searchInput.addEventListener('input', debounce(filterTable, 300));
     editForm.addEventListener('submit', handleFormSubmit);
     btnVoltar.addEventListener('click', () => {
         window.location.href = "../tela_geral/tela_geral.html";
     });
+    mostrarOcultosBtn.addEventListener('click', toggleMostrarOcultos);
 
     // Fechar modal ao clicar fora
     window.addEventListener('click', function(event) {
@@ -192,13 +99,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Configura ordenação da tabela
+    const headers = document.querySelectorAll(".service-table th");
+    headers.forEach((header, index) => {
+        if (index !== headers.length - 1) {
+            header.style.cursor = "pointer";
+            header.addEventListener("click", () => sortTable(index));
+        }
+    });
+
     // Funções principais
     function renderTable() {
         tableBody.innerHTML = '';
         
+        const dadosParaExibir = mostrarTodos ? filteredData : filteredData.filter(func => func.visivel);
         const start = (currentPage - 1) * rowsPerPage;
         const end = start + rowsPerPage;
-        const paginatedData = filteredData.slice(start, end);
+        const paginatedData = dadosParaExibir.slice(start, end);
 
         if (paginatedData.length === 0) {
             const row = document.createElement('tr');
@@ -210,10 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
         paginatedData.forEach(func => {
             const row = document.createElement('tr');
             row.dataset.id = func.id;
+            row.dataset.visivel = func.visivel;
+            
             row.innerHTML = `
                 <td>${func.nome}</td>
                 <td>${func.cpf}</td>
-                <td>${func.salario}</td>
+                <td>R$ ${func.salario}</td>
                 <td>${func.dataNascimento}</td>
                 <td>${func.cep}</td>
                 <td>${func.funcao}</td>
@@ -222,17 +141,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="action-btn edit-btn" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="action-btn delete-btn" title="Excluir">
-                        <i class="fas fa-trash-alt"></i>
+                    <button class="action-btn ${func.visivel ? 'hide-btn' : 'show-btn'}" 
+                            title="${func.visivel ? 'Ocultar' : 'Mostrar'}">
+                        <i class="fas ${func.visivel ? 'fa-eye-slash' : 'fa-eye'}"></i>
                     </button>
                 </td>
             `;
+            
+            if (!func.visivel && mostrarTodos) {
+                row.classList.add('oculto');
+            }
+            
             tableBody.appendChild(row);
         });
 
-        // Atualizar eventos dos botões
         addEditEvents();
-        addDeleteEvents();
+        addToggleVisibilityEvents();
         updatePagination();
     }
 
@@ -252,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('edit-cep').value = func.cep;
                     document.getElementById('edit-funcao').value = func.funcao;
                     document.getElementById('edit-email').value = func.email;
+                    document.getElementById('edit-visivel').value = func.visivel ? 'true' : 'false';
                     
                     openModal();
                 }
@@ -259,16 +184,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function addDeleteEvents() {
-        document.querySelectorAll('.delete-btn').forEach(btn => {
+    function addToggleVisibilityEvents() {
+        document.querySelectorAll('.hide-btn, .show-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
                 const id = parseInt(row.dataset.id);
-                
-                if (confirm('Tem certeza que deseja excluir este funcionário?')) {
-                    funcionarios = funcionarios.filter(func => func.id !== id);
-                    filteredData = filteredData.filter(func => func.id !== id);
-                    renderTable();
+                const funcIndex = funcionarios.findIndex(func => func.id === id);
+    
+                if (funcIndex !== -1) {
+                    const novoStatus = !funcionarios[funcIndex].visivel;
+                    const acao = novoStatus ? 'mostrar' : 'ocultar';
+    
+                    const confirmacao = confirm(`Tem certeza que deseja ${acao} este funcionário?`);
+    
+                    if (confirmacao) {
+                        funcionarios[funcIndex].visivel = novoStatus;
+    
+                        const filteredIndex = filteredData.findIndex(func => func.id === id);
+                        if (filteredIndex !== -1) {
+                            filteredData[filteredIndex].visivel = novoStatus;
+                        }
+    
+                        renderTable();
+                    } else {
+                        console.log(`${acao.charAt(0).toUpperCase() + acao.slice(1)} cancelado.`);
+                    }
                 }
             });
         });
@@ -276,32 +216,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function filterTable() {
         const searchTerm = searchInput.value.toLowerCase();
-        const rows = tableBody.querySelectorAll('tr');
         
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td:not(.actions-cell)');
-            let shouldShow = false;
-            
-            cells.forEach(cell => {
-                if (cell.textContent.toLowerCase().includes(searchTerm)) {
-                    shouldShow = true;
-                }
+        if (searchTerm === '') {
+            filteredData = [...funcionarios];
+        } else {
+            filteredData = funcionarios.filter(func => {
+                return (
+                    func.nome.toLowerCase().includes(searchTerm) ||
+                    func.cpf.toLowerCase().includes(searchTerm) ||
+                    func.salario.toLowerCase().includes(searchTerm) ||
+                    func.dataNascimento.toLowerCase().includes(searchTerm) ||
+                    func.cep.toLowerCase().includes(searchTerm) ||
+                    func.funcao.toLowerCase().includes(searchTerm) ||
+                    func.email.toLowerCase().includes(searchTerm)
+                );
             });
-            
-            row.style.display = shouldShow ? '' : 'none';
-        });
+        }
         
-        // Atualiza a paginação sem re-renderizar
-        updatePagination();
+        currentPage = 1;
+        renderTable();
     }
-    searchInput.addEventListener('input', debounce(filterTable, 300));
-    function debounce(func, timeout = 300) {
-        let timer;
-        return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => { func.apply(this, args); }, timeout);
-        };
-    }
+
     function handleFormSubmit(e) {
         e.preventDefault();
         
@@ -309,7 +244,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const funcIndex = funcionarios.findIndex(func => func.id === id);
         
         if (funcIndex !== -1) {
-            // Atualizar funcionário existente
             funcionarios[funcIndex] = {
                 ...funcionarios[funcIndex],
                 nome: document.getElementById('edit-funcionario').value,
@@ -318,10 +252,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 dataNascimento: document.getElementById('edit-dataNascimento').value,
                 cep: document.getElementById('edit-cep').value,
                 funcao: document.getElementById('edit-funcao').value,
-                email: document.getElementById('edit-email').value
+                email: document.getElementById('edit-email').value,
+                visivel: document.getElementById('edit-visivel').value === 'true'
             };
         } else {
-            // Criar novo funcionário
             const newId = funcionarios.length > 0 ? Math.max(...funcionarios.map(func => func.id)) + 1 : 1;
             funcionarios.push({
                 id: newId,
@@ -331,7 +265,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 dataNascimento: document.getElementById('edit-dataNascimento').value,
                 cep: document.getElementById('edit-cep').value,
                 funcao: document.getElementById('edit-funcao').value,
-                email: document.getElementById('edit-email').value
+                email: document.getElementById('edit-email').value,
+                visivel: true
             });
         }
         
@@ -340,7 +275,13 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal();
     }
 
-    // Funções auxiliares
+    function toggleMostrarOcultos() {
+        mostrarTodos = !mostrarTodos;
+        mostrarOcultosBtn.textContent = mostrarTodos ? 'Mostrar Apenas Visíveis' : 'Mostrar Ocultos';
+        currentPage = 1;
+        renderTable();
+    }
+
     function openModal() {
         editModal.style.display = 'block';
     }
@@ -351,9 +292,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function openNewFuncionarioModal() {
-        // Limpa o formulário e define o ID como vazio para novo cadastro
         editForm.reset();
         document.getElementById('edit-id').value = '';
+        document.getElementById('edit-visivel').value = 'true';
         openModal();
     }
 
@@ -365,7 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function goToNextPage() {
-        const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+        const dadosParaExibir = mostrarTodos ? filteredData : filteredData.filter(func => func.visivel);
+        const totalPages = Math.ceil(dadosParaExibir.length / rowsPerPage);
         if (currentPage < totalPages) {
             currentPage++;
             renderTable();
@@ -373,61 +315,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updatePagination() {
-        const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+        const dadosParaExibir = mostrarTodos ? filteredData : filteredData.filter(func => func.visivel);
+        const totalPages = Math.ceil(dadosParaExibir.length / rowsPerPage);
         pageNumber.textContent = currentPage;
         
         prevPageBtn.disabled = currentPage === 1;
         nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
     }
-});
-// gestao_func.js - Script completo e testado para filtro de pesquisa
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Selecionar elementos
-    const searchInput = document.getElementById('search-input');
-    const tableBody = document.getElementById('os-table-body');
-    
-    // Verificar se os elementos existem
-    if (!searchInput || !tableBody) {
-        console.error('Elementos não encontrados! Verifique os IDs no HTML.');
-        return;
+    function debounce(func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
     }
-
-    // Função principal de filtragem
-    const filterTable = () => {
-        const searchTerm = searchInput.value.toLowerCase();
-        const rows = tableBody.querySelectorAll('tr');
-        
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td:not(.actions-cell)'); // Ignora coluna de ações
-            let shouldShow = false;
-            
-            // Verifica cada célula
-            cells.forEach(cell => {
-                if (cell.textContent.toLowerCase().includes(searchTerm)) {
-                    shouldShow = true;
-                }
-            });
-            
-            // Aplica visibilidade
-            row.style.display = shouldShow ? '' : 'none';
-        });
-    };
-
-    // Adicionar eventos
-    searchInput.addEventListener('input', () => {
-        // Debounce para melhor performance
-        clearTimeout(window.searchTimeout);
-        window.searchTimeout = setTimeout(filterTable, 300);
-    });
-
-    // Opcional: Limpar pesquisa ao clicar no ícone
-    document.querySelector('.search-box i')?.addEventListener('click', () => {
-        if (searchInput.value) {
-            searchInput.value = '';
-            filterTable();
-            searchInput.focus();
-        }
-    });
-
 });

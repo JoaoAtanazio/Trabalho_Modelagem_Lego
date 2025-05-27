@@ -71,70 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
             telefone: "(11) 98765-4321",
             email: "gustavo_tobler@email.com",
     },
-    {
-            id: 2,
-            nome: "joão oliveira",
-            cpf: "987.654.321-00",
-            cep: "20020-010",
-            telefone: "(21) 99876-5432",
-            email: "joao.oliveira@email.com",
-    },
-    {
-            id: 3,
-            nome: "tech solutions ltda",
-            cnpj: "12.345.678/0001-99",
-            cep: "30130-010",
-            telefone: "(31) 3456-7890",
-            email: "contato@techsolutions.com",
-    },
-    {
-        id: 4,
-        nome: "ana costa",
-        cpf: "456.789.123-00",
-        cep: "40010-020",
-        telefone: "(71) 91234-5678",
-        email: "ana.costa@email.com",
-    },
-    {
-        id: 5,
-        nome: "carlos souza",
-        cpf: "789.123.456-00",
-        cep: "50050-100",
-        telefone: "(81) 98765-1234",
-        email: "carlos.souza@email.com",
-    },
-    {
-        id: 6,
-        nome: "vida natural me",
-        cnpj: "98.765.432/0001-11",
-        cep: "60060-070",
-        telefone: "(85) 3344-5566",
-        email: "vendas@vidanatural.com",
-    },
-    {
-        id: 7,
-        nome: "fernanda lima",
-        cpf: "321.654.987-00",
-        cep: "70070-200",
-        telefone: "(61) 99887-6655",
-        email: "fernanda.lima@email.com",
-    },
-    {
-        id: 8,
-        nome: "global importações s.a.",
-        cnpj: "23.456.789/0001-22",
-        cep: "80010-900",
-        telefone: "(41) 3765-4321",
-        email: "financeiro@globalimport.com",
-    },
-    {
-        id: 9,
-        nome: "maria silva",
-        cpf: "123.456.789-00",
-        cep: "01001-000",
-        telefone: "(11) 98765-4321",
-        email: "maria.silva@email.com",
-    }
+  
 ];
 
     // Elementos da DOM
@@ -402,3 +339,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Aplica debounce ao input para melhor performance
     searchInput.addEventListener('input', debounce(filterClients));
 });
+
+
+
