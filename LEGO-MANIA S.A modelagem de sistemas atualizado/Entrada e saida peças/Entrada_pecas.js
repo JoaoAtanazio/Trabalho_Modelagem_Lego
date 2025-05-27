@@ -1,8 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
   // Configuração dos datepickers
-  flatpickr(".data", {
+  const datepickers = flatpickr(".data", {
     dateFormat: "d/m/Y",
-    locale: "pt"
+    locale: "pt",
+    onChange: function(selectedDates, dateStr, instance) {
+      // Quando uma data é alterada, aplicar o filtro
+      filtrarPorData();
+    }
   });
 
   // Configurar datepicker do modal
@@ -14,9 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Carregar peças ao iniciar
   carregarPecas();
 
-  // Pesquisa
+  // Pesquisa por texto
   document.getElementById('search-input').addEventListener('input', function() {
     filtrarTabela(this.value.toLowerCase());
+  });
+
+  // Botão Voltar
+  document.getElementById('btnvoltaros').addEventListener('click', function() {
+    window.location.href = '../tela_geral/tela_geral.html';
   });
 });
 
@@ -49,6 +58,46 @@ function carregarPecas() {
   });
   
   adicionarEventListeners();
+}
+
+function filtrarPorData() {
+  const dataInicioInput = document.querySelector('.date-field:first-child input');
+  const dataFimInput = document.querySelector('.date-field:last-child input');
+  
+  const dataInicioStr = dataInicioInput.value;
+  const dataFimStr = dataFimInput.value;
+  
+  // Se ambos os campos estiverem preenchidos, aplicar o filtro
+  if (dataInicioStr && dataFimStr) {
+    const dataInicio = parseDate(dataInicioStr);
+    const dataFim = parseDate(dataFimStr);
+    
+    const linhas = document.querySelectorAll('#os-table-body tr');
+    
+    linhas.forEach(linha => {
+      const dataPecaStr = linha.cells[3].textContent; // A data está na 4ª coluna (índice 3)
+      const dataPeca = parseDate(dataPecaStr);
+      
+      // Mostrar apenas se a data estiver dentro do intervalo
+      if (dataPeca >= dataInicio && dataPeca <= dataFim) {
+        linha.style.display = '';
+      } else {
+        linha.style.display = 'none';
+      }
+    });
+  } else {
+    // Se algum campo estiver vazio, mostrar todas as linhas
+    const linhas = document.querySelectorAll('#os-table-body tr');
+    linhas.forEach(linha => {
+      linha.style.display = '';
+    });
+  }
+}
+
+// Função para converter string de data (dd/mm/aaaa) para objeto Date
+function parseDate(dateStr) {
+  const [day, month, year] = dateStr.split('/');
+  return new Date(year, month - 1, day);
 }
 
 function adicionarEventListeners() {
@@ -135,7 +184,7 @@ function salvarEdicao() {
     carregarPecas();
   }
 
-  windowalert("Você alterou as informações!")
+  alert("Você alterou as informações!");
 }
 
 function excluirPeca(id) {
