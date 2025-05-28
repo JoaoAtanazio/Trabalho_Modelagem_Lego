@@ -192,6 +192,7 @@
   background-color: var(--white);
   color: var(--primary-color);
   border: 1px solid var(--medium-gray);
+  border-radius:5px;
 }
 
 .voltarPagina:hover {
