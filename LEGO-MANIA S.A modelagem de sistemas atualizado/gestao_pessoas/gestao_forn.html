@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gestão de clientes - LEGO MANIA</title>
+  <title>Gestão de fornecedor - LEGO MANIA</title>
   <link rel="stylesheet" href="../tela_geral/style_geral.css" />
   <link rel="stylesheet" href="gestao_func.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -62,6 +62,7 @@
           <div class="submenu">
             <a id="gestao_clnt" href="../gestao_pessoas/gestao_clnt.html"><i class="fa-solid fa-circle-user"></i> Clientes</a>
             <a id="gestao_func" href="../gestao_pessoas/gestao_func.html"><i class="fa-solid fa-address-card"></i> Funcionários</a>
+            <a id="gestao_forn" href="../gestao_pessoas/gestao_forn.html"><i class="fa-solid fa-address-card"></i> Fornecedor</a>
           </div>
         </div>
 
@@ -73,21 +74,21 @@
      <!--____________________________________-->
      <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
      <!--____________________________________-->
-     
-      <!-- Botão de sair e do perfil-->
-      <main class="main-content">
-        <header class="header">
-            <div class="logout">
-                <button class="btnperfil" id="btnperfil"></button>
-                <button>Sair</button>
-            </div>
-        </header>
-        
+
+  <!-- Botões de sair e do perfil -->
+  <main class="main-content">
+    <header class="header">
+      <div class="logout">
+        <button class="btnperfil" id="btnperfil"></button>
+        <button onclick="window.location.href='../login/login.html'" class="btnsair">Sair</button>
+      </div>
+    </header>
+  
        <!--TUDO ACIMA É PADRÃO EM TODOS OS HTML-->
 
             <section class="section_conteudo">
                 <div class="section-header">
-                    <h2><i class="fas fa-tasks"></i> Gestão de Clientes</h2>
+                    <h2><i class="fas fa-tasks"></i> Gestão de fornecedor</h2>
                     <div class="actions">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
@@ -100,21 +101,23 @@
                     <table class="service-table">
                         <thead>
                             <tr>
-                                <th>Cliente</th>
-                                <th>CPF/CPNJ</th>
-                                <th>CEP</th>
+                                <th>Fornecedor</th>
+                                <th>CPF/CNPJ</th>
                                 <th>Telefone</th>
+                                <th>Ramo de atividade</th>
+                                <th>CEP</th>
                                 <th>Email</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="os-table-body">
                             <tr data-id="1">
-                                <td>Gustavo Tobler</td>
-                                <td>123.456.789-00</td>
-                                <td>01001-000</td>
-                                <td>(11) 98765-4321</td>
-                                <td>gustavo_tobler@email.com</td>
+                                <td>Joseph</td>
+                                <td>727.338.970.13</td>
+                                <td>(48)99462-3412</td>
+                                <td>Ramo de carcaça</td>
+                                <td>46288-123</td>
+                                <td>JosephJ&G@gmail.com</td>
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
                                         <i class="fas fa-edit"></i>
@@ -129,14 +132,6 @@
                         </tbody>
                     </table>
                 </div>
-                 <div class="filter-controls">
-                         <label>Mostrar:</label>
-                       <select id="visibility-filter">
-                             <option value="all">Todos</option>
-                             <option value="visible">Apenas visíveis</option>
-                             <option value="hidden">Apenas ocultos</option>
-                       </select>
-                     </div>
        
                 <div class="table-footer">
                     <div class="pagination">
@@ -145,7 +140,16 @@
                         <button class="pagination-btn" id="next-page"><i class="fas fa-chevron-right"></i></button>
                     </div>
 
-                    <!-- Botão Voltar -->
+                    <div class="filter-controls">
+                        <label>Mostrar:</label>
+                      <select id="visibility-filter">
+                            <option value="all">Todos</option>
+                            <option value="visible">Apenas visíveis</option>
+                            <option value="hidden">Apenas ocultos</option>
+                      </select>
+                    </div>
+
+                    <!-- Botão voltar -->
                     <button class="btn btn-secondary" id="btnvoltaros">
                         <i class="fas fa-arrow-left"></i> Voltar
                     </button>
@@ -156,32 +160,40 @@
     </div>
 
     <!-- Modal de Edição -->
-    <!-- Modal de Edição -->
-<div id="edit-modal" class="modal">
+     
+<div id="edit-modal" class="modal"> 
     <div class="modal-content">
         <span class="close-btn">&times;</span>
-        <h3>Editar Cliente</h3>
+        <h3>Editar Funcionário</h3>
         <form id="edit-form">
             <input type="hidden" id="edit-id">
             <div class="form-group">
                 <label for="edit-funcionario">Nome:</label>
-                <input type="text" id="edit-nome" required>
+                <input type="text" id="edit-funcionario" required>
             </div>
             <div class="form-group">
-                <label for="edit-cpf">CPF/CNPJ:</label>
-                <input type="text" id="edit-cpf_cnpj" required>
+                <label for="edit-cpf">CPF:</label>
+                <input type="text" id="edit-cpf" required>
             </div>
             <div class="form-group">
-                <label for="edit-salario">CEP:</label>
+                <label for="edit-salario">Salário:</label>
+                <input type="text" id="edit-salario" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-dataNascimento">Data de nascimento:</label>
+                <input type="text" id="edit-dataNascimento" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-cep">CEP:</label>
                 <input type="text" id="edit-cep" required>
             </div>
             <div class="form-group">
-                <label for="edit-dataNascimento">Telefone:</label>
-                <input type="text" id="edit-telefone" required>
+                <label for="edit-funcao">Função:</label>
+                <input type="text" id="edit-funcao" required>
             </div>
             <div class="form-group">
-                <label for="edit-cep">Email:</label>
-                <input type="text" id="edit-email" required>
+                <label for="edit-email">Email:</label>
+                <input type="email" id="edit-email" required>
             </div>
             <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
@@ -189,6 +201,5 @@
 </div>
     <script src="../tela_geral/tela_geral.js"></script>
     <script src="../tela_geral/main.js"></script>
-    <script src="../gestao_pessoas/gestao_clnt.js"></script>
 </body>
 </html>
