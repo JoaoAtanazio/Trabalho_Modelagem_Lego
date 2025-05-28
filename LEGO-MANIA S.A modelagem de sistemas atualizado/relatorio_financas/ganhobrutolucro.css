@@ -1,0 +1,18 @@
+/* Estilização geral da página */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #F0EBE3;
+  padding: 0px;
+}
+
+/* Estilo do canvas do gráfico */
+canvas {
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.graficolinhas{
+  margin-left:230px;
+  margin-top:60px;
+  border-style: 5px;
+}
