@@ -22,11 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('search-input').addEventListener('input', function() {
     filtrarTabela(this.value.toLowerCase());
   });
-
-  // Botão Voltar
-  document.getElementById('btnvoltaros').addEventListener('click', function() {
-    window.location.href = '../tela_geral/tela_geral.html';
-  });
 });
 
 function carregarPecas() {
