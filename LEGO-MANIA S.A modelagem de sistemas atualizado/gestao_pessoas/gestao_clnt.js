@@ -1,9 +1,11 @@
+// gestao_clnt.js
+
 document.addEventListener('DOMContentLoaded', function() {
     // Variáveis globais
     let currentPage = 1;
     const rowsPerPage = 10;
-    let allEmployees = [];
-    let filteredEmployees = [];
+    let allClients = [];
+    let filteredClients = [];
     
     // Elementos do DOM
     const tableBody = document.getElementById('os-table-body');
@@ -33,44 +35,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function loadSampleData() {
-        // Dados de exemplo para funcionários
-        allEmployees = [
+        // Dados de exemplo
+        allClients = [
             {
                 id: 1,
-                nome: 'Inácio',
-                cpf: '143.140.073-14',
-                salario: '10000,00',
-                dataNascimento: '04/12/1988',
-                cep: '46288-123',
-                funcao: 'Administrador',
-                email: 'inacio@gmail.com',
+                nome: 'Gustavo Tobler',
+                cpf_cnpj: '123.456.789-00',
+                cep: '01001-000',
+                telefone: '(11) 98765-4321',
+                email: 'gustavo_tobler@email.com',
                 visible: true
             },
             {
                 id: 2,
                 nome: 'Maria Silva',
-                cpf: '987.654.321-00',
-                salario: '3500,00',
-                dataNascimento: '15/05/1990',
+                cpf_cnpj: '987.654.321-00',
                 cep: '04538-132',
-                funcao: 'Técnica',
+                telefone: '(11) 91234-5678',
                 email: 'maria.silva@email.com',
                 visible: true
             },
             {
                 id: 3,
                 nome: 'João Santos',
-                cpf: '456.789.123-00',
-                salario: '4200,00',
-                dataNascimento: '22/09/1985',
+                cpf_cnpj: '456.789.123-00',
                 cep: '01310-100',
-                funcao: 'Atendente',
+                telefone: '(11) 99876-5432',
                 email: 'joao.santos@email.com',
                 visible: true
             }
         ];
         
-        filteredEmployees = [...allEmployees];
+        filteredClients = [...allClients];
     }
     
     function setupEventListeners() {
@@ -95,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         nextPageBtn.addEventListener('click', function() {
-            const totalPages = Math.ceil(filteredEmployees.length / rowsPerPage);
+            const totalPages = Math.ceil(filteredClients.length / rowsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
                 renderTable();
@@ -115,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         editForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            saveEditedEmployee();
+            saveEditedClient();
         });
         
         // Botão voltar
@@ -128,21 +124,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplica filtro de pesquisa
         const searchTerm = searchInput.value.toLowerCase();
         
-        filteredEmployees = allEmployees.filter(employee => {
+        filteredClients = allClients.filter(client => {
             const matchesSearch = 
-                employee.nome.toLowerCase().includes(searchTerm) ||
-                employee.cpf.toLowerCase().includes(searchTerm) ||
-                employee.salario.toLowerCase().includes(searchTerm) ||
-                employee.dataNascimento.toLowerCase().includes(searchTerm) ||
-                employee.cep.toLowerCase().includes(searchTerm) ||
-                employee.funcao.toLowerCase().includes(searchTerm) ||
-                employee.email.toLowerCase().includes(searchTerm);
+                client.nome.toLowerCase().includes(searchTerm) ||
+                client.cpf_cnpj.toLowerCase().includes(searchTerm) ||
+                client.cep.toLowerCase().includes(searchTerm) ||
+                client.telefone.toLowerCase().includes(searchTerm) ||
+                client.email.toLowerCase().includes(searchTerm);
             
             // Aplica filtro de visibilidade
             const matchesVisibility = 
                 visibilityFilter.value === 'all' ||
-                (visibilityFilter.value === 'visible' && employee.visible) ||
-                (visibilityFilter.value === 'hidden' && !employee.visible);
+                (visibilityFilter.value === 'visible' && client.visible) ||
+                (visibilityFilter.value === 'hidden' && !client.visible);
             
             return matchesSearch && matchesVisibility;
         });
@@ -157,31 +151,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // Calcula paginação
         const startIndex = (currentPage - 1) * rowsPerPage;
         const endIndex = startIndex + rowsPerPage;
-        const employeesToShow = filteredEmployees.slice(startIndex, endIndex);
+        const clientsToShow = filteredClients.slice(startIndex, endIndex);
         
         // Preenche a tabela
-        employeesToShow.forEach(employee => {
+        clientsToShow.forEach(client => {
             const row = document.createElement('tr');
-            row.dataset.id = employee.id;
+            row.dataset.id = client.id;
             
-            if (!employee.visible) {
+            if (!client.visible) {
                 row.classList.add('hidden-row');
             }
             
             row.innerHTML = `
-                <td>${employee.nome}</td>
-                <td>${employee.cpf}</td>
-                <td>${employee.salario}</td>
-                <td>${employee.dataNascimento}</td>
-                <td>${employee.cep}</td>
-                <td>${employee.funcao}</td>
-                <td>${employee.email}</td>
+                <td>${client.nome}</td>
+                <td>${client.cpf_cnpj}</td>
+                <td>${client.cep}</td>
+                <td>${client.telefone}</td>
+                <td>${client.email}</td>
                 <td class="actions-cell">
                     <button class="action-btn edit-btn" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="action-btn delete-btn" title="${employee.visible ? 'Ocultar' : 'Mostrar'}">
-                        <i class="fas ${employee.visible ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                    <button class="action-btn delete-btn" title="${client.visible ? 'Ocultar' : 'Mostrar'}">
+                        <i class="fas ${client.visible ? 'fa-eye-slash' : 'fa-eye'}"></i>
                     </button>
                 </td>
             `;
@@ -201,11 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const employeeId = parseInt(row.dataset.id);
-                const employee = allEmployees.find(e => e.id === employeeId);
+                const clientId = parseInt(row.dataset.id);
+                const client = allClients.find(c => c.id === clientId);
                 
-                if (employee) {
-                    openEditModal(employee);
+                if (client) {
+                    openEditModal(client);
                 }
             });
         });
@@ -214,38 +206,34 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const employeeId = parseInt(row.dataset.id);
-                toggleEmployeeVisibility(employeeId);
+                const clientId = parseInt(row.dataset.id);
+                toggleClientVisibility(clientId);
             });
         });
     }
     
-    function openEditModal(employee) {
-        document.getElementById('edit-id').value = employee.id;
-        document.getElementById('edit-funcionario').value = employee.nome;
-        document.getElementById('edit-cpf').value = employee.cpf;
-        document.getElementById('edit-salario').value = employee.salario;
-        document.getElementById('edit-dataNascimento').value = employee.dataNascimento;
-        document.getElementById('edit-cep').value = employee.cep;
-        document.getElementById('edit-funcao').value = employee.funcao;
-        document.getElementById('edit-email').value = employee.email;
+    function openEditModal(client) {
+        document.getElementById('edit-id').value = client.id;
+        document.getElementById('edit-nome').value = client.nome;
+        document.getElementById('edit-cpf_cnpj').value = client.cpf_cnpj;
+        document.getElementById('edit-cep').value = client.cep;
+        document.getElementById('edit-telefone').value = client.telefone;
+        document.getElementById('edit-email').value = client.email;
         
         editModal.style.display = 'block';
     }
     
-    function saveEditedEmployee() {
-        const employeeId = parseInt(document.getElementById('edit-id').value);
-        const employeeIndex = allEmployees.findIndex(e => e.id === employeeId);
+    function saveEditedClient() {
+        const clientId = parseInt(document.getElementById('edit-id').value);
+        const clientIndex = allClients.findIndex(c => c.id === clientId);
         
-        if (employeeIndex !== -1) {
-            allEmployees[employeeIndex] = {
-                ...allEmployees[employeeIndex],
-                nome: document.getElementById('edit-funcionario').value,
-                cpf: document.getElementById('edit-cpf').value,
-                salario: document.getElementById('edit-salario').value,
-                dataNascimento: document.getElementById('edit-dataNascimento').value,
+        if (clientIndex !== -1) {
+            allClients[clientIndex] = {
+                ...allClients[clientIndex],
+                nome: document.getElementById('edit-nome').value,
+                cpf_cnpj: document.getElementById('edit-cpf_cnpj').value,
                 cep: document.getElementById('edit-cep').value,
-                funcao: document.getElementById('edit-funcao').value,
+                telefone: document.getElementById('edit-telefone').value,
                 email: document.getElementById('edit-email').value
             };
             
@@ -253,24 +241,24 @@ document.addEventListener('DOMContentLoaded', function() {
             filterAndRenderTable();
             
             // Aqui você pode adicionar uma chamada para salvar no banco de dados
-            alert('Funcionário atualizado com sucesso!');
+            alert('Cliente atualizado com sucesso!');
         }
     }
     
-    function toggleEmployeeVisibility(employeeId) {
-        const employeeIndex = allEmployees.findIndex(e => e.id === employeeId);
+    function toggleClientVisibility(clientId) {
+        const clientIndex = allClients.findIndex(c => c.id === clientId);
         
-        if (employeeIndex !== -1) {
-            allEmployees[employeeIndex].visible = !allEmployees[employeeIndex].visible;
+        if (clientIndex !== -1) {
+            allClients[clientIndex].visible = !allClients[clientIndex].visible;
             filterAndRenderTable();
             
             // Aqui você pode adicionar uma chamada para atualizar no banco de dados
-            alert(`Funcionário ${allEmployees[employeeIndex].visible ? 'mostrado' : 'ocultado'} com sucesso!`);
+            alert(`Cliente ${allClients[clientIndex].visible ? 'mostrado' : 'ocultado'} com sucesso!`);
         }
     }
     
     function updatePagination() {
-        const totalPages = Math.ceil(filteredEmployees.length / rowsPerPage);
+        const totalPages = Math.ceil(filteredClients.length / rowsPerPage);
         pageNumberSpan.textContent = currentPage;
         
         prevPageBtn.disabled = currentPage === 1;

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Entrada de peças - LEGO MANIA</title>
+  <title>Peças no estoque - LEGO MANIA</title>
   <link rel="stylesheet" href="../tela_geral/style_geral.css" />
   <link rel="stylesheet" href="entrada_peca.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -47,9 +47,9 @@
           
           <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-clipboard"></i> Relatório de finanças</button>
           <div class="submenu">
-            <a id="ganhobrutolucro" href="../relatorio_financas/ganhobrutolucro.html"><i class="fa-solid fa-database"></i> Ganho <br> bruto/lucro</a>
+            <a href="#"><i class="fa-solid fa-database"></i> Ganho <br> bruto/lucro</a>
             <a href="#"><i class="fa-solid fa-coins"></i> Despesas</a>
-            <a id="servicos_realizados" href="../servicos_realizadoss/servicos_realizados.html">Serviços <br>realizados</a>
+            <a href><i class="fa-solid fa-file-invoice"></i> Serviços <br>realizados</a>
           </div>
 
           <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-truck"></i> Relatório do estoque</button>
@@ -88,7 +88,7 @@
 
             <section class="section_conteudo">
                 <div class="section-header">
-                    <h2><i class="fa-solid fa-truck"></i> Entrada de peças</h2>
+                    <h2><i class="fa-solid fa-truck"></i> Peças no estoque</h2>
                     <div class="actions">
                         <div class="search-box">
                             <i class="fas fa-search"></i>
@@ -104,7 +104,7 @@
                                 <th>Nome da peça</th>
                                 <th>Código</th>
                                 <th>Tipo de peça</th>
-                                <th>Data de recebimento</th>
+                                <th>Quantidade</th>
                                 <th>Ações</th> 
                             </tr>
                         </thead>
@@ -119,7 +119,6 @@
                                     </button>
                                 </td>
                             </tr>
-                            
                         </tbody>
                     </table>
                 </div>
@@ -172,7 +171,7 @@
         <input type="text" id="edit-salario" required>
       </div>
       <div class="form-group">
-        <label for="edit-dataRecebimento">Data de recebimento:</label>
+        <label for="edit-dataRecebimento">Quantidade:</label>
         <input type="text" id="edit-dataRecebimento" required>
       </div>
       <button type="submit" class="btn btn-primary">Salvar</button>

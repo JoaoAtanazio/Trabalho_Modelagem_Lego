@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function marcarErro(input, condicaoInvalida, mensagem) {
     const errorMessage = input.nextElementSibling;  // Assume que a mensagem de erro está após o campo
     if (condicaoInvalida) {
-      input.classList.add('erro');
+        input.classList.add('erro');
       if (errorMessage) errorMessage.textContent = mensagem;
       return true;
     } else {
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let valor = this.value.replace(/\D/g, '');
     valor = (parseFloat(valor) / 100).toFixed(2);
     const valorFormatado = new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
+        style: 'currency',
       currency: 'BRL'
     }).format(valor);
     this.value = valorFormatado;
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
   cpfCnpjInput.addEventListener('input', function () {
     let v = this.value.replace(/\D/g, '');
     if (v.length <= 11) {
-      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+         v = v.replace(/(\d{3})(\d)/, '$1.$2');
       v = v.replace(/(\d{3})(\d)/, '$1.$2');
       v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     } else {
@@ -82,6 +82,8 @@ document.addEventListener("DOMContentLoaded", function () {
     this.classList.remove('erro');
   });
 
+  
+       
   // Função para selecionar a função e atualizar o input
   function selecionarFuncao(funcao) {
     funcaoInput.value = funcao;  // Atualiza o campo do input
@@ -116,10 +118,46 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       dropdown.classList.remove('erro');
     }
-
-    if (!erro) {
+  if (!erro) {
       alert('Funcionário cadastrado com sucesso!');
       form.submit();
     }
   });
 });
+
+const formFuncionario = document.querySelector('#formFuncionario');
+        const formCliente = document.querySelector('#formCliente');
+        
+        // Função genérica de validação (adicione os campos de cliente aqui)
+        function validarFormulario(form) {
+          // fazer validações aqui com base no tipo de formulário
+          alert('Formulário válido!');
+        
+          // Se estiver tudo certo:
+          return true;
+        }
+        
+        // Exemplo para cliente:
+        if (formCliente) {
+          formCliente.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const valido = validarFormulario(formCliente);
+            if (valido) {
+              alert('Cliente cadastrado com sucesso!');
+              // Se quiser, envie: formCliente.submit();
+            }
+          });
+        }
+      
+   form.addEventListener('submit', function (e) {
+    let erro = false;
+  
+    // todas as validações...
+  
+    if (erro) {
+      e.preventDefault(); // só bloqueia o envio se tiver erro
+    } else {
+      alert('Funcionário cadastrado com sucesso!');
+      // envio segue normalmente
+    }
+  });

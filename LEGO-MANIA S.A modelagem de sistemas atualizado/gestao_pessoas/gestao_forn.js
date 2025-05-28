@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variáveis globais
     let currentPage = 1;
     const rowsPerPage = 10;
-    let allEmployees = [];
-    let filteredEmployees = [];
+    let allSuppliers = [];
+    let filteredSuppliers = [];
     
     // Elementos do DOM
     const tableBody = document.getElementById('os-table-body');
@@ -33,44 +33,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function loadSampleData() {
-        // Dados de exemplo para funcionários
-        allEmployees = [
+        // Dados de exemplo para fornecedores
+        allSuppliers = [
             {
                 id: 1,
-                nome: 'Inácio',
-                cpf: '143.140.073-14',
-                salario: '10000,00',
-                dataNascimento: '04/12/1988',
+                nome: 'Joseph',
+                cpf_cnpj: '727.338.970.13',
+                telefone: '(48) 99462-3412',
+                ramo: 'Ramo de carcaça',
                 cep: '46288-123',
-                funcao: 'Administrador',
-                email: 'inacio@gmail.com',
+                email: 'JosephJ&G@gmail.com',
                 visible: true
             },
             {
                 id: 2,
-                nome: 'Maria Silva',
-                cpf: '987.654.321-00',
-                salario: '3500,00',
-                dataNascimento: '15/05/1990',
+                nome: 'Fornecedor ABC',
+                cpf_cnpj: '12.345.678/0001-90',
+                telefone: '(11) 98765-4321',
+                ramo: 'Peças eletrônicas',
                 cep: '04538-132',
-                funcao: 'Técnica',
-                email: 'maria.silva@email.com',
+                email: 'contato@abc.com.br',
                 visible: true
             },
             {
                 id: 3,
-                nome: 'João Santos',
-                cpf: '456.789.123-00',
-                salario: '4200,00',
-                dataNascimento: '22/09/1985',
+                nome: 'Distribuidora XYZ',
+                cpf_cnpj: '98.765.432/0001-21',
+                telefone: '(11) 91234-5678',
+                ramo: 'Componentes plásticos',
                 cep: '01310-100',
-                funcao: 'Atendente',
-                email: 'joao.santos@email.com',
+                email: 'vendas@xyz.com.br',
                 visible: true
             }
         ];
         
-        filteredEmployees = [...allEmployees];
+        filteredSuppliers = [...allSuppliers];
     }
     
     function setupEventListeners() {
@@ -95,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         nextPageBtn.addEventListener('click', function() {
-            const totalPages = Math.ceil(filteredEmployees.length / rowsPerPage);
+            const totalPages = Math.ceil(filteredSuppliers.length / rowsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
                 renderTable();
@@ -115,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         editForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            saveEditedEmployee();
+            saveEditedSupplier();
         });
         
         // Botão voltar
@@ -128,21 +125,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplica filtro de pesquisa
         const searchTerm = searchInput.value.toLowerCase();
         
-        filteredEmployees = allEmployees.filter(employee => {
+        filteredSuppliers = allSuppliers.filter(supplier => {
             const matchesSearch = 
-                employee.nome.toLowerCase().includes(searchTerm) ||
-                employee.cpf.toLowerCase().includes(searchTerm) ||
-                employee.salario.toLowerCase().includes(searchTerm) ||
-                employee.dataNascimento.toLowerCase().includes(searchTerm) ||
-                employee.cep.toLowerCase().includes(searchTerm) ||
-                employee.funcao.toLowerCase().includes(searchTerm) ||
-                employee.email.toLowerCase().includes(searchTerm);
+                supplier.nome.toLowerCase().includes(searchTerm) ||
+                supplier.cpf_cnpj.toLowerCase().includes(searchTerm) ||
+                supplier.telefone.toLowerCase().includes(searchTerm) ||
+                supplier.ramo.toLowerCase().includes(searchTerm) ||
+                supplier.cep.toLowerCase().includes(searchTerm) ||
+                supplier.email.toLowerCase().includes(searchTerm);
             
             // Aplica filtro de visibilidade
             const matchesVisibility = 
                 visibilityFilter.value === 'all' ||
-                (visibilityFilter.value === 'visible' && employee.visible) ||
-                (visibilityFilter.value === 'hidden' && !employee.visible);
+                (visibilityFilter.value === 'visible' && supplier.visible) ||
+                (visibilityFilter.value === 'hidden' && !supplier.visible);
             
             return matchesSearch && matchesVisibility;
         });
@@ -157,31 +153,30 @@ document.addEventListener('DOMContentLoaded', function() {
         // Calcula paginação
         const startIndex = (currentPage - 1) * rowsPerPage;
         const endIndex = startIndex + rowsPerPage;
-        const employeesToShow = filteredEmployees.slice(startIndex, endIndex);
+        const suppliersToShow = filteredSuppliers.slice(startIndex, endIndex);
         
         // Preenche a tabela
-        employeesToShow.forEach(employee => {
+        suppliersToShow.forEach(supplier => {
             const row = document.createElement('tr');
-            row.dataset.id = employee.id;
+            row.dataset.id = supplier.id;
             
-            if (!employee.visible) {
+            if (!supplier.visible) {
                 row.classList.add('hidden-row');
             }
             
             row.innerHTML = `
-                <td>${employee.nome}</td>
-                <td>${employee.cpf}</td>
-                <td>${employee.salario}</td>
-                <td>${employee.dataNascimento}</td>
-                <td>${employee.cep}</td>
-                <td>${employee.funcao}</td>
-                <td>${employee.email}</td>
+                <td>${supplier.nome}</td>
+                <td>${supplier.cpf_cnpj}</td>
+                <td>${supplier.telefone}</td>
+                <td>${supplier.ramo}</td>
+                <td>${supplier.cep}</td>
+                <td>${supplier.email}</td>
                 <td class="actions-cell">
                     <button class="action-btn edit-btn" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="action-btn delete-btn" title="${employee.visible ? 'Ocultar' : 'Mostrar'}">
-                        <i class="fas ${employee.visible ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                    <button class="action-btn delete-btn" title="${supplier.visible ? 'Ocultar' : 'Mostrar'}">
+                        <i class="fas ${supplier.visible ? 'fa-eye-slash' : 'fa-eye'}"></i>
                     </button>
                 </td>
             `;
@@ -201,11 +196,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const employeeId = parseInt(row.dataset.id);
-                const employee = allEmployees.find(e => e.id === employeeId);
+                const supplierId = parseInt(row.dataset.id);
+                const supplier = allSuppliers.find(s => s.id === supplierId);
                 
-                if (employee) {
-                    openEditModal(employee);
+                if (supplier) {
+                    openEditModal(supplier);
                 }
             });
         });
@@ -214,38 +209,36 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const employeeId = parseInt(row.dataset.id);
-                toggleEmployeeVisibility(employeeId);
+                const supplierId = parseInt(row.dataset.id);
+                toggleSupplierVisibility(supplierId);
             });
         });
     }
     
-    function openEditModal(employee) {
-        document.getElementById('edit-id').value = employee.id;
-        document.getElementById('edit-funcionario').value = employee.nome;
-        document.getElementById('edit-cpf').value = employee.cpf;
-        document.getElementById('edit-salario').value = employee.salario;
-        document.getElementById('edit-dataNascimento').value = employee.dataNascimento;
-        document.getElementById('edit-cep').value = employee.cep;
-        document.getElementById('edit-funcao').value = employee.funcao;
-        document.getElementById('edit-email').value = employee.email;
+    function openEditModal(supplier) {
+        document.getElementById('edit-id').value = supplier.id;
+        document.getElementById('edit-forn').value = supplier.nome;
+        document.getElementById('edit-cpf_cnpj').value = supplier.cpf_cnpj;
+        document.getElementById('edit-telefone').value = supplier.telefone;
+        document.getElementById('edit-ramo').value = supplier.ramo;
+        document.getElementById('edit-cep').value = supplier.cep;
+        document.getElementById('edit-email').value = supplier.email;
         
         editModal.style.display = 'block';
     }
     
-    function saveEditedEmployee() {
-        const employeeId = parseInt(document.getElementById('edit-id').value);
-        const employeeIndex = allEmployees.findIndex(e => e.id === employeeId);
+    function saveEditedSupplier() {
+        const supplierId = parseInt(document.getElementById('edit-id').value);
+        const supplierIndex = allSuppliers.findIndex(s => s.id === supplierId);
         
-        if (employeeIndex !== -1) {
-            allEmployees[employeeIndex] = {
-                ...allEmployees[employeeIndex],
-                nome: document.getElementById('edit-funcionario').value,
-                cpf: document.getElementById('edit-cpf').value,
-                salario: document.getElementById('edit-salario').value,
-                dataNascimento: document.getElementById('edit-dataNascimento').value,
+        if (supplierIndex !== -1) {
+            allSuppliers[supplierIndex] = {
+                ...allSuppliers[supplierIndex],
+                nome: document.getElementById('edit-forn').value,
+                cpf_cnpj: document.getElementById('edit-cpf_cnpj').value,
+                telefone: document.getElementById('edit-telefone').value,
+                ramo: document.getElementById('edit-ramo').value,
                 cep: document.getElementById('edit-cep').value,
-                funcao: document.getElementById('edit-funcao').value,
                 email: document.getElementById('edit-email').value
             };
             
@@ -253,24 +246,24 @@ document.addEventListener('DOMContentLoaded', function() {
             filterAndRenderTable();
             
             // Aqui você pode adicionar uma chamada para salvar no banco de dados
-            alert('Funcionário atualizado com sucesso!');
+            alert('Fornecedor atualizado com sucesso!');
         }
     }
     
-    function toggleEmployeeVisibility(employeeId) {
-        const employeeIndex = allEmployees.findIndex(e => e.id === employeeId);
+    function toggleSupplierVisibility(supplierId) {
+        const supplierIndex = allSuppliers.findIndex(s => s.id === supplierId);
         
-        if (employeeIndex !== -1) {
-            allEmployees[employeeIndex].visible = !allEmployees[employeeIndex].visible;
+        if (supplierIndex !== -1) {
+            allSuppliers[supplierIndex].visible = !allSuppliers[supplierIndex].visible;
             filterAndRenderTable();
             
             // Aqui você pode adicionar uma chamada para atualizar no banco de dados
-            alert(`Funcionário ${allEmployees[employeeIndex].visible ? 'mostrado' : 'ocultado'} com sucesso!`);
+            alert(`Fornecedor ${allSuppliers[supplierIndex].visible ? 'mostrado' : 'ocultado'} com sucesso!`);
         }
     }
     
     function updatePagination() {
-        const totalPages = Math.ceil(filteredEmployees.length / rowsPerPage);
+        const totalPages = Math.ceil(filteredSuppliers.length / rowsPerPage);
         pageNumberSpan.textContent = currentPage;
         
         prevPageBtn.disabled = currentPage === 1;
