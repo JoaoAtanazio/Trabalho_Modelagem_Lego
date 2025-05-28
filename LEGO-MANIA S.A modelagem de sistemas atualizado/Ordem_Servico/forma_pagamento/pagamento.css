@@ -741,14 +741,14 @@ transform: translate(370px , 5px);
   display: flex;
   justify-content: space-between;
   margin-top: 25px;
-  transform: translate(0px, -190px);
+  transform: translate(-120px, -190px);
 }
 
 .form-buttons-Pix {
   display: flex;
   justify-content: space-between;
   margin-top: 25px;
-  transform: translate(2px, 50px);
+  transform: translate(-120px, 50px);
   }
 
 .btn-voltar-modal {
@@ -756,12 +756,15 @@ transform: translate(370px , 5px);
   color: #333;
   padding: 10px 20px;
   border: 1px solid #5a5a5a;
+  align-items: center;
+  transform: translate(120px , 120px);
 }
 
 .btn-confirmar {
   background-color: #5a5a5a;
   color: white;
   padding: 10px 20px;
+  transform: translate(120px, 120px);
 }
 
 .pag-card{
@@ -789,4 +792,30 @@ transform: translate(370px , 5px);
 
 .qr-code{
   transform: translate(250px, -220px);
+}
+
+/* Estilos para o campo de valor com R$ fixo */
+.input-with-symbol {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.tipo-dinheiro-input{
+  padding-left: 35px !important;
+  width: calc(100% - 35px) !important;
+  box-sizing: border-box;
+}
+
+/* Estilo para quando o valor é insuficiente */
+.insufficient-funds {
+  color: #e74c3c;
+  font-weight: bold;
 }
