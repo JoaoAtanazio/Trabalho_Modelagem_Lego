@@ -748,7 +748,7 @@ transform: translate(370px , 5px);
   display: flex;
   justify-content: space-between;
   margin-top: 25px;
-  transform: translate(2px, 200px);
+  transform: translate(2px, 50px);
   }
 
 .btn-voltar-modal {
