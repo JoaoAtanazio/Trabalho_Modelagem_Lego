@@ -164,32 +164,28 @@
 <div id="edit-modal" class="modal"> 
     <div class="modal-content">
         <span class="close-btn">&times;</span>
-        <h3>Editar Funcionário</h3>
+        <h3>Editar Fornecedor</h3>
         <form id="edit-form">
             <input type="hidden" id="edit-id">
             <div class="form-group">
                 <label for="edit-funcionario">Nome:</label>
-                <input type="text" id="edit-funcionario" required>
+                <input type="text" id="edit-forn" required>
             </div>
             <div class="form-group">
-                <label for="edit-cpf">CPF:</label>
-                <input type="text" id="edit-cpf" required>
+                <label for="edit-cpf">CPF/CNPJ:</label>
+                <input type="text" id="edit-cpf_cnpj" required>
             </div>
             <div class="form-group">
-                <label for="edit-salario">Salário:</label>
-                <input type="text" id="edit-salario" required>
+                <label for="edit-salario">Telefone:</label>
+                <input type="text" id="edit-telefone" required>
             </div>
             <div class="form-group">
-                <label for="edit-dataNascimento">Data de nascimento:</label>
-                <input type="text" id="edit-dataNascimento" required>
+                <label for="edit-dataNascimento">Ramo de atvidade:</label>
+                <input type="text" id="edit-ramo" required>
             </div>
             <div class="form-group">
                 <label for="edit-cep">CEP:</label>
                 <input type="text" id="edit-cep" required>
-            </div>
-            <div class="form-group">
-                <label for="edit-funcao">Função:</label>
-                <input type="text" id="edit-funcao" required>
             </div>
             <div class="form-group">
                 <label for="edit-email">Email:</label>
@@ -199,6 +195,7 @@
         </form>
     </div>
 </div>
+    <script src="gestao_forn.js"></script>
     <script src="../tela_geral/tela_geral.js"></script>
     <script src="../tela_geral/main.js"></script>
 </body>
