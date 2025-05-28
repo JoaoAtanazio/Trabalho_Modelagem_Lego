@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('modalCartao').style.display = 'none';
+document.getElementById('modalPix').style.display = 'none';
   // Elementos do modal
   const modalCartao = document.getElementById('modalCartao');
   const btnCartao = document.getElementById('btnCartao');
@@ -9,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const parcelas = document.getElementById('parcelas');
   const valorParcela = document.getElementById('valorParcela');
   const btnvoltar = document.getElementById('btnvoltar');
+  const validatitular = document.getElementById('nomeTitular');
   
   // Ao clicar no cartão
   btnCartao.addEventListener('click', function() {
@@ -63,8 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // DAQUI PARA BAIXO É JAVASCRIPT DO PAGAMENTO FORMA PIX //
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Elementos principais
     const modalPix = document.getElementById('modalPix');
     const btnPix = document.getElementById('btnPix');
     const closeModal = modalPix.querySelector('.close-modal');
@@ -111,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
             modalPix.style.display = 'none';
         }
     });
-
+  
     // Calcular valor da parcela ao alterar o select
     parcelas.addEventListener('change', function () {
         const valorTotalText = document.getElementById('valorTotal')?.value || 'R$ 1.250,00';
@@ -141,8 +142,6 @@ document.addEventListener('DOMContentLoaded', function () {
             width: 200,
             height: 200,
         });
-
         alert('QR Code gerado com sucesso!');
     });
-});
 

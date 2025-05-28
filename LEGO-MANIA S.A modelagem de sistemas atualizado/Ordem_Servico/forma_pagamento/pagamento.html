@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tela inicial - LEGO MANIA</title>
+  <title>Pagamento - LEGO MANIA</title>
   <link rel="stylesheet" href="pagamento.css"/>
   <link rel="stylesheet" href="../../tela_geral/style_geral.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -56,8 +56,9 @@
           </div>
           <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-user-large"></i> Gestão de pessoas</button>
           <div class="submenu">
-            <a href="#"><i class="fa-solid fa-circle-user"></i> Clientes</a>
+            <a id="gestao_clnt" href="../gestao_pessoas/gestao_clnt.html"><i class="fa-solid fa-circle-user"></i> Clientes</a>
             <a id="gestao_func" href="../../gestao_pessoas/gestao_func.html"><i class="fa-solid fa-address-card"></i> Funcionários</a>
+            <a id="gestao_forn" href="../gestao_pessoas/gestao_forn.html"><i class="fa-solid fa-truck-fast"></i> Fornecedor</a>
           </div>
         </div>
 
@@ -116,11 +117,6 @@
                 <button class="payment-card" id="btnPix">
                     <div>PIX</div>
                     <img src="../forma_pagamento/imagem-pix.png" alt="PIX">
-                </button>
-
-                <button class="payment-card" id="btnBoleto">
-                    <div class="Boleto">Boleto</div>
-                    <img src="../forma_pagamento/imagem-boleto.png" alt="Boleto">
                 </button>
 
                 <button class="payment-card" id="btnDinheiro">

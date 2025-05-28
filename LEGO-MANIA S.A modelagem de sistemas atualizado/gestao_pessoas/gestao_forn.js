@@ -1,11 +1,9 @@
-// gestao_clnt.js
-
 document.addEventListener('DOMContentLoaded', function() {
     // Variáveis globais
     let currentPage = 1;
     const rowsPerPage = 10;
-    let allClients = [];
-    let filteredClients = [];
+    let allSuppliers = [];
+    let filteredSuppliers = [];
     
     // Elementos do DOM
     const tableBody = document.getElementById('os-table-body');
@@ -35,38 +33,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function loadSampleData() {
-        // Dados de exemplo
-        allClients = [
+        // Dados de exemplo para fornecedores
+        allSuppliers = [
             {
                 id: 1,
-                nome: 'Gustavo Tobler',
-                cpf_cnpj: '123.456.789-00',
-                cep: '01001-000',
-                telefone: '(11) 98765-4321',
-                email: 'gustavo_tobler@email.com',
+                nome: 'Joseph',
+                cpf_cnpj: '727.338.970.13',
+                telefone: '(48) 99462-3412',
+                ramo: 'Ramo de carcaça',
+                cep: '46288-123',
+                email: 'JosephJ&G@gmail.com',
                 visible: true
             },
             {
                 id: 2,
-                nome: 'Maria Silva',
-                cpf_cnpj: '987.654.321-00',
+                nome: 'Fornecedor ABC',
+                cpf_cnpj: '12.345.678/0001-90',
+                telefone: '(11) 98765-4321',
+                ramo: 'Peças eletrônicas',
                 cep: '04538-132',
-                telefone: '(11) 91234-5678',
-                email: 'maria.silva@email.com',
+                email: 'contato@abc.com.br',
                 visible: true
             },
             {
                 id: 3,
-                nome: 'João Santos',
-                cpf_cnpj: '456.789.123-00',
+                nome: 'Distribuidora XYZ',
+                cpf_cnpj: '98.765.432/0001-21',
+                telefone: '(11) 91234-5678',
+                ramo: 'Componentes plásticos',
                 cep: '01310-100',
-                telefone: '(11) 99876-5432',
-                email: 'joao.santos@email.com',
+                email: 'vendas@xyz.com.br',
                 visible: true
             }
         ];
         
-        filteredClients = [...allClients];
+        filteredSuppliers = [...allSuppliers];
     }
     
     function setupEventListeners() {
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         nextPageBtn.addEventListener('click', function() {
-            const totalPages = Math.ceil(filteredClients.length / rowsPerPage);
+            const totalPages = Math.ceil(filteredSuppliers.length / rowsPerPage);
             if (currentPage < totalPages) {
                 currentPage++;
                 renderTable();
@@ -111,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         editForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            saveEditedClient();
+            saveEditedSupplier();
         });
         
         // Botão voltar
@@ -124,19 +125,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplica filtro de pesquisa
         const searchTerm = searchInput.value.toLowerCase();
         
-        filteredClients = allClients.filter(client => {
+        filteredSuppliers = allSuppliers.filter(supplier => {
             const matchesSearch = 
-                client.nome.toLowerCase().includes(searchTerm) ||
-                client.cpf_cnpj.toLowerCase().includes(searchTerm) ||
-                client.cep.toLowerCase().includes(searchTerm) ||
-                client.telefone.toLowerCase().includes(searchTerm) ||
-                client.email.toLowerCase().includes(searchTerm);
+                supplier.nome.toLowerCase().includes(searchTerm) ||
+                supplier.cpf_cnpj.toLowerCase().includes(searchTerm) ||
+                supplier.telefone.toLowerCase().includes(searchTerm) ||
+                supplier.ramo.toLowerCase().includes(searchTerm) ||
+                supplier.cep.toLowerCase().includes(searchTerm) ||
+                supplier.email.toLowerCase().includes(searchTerm);
             
             // Aplica filtro de visibilidade
             const matchesVisibility = 
                 visibilityFilter.value === 'all' ||
-                (visibilityFilter.value === 'visible' && client.visible) ||
-                (visibilityFilter.value === 'hidden' && !client.visible);
+                (visibilityFilter.value === 'visible' && supplier.visible) ||
+                (visibilityFilter.value === 'hidden' && !supplier.visible);
             
             return matchesSearch && matchesVisibility;
         });
@@ -151,29 +153,30 @@ document.addEventListener('DOMContentLoaded', function() {
         // Calcula paginação
         const startIndex = (currentPage - 1) * rowsPerPage;
         const endIndex = startIndex + rowsPerPage;
-        const clientsToShow = filteredClients.slice(startIndex, endIndex);
+        const suppliersToShow = filteredSuppliers.slice(startIndex, endIndex);
         
         // Preenche a tabela
-        clientsToShow.forEach(client => {
+        suppliersToShow.forEach(supplier => {
             const row = document.createElement('tr');
-            row.dataset.id = client.id;
+            row.dataset.id = supplier.id;
             
-            if (!client.visible) {
+            if (!supplier.visible) {
                 row.classList.add('hidden-row');
             }
             
             row.innerHTML = `
-                <td>${client.nome}</td>
-                <td>${client.cpf_cnpj}</td>
-                <td>${client.cep}</td>
-                <td>${client.telefone}</td>
-                <td>${client.email}</td>
+                <td>${supplier.nome}</td>
+                <td>${supplier.cpf_cnpj}</td>
+                <td>${supplier.telefone}</td>
+                <td>${supplier.ramo}</td>
+                <td>${supplier.cep}</td>
+                <td>${supplier.email}</td>
                 <td class="actions-cell">
                     <button class="action-btn edit-btn" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="action-btn delete-btn" title="${client.visible ? 'Ocultar' : 'Mostrar'}">
-                        <i class="fas ${client.visible ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                    <button class="action-btn delete-btn" title="${supplier.visible ? 'Ocultar' : 'Mostrar'}">
+                        <i class="fas ${supplier.visible ? 'fa-eye-slash' : 'fa-eye'}"></i>
                     </button>
                 </td>
             `;
@@ -193,11 +196,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const clientId = parseInt(row.dataset.id);
-                const client = allClients.find(c => c.id === clientId);
+                const supplierId = parseInt(row.dataset.id);
+                const supplier = allSuppliers.find(s => s.id === supplierId);
                 
-                if (client) {
-                    openEditModal(client);
+                if (supplier) {
+                    openEditModal(supplier);
                 }
             });
         });
@@ -206,34 +209,36 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const clientId = parseInt(row.dataset.id);
-                toggleClientVisibility(clientId);
+                const supplierId = parseInt(row.dataset.id);
+                toggleSupplierVisibility(supplierId);
             });
         });
     }
     
-    function openEditModal(client) {
-        document.getElementById('edit-id').value = client.id;
-        document.getElementById('edit-nome').value = client.nome;
-        document.getElementById('edit-cpf_cnpj').value = client.cpf_cnpj;
-        document.getElementById('edit-cep').value = client.cep;
-        document.getElementById('edit-telefone').value = client.telefone;
-        document.getElementById('edit-email').value = client.email;
+    function openEditModal(supplier) {
+        document.getElementById('edit-id').value = supplier.id;
+        document.getElementById('edit-forn').value = supplier.nome;
+        document.getElementById('edit-cpf_cnpj').value = supplier.cpf_cnpj;
+        document.getElementById('edit-telefone').value = supplier.telefone;
+        document.getElementById('edit-ramo').value = supplier.ramo;
+        document.getElementById('edit-cep').value = supplier.cep;
+        document.getElementById('edit-email').value = supplier.email;
         
         editModal.style.display = 'block';
     }
     
-    function saveEditedClient() {
-        const clientId = parseInt(document.getElementById('edit-id').value);
-        const clientIndex = allClients.findIndex(c => c.id === clientId);
+    function saveEditedSupplier() {
+        const supplierId = parseInt(document.getElementById('edit-id').value);
+        const supplierIndex = allSuppliers.findIndex(s => s.id === supplierId);
         
-        if (clientIndex !== -1) {
-            allClients[clientIndex] = {
-                ...allClients[clientIndex],
-                nome: document.getElementById('edit-nome').value,
+        if (supplierIndex !== -1) {
+            allSuppliers[supplierIndex] = {
+                ...allSuppliers[supplierIndex],
+                nome: document.getElementById('edit-forn').value,
                 cpf_cnpj: document.getElementById('edit-cpf_cnpj').value,
-                cep: document.getElementById('edit-cep').value,
                 telefone: document.getElementById('edit-telefone').value,
+                ramo: document.getElementById('edit-ramo').value,
+                cep: document.getElementById('edit-cep').value,
                 email: document.getElementById('edit-email').value
             };
             
@@ -241,24 +246,24 @@ document.addEventListener('DOMContentLoaded', function() {
             filterAndRenderTable();
             
             // Aqui você pode adicionar uma chamada para salvar no banco de dados
-            alert('Cliente atualizado com sucesso!');
+            alert('Fornecedor atualizado com sucesso!');
         }
     }
     
-    function toggleClientVisibility(clientId) {
-        const clientIndex = allClients.findIndex(c => c.id === clientId);
+    function toggleSupplierVisibility(supplierId) {
+        const supplierIndex = allSuppliers.findIndex(s => s.id === supplierId);
         
-        if (clientIndex !== -1) {
-            allClients[clientIndex].visible = !allClients[clientIndex].visible;
+        if (supplierIndex !== -1) {
+            allSuppliers[supplierIndex].visible = !allSuppliers[supplierIndex].visible;
             filterAndRenderTable();
             
             // Aqui você pode adicionar uma chamada para atualizar no banco de dados
-            alert(`Cliente ${allClients[clientIndex].visible ? 'mostrado' : 'ocultado'} com sucesso!`);
+            alert(`Fornecedor ${allSuppliers[supplierIndex].visible ? 'mostrado' : 'ocultado'} com sucesso!`);
         }
     }
     
     function updatePagination() {
-        const totalPages = Math.ceil(filteredClients.length / rowsPerPage);
+        const totalPages = Math.ceil(filteredSuppliers.length / rowsPerPage);
         pageNumberSpan.textContent = currentPage;
         
         prevPageBtn.disabled = currentPage === 1;
