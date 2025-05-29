@@ -155,27 +155,70 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   
-    // Botão Voltar
-    document.getElementById('btnvoltaros').addEventListener('click', function() {
-      window.location.href = '../tela_geral/tela_geral.html';
-    });
   });
   
   // Cabeçalho horário
-  function atualizarHorario() {
-    const elementoHorario = document.querySelector('.horario');
-    const agora = new Date();
-    
-    const dia = String(agora.getDate()).padStart(2, '0');
-    const mes = String(agora.getMonth() + 1).padStart(2, '0');
-    const ano = agora.getFullYear();
-    
-    const horas = String(agora.getHours()).padStart(2, '0');
-    const minutos = String(agora.getMinutes()).padStart(2, '0');
-    const segundos = String(agora.getSeconds()).padStart(2, '0');
-    
-    elementoHorario.innerHTML = `<p>Data: ${dia}/${mes}/${ano} - Hora: ${horas}:${minutos}:${segundos}</p>`;
-  }
+  // Função para atualizar data e hora
+function atualizarHorario() {
+  const elementoHorario = document.querySelector('.horario');
+  const agora = new Date();
   
-  atualizarHorario();
-  setInterval(atualizarHorario, 1000);
+  // Formatar data (dd/mm/aaaa)
+  const dia = String(agora.getDate()).padStart(2, '0');
+  const mes = String(agora.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+  const ano = agora.getFullYear();
+  
+  // Formatar hora (hh:mm:ss)
+  const horas = String(agora.getHours()).padStart(2, '0');
+  const minutos = String(agora.getMinutes()).padStart(2, '0');
+  const segundos = String(agora.getSeconds()).padStart(2, '0');
+  
+  // Atualizar o elemento HTML
+  elementoHorario.innerHTML = `<p>Data: ${dia}/${mes}/${ano} - Hora: ${horas}:${minutos}:${segundos}</p>`;
+}
+
+// Atualizar imediatamente quando a página carregar
+atualizarHorario();
+
+// Atualizar a cada segundo (1000ms)
+setInterval(atualizarHorario, 1000);
+
+
+    // Adicione este código ao seu arquivo JavaScript do cadastro
+document.addEventListener('DOMContentLoaded', function() {
+  // Configuração do datepicker
+  flatpickr("#data-recebimento", {
+    dateFormat: "d/m/Y",
+    locale: "pt"
+  });
+
+  // Manipulador do formulário de cadastro
+  const form = document.querySelector('.form-pecas');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Obter valores do formulário
+    const peca = {
+      nome: document.getElementById('nome').value,
+      data: document.getElementById('data-recebimento').value,
+      id: document.getElementById('id').value,
+      tipo: document.getElementById('text').value
+    };
+
+    // Salvar no localStorage
+    salvarPeca(peca);
+    
+    // Limpar formulário
+    form.reset();
+    
+    // Feedback para o usuário
+    alert('Peça cadastrada com sucesso!');
+  });
+
+  // Função para salvar peça
+  function salvarPeca(peca) {
+    let pecas = JSON.parse(localStorage.getItem('pecas')) || [];
+    pecas.push(peca);
+    localStorage.setItem('pecas', JSON.stringify(pecas));
+  }
+});
