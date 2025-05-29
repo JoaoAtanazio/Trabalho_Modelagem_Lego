@@ -44,7 +44,7 @@ function carregarPecas() {
     
     tr.innerHTML = `
       <td>${peca.nome}</td>
-      <td>${peca.id}</td>
+      <td>${peca.quantidade || '0'}</td>  <!-- Alterado para peca.quantidade -->
       <td>${peca.tipo}</td>
       <td>${peca.data}</td>
       <td class="actions-cell">
@@ -181,22 +181,17 @@ function salvarEdicao() {
   let pecas = JSON.parse(localStorage.getItem('pecas')) || [];
   
   if (index >= 0 && index < pecas.length) {
-    // Atualizar os dados da peça
     pecas[index] = {
       nome: document.getElementById('edit-funcionario').value,
-      id: document.getElementById('edit-quantidade').value,
+      quantidade: document.getElementById('edit-quantidade').value,  // Certifique-se que está correto
       tipo: document.getElementById('edit-salario').value,
       data: document.getElementById('edit-dataRecebimento').value
     };
     
-    // Salvar no localStorage
     localStorage.setItem('pecas', JSON.stringify(pecas));
-    
-    // Fechar o modal e recarregar a tabela
     fecharModal();
     carregarPecas();
   }
-
   alert("Você alterou as informações!");
 }
 
