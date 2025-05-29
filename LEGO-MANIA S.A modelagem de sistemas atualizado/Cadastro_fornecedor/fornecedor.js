@@ -42,16 +42,31 @@ document.addEventListener('DOMContentLoaded', function() {
     aplicarMascaras();
     configurarValidacoesTempoReal();
     
-    // Validação ao submeter o formulário
+    // ✅ ÚNICO LISTENER DE SUBMIT (remove o outro que está fora desta função)
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
         if (validarFormulario()) {
-            // Se o formulário for válido, pode ser submetido
+            // Cadastra o fornecedor apenas se o formulário for válido
+            const fornecedor = {
+                id: Date.now(),
+                nome: nomeInput.value,
+                cpf_cnpj: cpfCnpjInput.value.replace(/\D/g, ''),
+                telefone: telefoneInput.value,
+                ramo: ramoInput.value,
+                cep: cepInput.value,
+                email: emailInput.value,
+                visible: true
+            };
+
+            const fornecedores = JSON.parse(localStorage.getItem('fornecedores')) || [];
+            fornecedores.push(fornecedor);
+            localStorage.setItem('fornecedores', JSON.stringify(fornecedores));
+
             alert('Fornecedor cadastrado com sucesso!');
             form.reset();
         }
-    });
+});
     
     // Função para aplicar máscaras aos campos
     function aplicarMascaras() {
