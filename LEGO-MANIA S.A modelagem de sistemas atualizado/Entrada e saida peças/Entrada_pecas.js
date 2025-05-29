@@ -161,7 +161,7 @@ function abrirModalEdicao(id) {
     // Preencher o formulário com os dados da peça
     document.getElementById('edit-id').value = id;
     document.getElementById('edit-funcionario').value = peca.nome;
-    document.getElementById('edit-quantidade').value = peca.id;
+    document.getElementById('edit-quantidade').value = peca.quantidade;
     document.getElementById('edit-salario').value = peca.tipo;
     document.getElementById('edit-dataRecebimento').value = peca.data;
     
