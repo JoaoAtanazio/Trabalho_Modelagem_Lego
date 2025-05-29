@@ -5,11 +5,11 @@
   border: 2px solid black;
   padding: 20px;
   margin-bottom: 20px;
-  overflow:visible;
-  height: 390px;
+  overflow: visible;
+  height: auto;
   overflow-y: auto;
-  transform:translate(54px, 10px);
-  width:89%;
+  transform: translate(54px, 10px);
+  width: 89%;
   overflow-x: hidden;
 }
 
