@@ -4,39 +4,88 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para salvar e atualizar a lista de ordens
     function salvarOrdens(novasOrdens) {
-        ordens = novasOrdens; // Atualiza a variável global
-        localStorage.setItem('ordensServico', JSON.stringify(ordens));
+    ordens = novasOrdens;
+    localStorage.setItem('ordensServico', JSON.stringify(ordens));
+    
+    // Verifica se há um termo de pesquisa ativo
+    const termoPesquisa = document.querySelector('.search-box input').value;
+    if (termoPesquisa) {
+        filtrarTabela(termoPesquisa);
+    } else {
         preencherTabela();
     }
+}
 
     // Preenche a tabela
-    function preencherTabela() {
-        tabela.innerHTML = '';
+    function preencherTabelaComDados(dados) {
+    tabela.innerHTML = '';
+    
+    dados.forEach(os => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = os.id;
         
-        ordens.forEach(os => {
-            const tr = document.createElement('tr');
-            tr.dataset.id = os.id;
-            
-            tr.innerHTML = `
-                <td>${os.tecnico || 'Não atribuído'}</td>
-                <td><span class="priority-badge ${(os.prioridade || 'MÉDIA').toLowerCase()}">${os.prioridade}</span></td>
-                <td>${os.marca || ''}</td>
-                <td>${os.problema || ''}</td>
-                <td><span class="status-badge ${getStatusClass(os.status || 'ABERTA')}">${os.status || 'ABERTA'}</span></td>
-                <td>${os.dataRecebimento || ''}</td>
-                <td class="actions-cell">
-                    <button class="action-btn edit-btn" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="action-btn delete-btn" title="Excluir">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </td>
-            `;
-            
-            tabela.appendChild(tr);
-        });
+        tr.innerHTML = `
+            <td>${os.tecnico || 'Não atribuído'}</td>
+            <td><span class="priority-badge ${getPriorityClass(os.prioridade || 'MÉDIA')}">${os.prioridade}</span></td>
+            <td>${os.marca || ''}</td>
+            <td>${os.problema || ''}</td>
+            <td><span class="status-badge ${getStatusClass(os.status || 'ABERTA')}">${os.status || 'ABERTA'}</span></td>
+            <td>${os.dataRecebimento || ''}</td>
+            <td class="actions-cell">
+                <button class="action-btn edit-btn" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete-btn" title="Excluir">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+        `;
+        
+        tabela.appendChild(tr);
+    });
+}
+
+// Mantenha a função original para quando não há filtro
+function preencherTabela() {
+    preencherTabelaComDados(ordens);
+}
+
+function mostrarMensagemNenhumResultado() {
+    // Remove a mensagem existente se houver
+    esconderMensagemNenhumResultado();
+    
+    const tr = document.createElement('tr');
+    tr.id = 'mensagem-nenhum-resultado';
+    tr.innerHTML = `
+        <td colspan="7" style="text-align: center; padding: 20px;">
+            Nenhum serviço encontrado com os critérios procurados
+        </td>
+    `;
+    
+    tabela.innerHTML = '';
+    tabela.appendChild(tr);
+}
+
+function esconderMensagemNenhumResultado() {
+    const mensagemExistente = document.getElementById('mensagem-nenhum-resultado');
+    if (mensagemExistente) {
+        mensagemExistente.remove();
     }
+}
+
+// Mantenha a função original para quando não há filtro
+function preencherTabela() {
+    preencherTabelaComDados(ordens);
+}
+
+    function getPriorityClass(prioridade) {
+    switch(prioridade.toUpperCase()) {
+        case 'ALTA': return 'high';
+        case 'MÉDIA': return 'medium';
+        case 'BAIXA': return 'low';
+        default: return 'medium';
+    }
+}
 
     // Implementação com delegação de eventos
     tabela.addEventListener('click', function(e) {
@@ -54,6 +103,28 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
+    function filtrarTabela(termo) {
+    termo = termo.toLowerCase();
+    
+    const ordensFiltradas = ordens.filter(os => {
+        return (
+            (os.tecnico && os.tecnico.toLowerCase().includes(termo)) ||
+            (os.marca && os.marca.toLowerCase().includes(termo)) ||
+            (os.problema && os.problema.toLowerCase().includes(termo)) ||
+            (os.prioridade && os.prioridade.toLowerCase().includes(termo)) ||
+            (os.status && os.status.toLowerCase().includes(termo))
+        );
+    });
+    
+    if (ordensFiltradas.length === 0 && termo !== '') {
+        mostrarMensagemNenhumResultado();
+    } else {
+        esconderMensagemNenhumResultado();
+        // Usamos uma cópia das ordens filtradas para não perder os dados originais
+        preencherTabelaComDados(ordensFiltradas);
+    }
+}
 
     function excluirOS(id) {
         const novasOrdens = ordens.filter(o => o.id !== id);
@@ -124,10 +195,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nova-os-btn').addEventListener('click', function() {
         window.location.href = 'nova_ordem.html';
     });
-    
-    // Botão Voltar
-    document.getElementById('btnvoltaros').addEventListener('click', function() {
-        window.location.href = '../tela_geral/tela_geral.html';
+
+    // Barra de pesquisar
+    document.querySelector('.search-box input').addEventListener('input', function(e) {
+       filtrarTabela(e.target.value);
     });
     
     // Inicializa a tabela

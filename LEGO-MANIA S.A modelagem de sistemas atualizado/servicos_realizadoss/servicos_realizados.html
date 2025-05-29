@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrade de peças - LEGO MANIA</title>
-    <link rel="stylesheet" href="servicos_realizados.css">
-    <link rel="stylesheet" href="../tela_geral/style_geral.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrada de peças - LEGO MANIA</title>
+  <link rel="stylesheet" href="../tela_geral/style_geral.css" />
+  <link rel="stylesheet" href="servicos_realizados.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
     <div class="custom-cursor site-wide">
@@ -18,48 +18,43 @@
         <aside class="sidebar">
 
           <!-- Quando clicar na logo lá em cima vai voltar pra página da tela geral -->
-         <h1 class="logo">
-        <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
-          <img class="logo_mania" src="../tela_geral/img/logo_mania.png">
-        </a>
-    </h1>
+          <h1 class="logo">
+              <a href="../tela_geral/tela_geral.html" style="text-decoration: none; color: inherit;">
+               LEGO - <br>MANIA O.S
+              </a>
+          </h1>
+
             <nav class="menu">
                 <div class="menu-container">
-                   <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-clipboard"></i></i> Cadastros</button>
-          <div class="submenu">
-            <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html"><i class="fa-solid fa-address-card"></i> Funcionários</a>
-            <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html"><i class="fa-solid fa-circle-user"> </i> Clientes</a>
-            <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html"><i class="fa-solid fa-gears"></i> Peças     no estoque</a>
-            <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html"><i class="fa-solid fa-address-book"></i> Fornecedor</a>
-          </div>
-
-          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-gears"></i> Ordem de Serviço</button>
-          <div class="submenu">
-            <a id="botao_os" href="../Ordem_Servico/nova_ordem.html"><i class="fa-solid fa-plus"></i> Nova O.S</a>
-            <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html"><i class="fa-solid fa-magnifying-glass"></i> Consultar O.S</a>
-            <a id="pagamento" href="../Ordem_Servico/forma_pagamento/pagamento.html"><i class="fa-solid fa-credit-card"></i> Pagamento</a>
-          </div>
-          
-          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-clipboard"></i> Relatório de finanças</button>
-          <div class="submenu">
-             <a id="ganhobrutolucro" href="../relatorio_financas/ganhobrutolucro.html"><i class="fa-solid fa-database"></i> Ganho <br> bruto/lucro</a>
-            <a id="despesas" href="../relatorio_financas/despesas.html"><i class="fa-solid fa-coins"></i> Despesas</a>
-            <a id="servicos" href="../servicos_realizadoss/servicos_realizados.html"><i class="fa-solid fa-file-invoice"></i> Serviços <br>realizados</a>
-          </div>
-
-          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-truck"></i> Relatório do estoque</button>
-          <div class="submenu">
-            <a id="pecas_estoque" href="../Entrada e saida peças/estoque_pecas.html"><i class="fa-solid fa-bolt"></i> Peças no <br>estoque</a>
-            <a id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html"><i class="fa-solid fa-folder-open"></i> Relatório <br>de uso</a>
-            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html"><i class="fa-solid fa-right-to-bracket"></i> Entrada <br>de peças</a>
-          </div>
-        
-          <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-user-large"></i> Gestão de pessoas</button>
-          <div class="submenu">
-            <a id="gestao_clnt" href="../gestao_pessoas/gestao_clnt.html"><i class="fa-solid fa-circle-user"></i> Clientes</a>
-            <a id="gestao_func" href="../gestao_pessoas/gestao_func.html"><i class="fa-solid fa-address-card"></i> Funcionários</a>
-            <a id="gestao_forn" href="../gestao_pessoas/gestao_forn.html"><i class="fa-solid fa-truck-fast"></i> Fornecedor</a>
-          </div>
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Cadastros</button>
+                  <div class="submenu">
+                    <a id="func" href="../Cadastro_funcionario_/cadastro_funcionario.html">Funcionários</a>
+                    <a id="cliente" href="../Cadastro_Cliente_/cadastro_cliente.html">Clientes</a>
+                    <a id="peça_estoque" href="../cadastro_pecas_/cadastro_pecas.html">Peças no estoque</a>
+                    <a id="fornecedor" href="../Cadastro_fornecedor/fornecedor.html">Fornecedor</a>
+                  </div>
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Ordem de Serviço</button>
+                  <div class="submenu">
+                    <a id="botao_os" href="../Ordem_Servico/nova_ordem.html">Nova O.S</a>
+                    <a id="consulta_os" href="../Ordem_Servico/ordem_abertas.html">Consultar O.S</a>
+                  </div>
+                    <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório de finanças</button>
+                  <div class="submenu">
+                    <a href="#">Ganho <br>bruto/lucro</a>
+                    <a href="#">Despesas</a>
+                    <a id="servicos_realizados" href="../servicos_realizadoss/servicos_realizados.html"><i class="fa-solid fa-file-invoice"></i> Serviços <br>realizados</a>
+                  </div>
+                    <button class="btn_menu" onclick="toggleSubmenu(this)">Relatório do estoque</button>
+                  <div class="submenu">
+                    <a href="#">Peças no <br>estoque</a>
+                    <a  id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html">Relatório <br>de uso</a>
+                    <a a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html">Entrada/saída <br>de peças</a>
+                  </div>
+                  <button class="btn_menu" onclick="toggleSubmenu(this)">Gestão de pessoas</button>
+                  <div class="submenu">
+                    <a href="#">Clientes</a>
+                    <a id="gestao_func" href="../gestao_pessoas/gestao_func.html">Funcionários</a>
+                  </div>
                 </div>
                 <!-- Data e horário -->
                 <div class="horario"></div>
@@ -101,8 +96,9 @@
                             
                                 <td class="actions-cell">
                                     <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
+                                      <i class="fa-solid fa-eye"></i>
                                     </button>
+
                                     <button class="action-btn delete-btn" title="Excluir">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
@@ -111,6 +107,11 @@
                         </tbody>
                     </table>
                 </div>
+
+
+<div id="mensagem-vazia" class="mensagem-vazia" style="display: none;">
+  Nenhum serviço realizado encontrado entre as datas selecionadas.
+</div>
        
                 <div class="table-footer">
                     <div class="pagination">
@@ -139,31 +140,50 @@
         </main>
     </div>
 
-<!-- Modal de Edição -->
-<div id="edit-modal" class="modal" style="display: none;">
+<!-- Modal de Visualização -->
+
+<div id="view-modal" class="modal">
   <div class="modal-content">
     <span class="close-btn">&times;</span>
-    <h3>Editar peça</h3>
-    <form id="edit-form">
-      <input type="hidden" id="edit-id">
-      <div class="form-group">
-        <label for="edit-funcionario">Nome da peça:</label>
-        <input type="text" id="edit-funcionario" required>
+    <h3>Detalhes do Serviço Realizado</h3>
+
+    <div class="modal-details">
+      <div class="detail-row">
+        <span class="detail-label">Cliente:</span>
+        <span id="view-cliente" class="detail-value"></span>
       </div>
-      <div class="form-group">
-        <label for="edit-cod">Código:</label>
-        <input type="text" id="edit-cod" required>
+      
+      <div class="detail-row">
+        <span class="detail-label">Marca/Modelo:</span>
+        <span id="view-marca" class="detail-value"></span>
       </div>
-      <div class="form-group">
-        <label for="edit-salario">Tipo de peça:</label>
-        <input type="text" id="edit-salario" required>
+
+      <div class="detail-row">
+        <span class="detail-label">Problema:</span>
+        <span id="view-problema" class="detail-value"></span>
       </div>
-      <div class="form-group">
-        <label for="edit-dataRecebimento">Data de recebimento:</label>
-        <input type="text" id="edit-dataRecebimento" required>
+
+      <div class="detail-row">
+        <span class="detail-label">Observações:</span>
+        <span id="view-observacoes" class="detail-value"></span>
       </div>
-      <button type="submit" class="btn btn-primary">Salvar</button>
-    </form>
+
+      <div class="detail-row">
+        <span class="detail-label">Técnico:</span>
+        <span id="view-tecnico" class="detail-value"></span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Data de Recebimento:</span>
+        <span id="view-data-recebimento" class="detail-value"></span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Data de Conclusão:</span>
+        <span id="view-data-conclusao" class="detail-value"></span>
+      </div>
+      
+    </div>
   </div>
 </div>
 

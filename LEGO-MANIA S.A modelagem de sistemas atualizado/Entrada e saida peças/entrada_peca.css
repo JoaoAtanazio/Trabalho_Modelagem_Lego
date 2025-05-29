@@ -340,3 +340,14 @@
     border: 1px solid #555;
     border-radius: 5px;
   }
+
+.mensagem-vazia {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 10px 15px;
+    border: 1px solid #ffeeba;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-weight: 500;
+    font-size: 14px;
+  }

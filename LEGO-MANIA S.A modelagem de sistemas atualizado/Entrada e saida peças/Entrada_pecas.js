@@ -27,8 +27,16 @@ document.addEventListener('DOMContentLoaded', function() {
 function carregarPecas() {
   const pecas = JSON.parse(localStorage.getItem('pecas')) || [];
   const tbody = document.getElementById('os-table-body');
+  const mensagemVazia = document.getElementById('mensagem-vazia');
   
   tbody.innerHTML = '';
+  
+  if (pecas.length === 0) {
+    mensagemVazia.style.display = 'block';
+    return;
+  } else {
+    mensagemVazia.style.display = 'none';
+  }
   
   pecas.forEach((peca, index) => {
     const tr = document.createElement('tr');
@@ -58,6 +66,7 @@ function carregarPecas() {
 function filtrarPorData() {
   const dataInicioInput = document.querySelector('.date-field:first-child input');
   const dataFimInput = document.querySelector('.date-field:last-child input');
+  const mensagemVazia = document.getElementById('mensagem-vazia');
   
   const dataInicioStr = dataInicioInput.value;
   const dataFimStr = dataFimInput.value;
@@ -68,24 +77,33 @@ function filtrarPorData() {
     const dataFim = parseDate(dataFimStr);
     
     const linhas = document.querySelectorAll('#os-table-body tr');
+    let linhasVisiveis = 0;
     
     linhas.forEach(linha => {
-      const dataPecaStr = linha.cells[3].textContent; // A data está na 4ª coluna (índice 3)
+      const dataPecaStr = linha.cells[3].textContent;
       const dataPeca = parseDate(dataPecaStr);
       
-      // Mostrar apenas se a data estiver dentro do intervalo
       if (dataPeca >= dataInicio && dataPeca <= dataFim) {
         linha.style.display = '';
+        linhasVisiveis++;
       } else {
         linha.style.display = 'none';
       }
     });
+    
+    if (linhasVisiveis === 0) {
+      mensagemVazia.textContent = "Nenhuma peça encontrada entre as datas selecionadas";
+      mensagemVazia.style.display = 'block';
+    } else {
+      mensagemVazia.style.display = 'none';
+    }
   } else {
     // Se algum campo estiver vazio, mostrar todas as linhas
     const linhas = document.querySelectorAll('#os-table-body tr');
     linhas.forEach(linha => {
       linha.style.display = '';
     });
+    mensagemVazia.style.display = 'none';
   }
 }
 
@@ -197,13 +215,24 @@ function excluirPeca(id) {
 
 function filtrarTabela(termo) {
   const linhas = document.querySelectorAll('#os-table-body tr');
+  const mensagemVazia = document.getElementById('mensagem-vazia');
+  let linhasVisiveis = 0;
   
   linhas.forEach(linha => {
     const textoLinha = linha.textContent.toLowerCase();
-    if (textoLinha.includes(termo)) {
+    if (termo === '' || textoLinha.includes(termo)) {
       linha.style.display = '';
+      linhasVisiveis++;
     } else {
       linha.style.display = 'none';
     }
   });
+  
+  // Mostrar mensagem se não houver linhas visíveis
+  if (linhasVisiveis === 0) {
+    mensagemVazia.textContent = "Nenhuma peça encontrada com os critérios selecionados";
+    mensagemVazia.style.display = 'block';
+  } else {
+    mensagemVazia.style.display = 'none';
+  }
 }

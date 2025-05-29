@@ -353,13 +353,16 @@ body {
 }
 
 .priority-badge.high {
-  border: 1px solid var(--danger-color);
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--danger-color);
 }
 .priority-badge.medium {
-  border: 1px solid var(--warning-color);
+  background-color: rgba(52, 152, 219, 0.1);
+  color: var(--accent-color);
 }
 .priority-badge.low {
-  border: 1px solid var(--success-color);
+  background-color: rgba(39, 174, 96, 0.1);
+  color: var(--success-color);
 }
 
 .status-badge.completed {
@@ -652,3 +655,14 @@ body {
   .horario{
     transform: translateY(-4px)
   }
+
+  #mensagem-nenhum-resultado {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-style: italic;
+}
+
+#mensagem-nenhum-resultado td {
+    padding: 20px !important;
+    text-align: center !important;
+}
