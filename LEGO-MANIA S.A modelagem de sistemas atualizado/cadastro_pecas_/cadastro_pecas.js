@@ -7,9 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   
     // Manipulador do formulário de cadastro
-    const form = document.querySelector('.form-pecas');
     form.addEventListener('submit', function(e) {
-      e.preventDefault();
+  e.preventDefault();
+  e.stopImmediatePropagation(); // Adicione esta linha para evitar outros handlers
+  
+  if (this.dataset.submitted) return; // Prevenir múltiplos submits
+  this.dataset.submitted = true;
       
       // Validar todos os campos antes de prosseguir
       if (validarFormulario()) {
@@ -131,10 +134,52 @@ document.addEventListener('DOMContentLoaded', function() {
   
     // Função para salvar peça
     function salvarPeca(peca) {
-      let pecas = JSON.parse(localStorage.getItem('pecas')) || [];
-      pecas.push(peca);
-      localStorage.setItem('pecas', JSON.stringify(pecas));
-    }
+  // Verificar se os campos obrigatórios estão preenchidos
+  if (!peca.nome || !peca.data || !peca.id || !peca.tipo) {
+    console.warn('Tentativa de salvar peça incompleta:', peca);
+    return false;
+  }
+  
+  let pecas = JSON.parse(localStorage.getItem('pecas')) || [];
+  pecas.push(peca);
+  localStorage.setItem('pecas', JSON.stringify(pecas));
+  return true;
+}
+
+// Função para calcular o total de peças
+function calcularTotalPecas() {
+  const pecas = JSON.parse(localStorage.getItem('pecas')) || [];
+  let total = 0;
+  
+  pecas.forEach(peca => {
+    const qtd = parseInt(peca.quantidade || peca.id) || 0; // Usa peca.quantidade ou peca.id (para compatibilidade)
+    total += qtd;
+  });
+  
+  document.getElementById('totalPecas').textContent = total;
+}
+
+// Modifique a função salvarPeca para atualizar o total após salvar
+function salvarPeca(peca) {
+  // Verificar se os campos obrigatórios estão preenchidos
+  if (!peca.nome || !peca.data || !peca.quantidade || !peca.tipo) {
+    console.warn('Tentativa de salvar peça incompleta:', peca);
+    return false;
+  }
+  
+  let pecas = JSON.parse(localStorage.getItem('pecas')) || [];
+  pecas.push(peca);
+  localStorage.setItem('pecas', JSON.stringify(pecas));
+  
+  // Atualiza o total de peças
+  calcularTotalPecas();
+  return true;
+}
+
+// Chame a função para calcular o total quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+  calcularTotalPecas();
+});
   
     // Adiciona validação em tempo real para melhor UX
     document.getElementById('nome').addEventListener('input', function() {
@@ -199,11 +244,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Obter valores do formulário
     const peca = {
-      nome: document.getElementById('nome').value,
-      data: document.getElementById('data-recebimento').value,
-      id: document.getElementById('id').value,
-      tipo: document.getElementById('text').value
-    };
+  nome: document.getElementById('nome').value.trim(),
+  data: document.getElementById('data-recebimento').value,
+  quantidade: document.getElementById('quantidade').value, // Alterado de 'id' para 'quantidade'
+  tipo: document.getElementById('text').value.trim()
+};
 
     // Salvar no localStorage
     salvarPeca(peca);
