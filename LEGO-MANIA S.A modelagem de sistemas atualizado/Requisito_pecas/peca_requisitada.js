@@ -70,49 +70,54 @@
 
   // Função principal para atualizar o gráfico
   function atualizarGrafico() {
-    const dataInicio = document.getElementById('data-inicio').value;
-    const dataFim = document.getElementById('data-fim').value;
-    const noDataMessage = document.getElementById('no-data-message');
-    const pecasContainer = document.getElementById('pecas-container');
-    const chartCanvas = document.getElementById('myChart');
+  const dataInicio = document.getElementById('data-inicio').value;
+  const dataFim = document.getElementById('data-fim').value;
+  const noDataMessage = document.getElementById('no-data-message');
+  const pecasContainer = document.getElementById('pecas-container');
+  const chartCanvas = document.getElementById('myChart');
+  const totalPecasElement = document.getElementById('total-pecas');
 
-    // Obter todas as peças
-    const todasPecas = obterPecasCadastradas();
-    console.log('Todas peças:', todasPecas); // Debug
-    
-    // Filtrar por data se ambas as datas estiverem preenchidas
-    let pecasFiltradas = todasPecas;
-    if (dataInicio && dataFim) {
-      pecasFiltradas = filtrarPecasPorData(todasPecas, dataInicio, dataFim);
-    }
-    console.log('Peças filtradas:', pecasFiltradas); // Debug
-    
-    if (pecasFiltradas.length === 0) {
-      // Modo "sem dados"
-      noDataMessage.style.display = 'block';
-      pecasContainer.style.display = 'none';
-      chartCanvas.style.display = 'none';
-      
-      // Destruir gráfico existente se houver
-      if (myChartInstance) {
-        myChartInstance.destroy();
-        myChartInstance = null;
-      }
-    } else {
-      // Modo normal com dados
-      noDataMessage.style.display = 'none';
-      pecasContainer.style.display = 'flex';
-      chartCanvas.style.display = 'block';
-      
-      // Calcular porcentagens
-      const pecasComPorcentagem = calcularPorcentagens(pecasFiltradas);
-      const topPecas = pecasComPorcentagem.slice(0, 5); // Pegar as 5 principais
-      console.log('Top peças:', topPecas); // Debug
-      
-      atualizarRetangulosPecas(topPecas);
-      renderizarGrafico(topPecas);
-    }
+  // Obter todas as peças
+  const todasPecas = obterPecasCadastradas();
+  
+  // Filtrar por data se ambas as datas estiverem preenchidas
+  let pecasFiltradas = todasPecas;
+  if (dataInicio && dataFim) {
+    pecasFiltradas = filtrarPecasPorData(todasPecas, dataInicio, dataFim);
   }
+  
+  // Calculate total pieces
+  const totalPecas = pecasFiltradas.reduce((sum, peca) => sum + peca.quantidade, 0);
+  
+  if (pecasFiltradas.length === 0) {
+    // Modo "sem dados"
+    noDataMessage.style.display = 'block';
+    pecasContainer.style.display = 'none';
+    chartCanvas.style.display = 'none';
+    totalPecasElement.style.display = 'none';
+    
+    if (myChartInstance) {
+      myChartInstance.destroy();
+      myChartInstance = null;
+    }
+  } else {
+    // Modo normal com dados
+    noDataMessage.style.display = 'none';
+    pecasContainer.style.display = 'flex';
+    chartCanvas.style.display = 'block';
+    totalPecasElement.style.display = 'block';
+    
+    // Update total display
+    totalPecasElement.textContent = `Total de peças no período escolhido: ${totalPecas}`;
+    
+    // Calcular porcentagens
+    const pecasComPorcentagem = calcularPorcentagens(pecasFiltradas);
+    const topPecas = pecasComPorcentagem.slice(0, 5);
+    
+    atualizarRetangulosPecas(topPecas);
+    renderizarGrafico(topPecas);
+  }
+}
 
   // Função para filtrar peças por data
   function filtrarPecasPorData(pecas, dataInicioStr, dataFimStr) {
@@ -239,8 +244,3 @@
       }
     });
   }
-
-  // Botão Voltar
-  document.getElementById('btnvoltaros').addEventListener('click', function() {
-    window.location.href = '../tela_geral/tela_geral.html';
-  });
