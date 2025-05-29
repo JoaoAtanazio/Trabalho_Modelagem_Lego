@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Peças no estoque - LEGO MANIA</title>
+  <title>Saída de peças - LEGO MANIA</title>
   <link rel="stylesheet" href="../tela_geral/style_geral.css" />
   <link rel="stylesheet" href="entrada_peca.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -86,103 +86,100 @@
       </header>
 
 
-            <section class="section_conteudo">
-                <div class="section-header">
-                    <h2><i class="fa-solid fa-truck"></i> Peças no estoque</h2>
-                    <div class="actions">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" placeholder="Pesquisar..." id="search-input">
-                        </div>
-                    </div>
-                </div>
+      <section class="section_conteudo">
+        <div class="section-header">
+          <h2><i class="fa-solid fa-truck"></i> Saída de peças</h2>
+          <div class="actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Pesquisar..." id="search-input">
+            </div>
+          </div>
+        </div>
 
-                <div class="table-container">
-                    <table class="service-table">
-                        <thead>
-                            <tr>
-                                <th>Nome da peça</th>
-                                <th>Código</th>
-                                <th>Tipo de peça</th>
-                                <th>Quantidade</th>
-                                <th>Ações</th> 
-                            </tr>
-                        </thead>
-                        <tbody id="os-table-body">
-                            
-                                <td class="actions-cell">
-                                    <button class="action-btn edit-btn" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn" title="Excluir">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-       
-                <div class="table-footer">
-                    <div class="pagination">
-                        <button class="pagination-btn" id="prev-page"><i class="fas fa-chevron-left"></i></button>
-                        <span class="page-number" id="page-number">1</span>
-                        <button class="pagination-btn" id="next-page"><i class="fas fa-chevron-right"></i></button>
-                    </div>
+        <div class="table-container">
+          <table class="service-table">
+            <thead>
+              <tr>
+                <th>Nome da peça</th>
+                <th>Quantidade</th>
+                <th>Tipo de peça</th>
+                <th>Data de saída</th>
+                <th>Ações</th> 
+              </tr>
+            </thead>
+            <tbody id="os-table-body">
+              <!-- Dados serão preenchidos pelo JavaScript -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div id="mensagem-vazia" class="mensagem-vazia" style="display: none;">
+          Nenhuma peça encontrada com os critérios selecionados
+        </div>
 
-                    <div class="date-range">
-                        <div class="date-field">
-                          <label for="dataInicio">De:</label>
-                          <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
-                        </div>
-                        <div class="date-field">
-                          <label for="dataFim">Até:</label>
-                          <input type="text" id="data-recebimento" placeholder="dd/mm/aaaa" class="data" readonly>
-                        </div>
-                    </div>
+        <div class="table-footer">
+          <div class="pagination">
+            <button class="pagination-btn" id="prev-page"><i class="fas fa-chevron-left"></i></button>
+            <span class="page-number" id="page-number">1</span>
+            <button class="pagination-btn" id="next-page"><i class="fas fa-chevron-right"></i></button>
+          </div>
 
-                    <!-- Botão Voltar -->
-                    <button class="btn btn-secondary" id="btnvoltaros">
-                      <i class="fas fa-arrow-left"></i> Voltar
-                  </button>
+          <div class="date-range">
+            <div class="date-field">
+              <label for="dataInicio">De:</label>
+              <input type="text" id="data-inicio" placeholder="dd/mm/aaaa" class="data" readonly>
+            </div>
+            <div class="date-field">
+              <label for="dataFim">Até:</label>
+              <input type="text" id="data-fim" placeholder="dd/mm/aaaa" class="data" readonly>
+            </div>
+          </div>
 
-                </div>
-            </section>
-        </main>
-    </div>
-
-<!-- Modal de Edição -->
-<div id="edit-modal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <span class="close-btn">&times;</span>
-    <h3>Editar peça</h3>
-    <form id="edit-form">
-      <input type="hidden" id="edit-id">
-      <div class="form-group">
-        <label for="edit-funcionario">Nome da peça:</label>
-        <input type="text" id="edit-funcionario" required>
-      </div>
-      <div class="form-group">
-        <label for="edit-cod">Código:</label>
-        <input type="text" id="edit-cod" required>
-      </div>
-      <div class="form-group">
-        <label for="edit-salario">Tipo de peça:</label>
-        <input type="text" id="edit-salario" required>
-      </div>
-      <div class="form-group">
-        <label for="edit-dataRecebimento">Quantidade:</label>
-        <input type="text" id="edit-dataRecebimento" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Salvar</button>
-    </form>
+          <button class="btn btn-secondary" id="btnvoltaros">
+            <i class="fas fa-arrow-left"></i> Voltar
+          </button>
+        </div>
+      </section>
+    </main>
   </div>
-</div>
 
-    <!-- seu conteúdo -->
-  <script src="Entrada_pecas.js"></script>
-  
-<script src="../Entrada e saida peças/Entrada_pecas.js" defer></script>
+  <!-- Modal de Edição -->
+  <div id="edit-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Editar saída de peça</h3>
+      <form id="edit-form">
+        <input type="hidden" id="edit-id">
+        
+        <div class="form-group">
+          <label for="edit-nome">Nome da peça:</label>
+          <input type="text" id="edit-nome" required>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-codigo">Quantidade:</label>
+          <input type="text" id="edit-codigo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-tipo">Tipo de peça:</label>
+          <input type="text" id="edit-tipo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-data-saida">Data de saída:</label>
+          <input type="text" id="edit-data-saida" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
+<!-- Scripts -->
+
+<script src="estoque_pecas.js"></script>
 <script src="../tela_geral/main.js"></script>
 <script src="../tela_geral/tela_geral.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
