@@ -161,7 +161,7 @@ function abrirModalEdicao(id) {
     // Preencher o formulário com os dados da peça
     document.getElementById('edit-id').value = id;
     document.getElementById('edit-funcionario').value = peca.nome;
-    document.getElementById('edit-cod').value = peca.id;
+    document.getElementById('edit-quantidade').value = peca.id;
     document.getElementById('edit-salario').value = peca.tipo;
     document.getElementById('edit-dataRecebimento').value = peca.data;
     
@@ -184,7 +184,7 @@ function salvarEdicao() {
     // Atualizar os dados da peça
     pecas[index] = {
       nome: document.getElementById('edit-funcionario').value,
-      id: document.getElementById('edit-cod').value,
+      id: document.getElementById('edit-quantidade').value,
       tipo: document.getElementById('edit-salario').value,
       data: document.getElementById('edit-dataRecebimento').value
     };
