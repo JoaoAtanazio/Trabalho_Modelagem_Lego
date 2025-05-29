@@ -49,16 +49,16 @@
           
           <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-clipboard"></i> Relatório de finanças</button>
           <div class="submenu">
-            <a id="ganhobrutolucro" href="../relatorio_financas/ganhobrutolucro.html"><i class="fa-solid fa-database"></i> Ganho <br> bruto/lucro</a>
-            <a href="#"><i class="fa-solid fa-coins"></i> Despesas</a>
-            <a id="servicos_realizados" href="../servicos_realizadoss/servicos_realizados.html"><i class="fa-solid fa-file-invoice"></i> Serviços <br>realizados</a>
+             <a id="ganhobrutolucro" href="../relatorio_financas/ganhobrutolucro.html"><i class="fa-solid fa-database"></i> Ganho <br> bruto/lucro</a>
+            <a id="despesas" href="../relatorio_financas/despesas.html"><i class="fa-solid fa-coins"></i> Despesas</a>
+            <a id="servicos" href="../servicos_realizadoss/servicos_realizados.html"><i class="fa-solid fa-file-invoice"></i> Serviços <br>realizados</a>
           </div>
 
           <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-truck"></i> Relatório do estoque</button>
           <div class="submenu">
             <a id="pecas_estoque" href="../Entrada e saida peças/estoque_pecas.html"><i class="fa-solid fa-bolt"></i> Peças no <br>estoque</a>
             <a id="peca_requisitada" href="../Requisito_pecas/Peca_requisitada.html"><i class="fa-solid fa-folder-open"></i> Relatório <br>de uso</a>
-            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html"><i class="fa-solid fa-right-to-bracket"></i> Entrada/saída <br>de peças</a>
+            <a id="entsaida_peca" href="../Entrada e saida peças/Entrada_pecas.html"><i class="fa-solid fa-right-to-bracket"></i> Entrada <br>de peças</a>
           </div>
         
           <button class="btn_menu" onclick="toggleSubmenu(this)"><i class="fa-solid fa-user-large"></i> Gestão de pessoas</button>
@@ -123,14 +123,277 @@
       </button>
       
       </div>
-        </div>
-          </div>
+    </section>
+  
+    <script>
+      // Variável global para a instância do gráfico
+  let myChartInstance = null;
 
-  <script src='peca_requisitada.js'></script>
-  <script src="../tela_geral/main.js"></script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Configuração dos datepickers
+  const datepickers = flatpickr(".data", {
+    dateFormat: "d/m/Y",
+    locale: "pt",
+    onChange: function(selectedDates, dateStr, instance) {
+      atualizarGrafico();
+    }
+  });
+
+  // Registrar plugin
+  Chart.register(ChartDataLabels);
+
+  // Inicializar o gráfico
+  atualizarGrafico();
+});
+
+// Função para obter as peças cadastradas
+function obterPecasCadastradas() {
+  const pecasCadastradas = JSON.parse(localStorage.getItem('pecasCadastradas')) || [];
+  
+  const pecasAgrupadas = {};
+  
+  pecasCadastradas.forEach(peca => {
+    if (!pecasAgrupadas[peca.nome]) {
+      pecasAgrupadas[peca.nome] = {
+        nome: peca.nome,
+        quantidade: 0,
+        tipo: peca.tipo,
+        data: peca.data
+      };
+    }
+    pecasAgrupadas[peca.nome].quantidade += parseInt(peca.quantidade) || 0;
+    // Manter a data mais recente para filtro
+    if (peca.data && (!pecasAgrupadas[peca.nome].data || parseDate(peca.data) > parseDate(pecasAgrupadas[peca.nome].data))) {
+      pecasAgrupadas[peca.nome].data = peca.data;
+    }
+  });
+  
+  return Object.values(pecasAgrupadas);
+}
+
+// Função para calcular porcentagens
+function calcularPorcentagens(pecasFiltradas) {
+  // Calcular o total das peças filtradas
+  const total = pecasFiltradas.reduce((sum, peca) => sum + peca.quantidade, 0);
+  
+  // Adicionar porcentagem a cada peça
+  const pecasComPorcentagem = pecasFiltradas.map(peca => {
+    return {
+      ...peca,
+      porcentagem: total > 0 ? ((peca.quantidade / total) * 100).toFixed(1) : 0
+    };
+  });
+  
+  // Ordenar por quantidade (decrescente)
+  return pecasComPorcentagem.sort((a, b) => b.quantidade - a.quantidade);
+}
+
+// Função para filtrar peças por data
+function filtrarPecasPorData(pecas, dataInicioStr, dataFimStr) {
+  if (!dataInicioStr || !dataFimStr) return pecas;
+  
+  const dataInicio = parseDate(dataInicioStr);
+  const dataFim = parseDate(dataFimStr);
+  
+  return pecas.filter(peca => {
+    if (!peca.data) return false; // Se não tem data, não inclui
+    const dataPeca = parseDate(peca.data);
+    return dataPeca >= dataInicio && dataPeca <= dataFim;
+  });
+}
+
+// Função para converter string de data para Date object
+function parseDate(dateStr) {
+  if (!dateStr) return null;
+  const [day, month, year] = dateStr.split('/');
+  return new Date(year, month - 1, day);
+}
+
+// Função principal para atualizar o gráfico
+function atualizarGrafico() {
+  const dataInicio = document.getElementById('data-inicio').value;
+  const dataFim = document.getElementById('data-fim').value;
+  const container = document.querySelector('.cadastro-box');
+  const noDataMessage = document.getElementById('no-data-message');
+  const formScroll = document.querySelector('.form-scroll');
+  const pecasContainer = document.getElementById('pecas-container');
+  const chartContainer = document.querySelector('.chart-container');
+
+  // Obter todas as peças
+  const todasPecas = obterPecasCadastradas();
+  
+  // Filtrar por data se ambas as datas estiverem preenchidas
+  let pecasFiltradas = todasPecas;
+  if (dataInicio && dataFim) {
+    pecasFiltradas = filtrarPecasPorData(todasPecas, dataInicio, dataFim);
+  }
+  
+  if (pecasFiltradas.length === 0) {
+    // Modo "sem dados"
+    container.classList.add('no-data');
+    container.style.height = '300px'; // Altura reduzida
+    noDataMessage.style.display = 'block';
+    pecasContainer.style.display = 'none';
+    chartContainer.style.display = 'none';
+  } else {
+    // Modo normal com dados
+    container.classList.remove('no-data');
+    container.style.height = '600px'; // Altura normal
+    noDataMessage.style.display = 'none';
+    pecasContainer.style.display = 'flex';
+    chartContainer.style.display = 'block';
+    
+    // Calcular porcentagens e atualizar exibição
+    const pecasComPorcentagem = calcularPorcentagens(pecasFiltradas);
+    const topPecas = pecasComPorcentagem.slice(0, 5);
+    atualizarRetangulosPecas(topPecas);
+    renderizarGrafico(topPecas);
+  }
+}
+
+function renderizarGrafico(topPecas) {
+  const ctx = document.getElementById('myChart')?.getContext('2d');
+  
+  // Destruir gráfico existente se houver
+  if (myChartInstance) {
+    myChartInstance.destroy();
+  }
+  
+  // Só criar novo gráfico se houver peças
+  if (topPecas && topPecas.length > 0) {
+    // ... (restante do código de renderização do gráfico)
+  }
+}
+
+function atualizarRetangulosPecas(topPecas) {
+  const cores = [
+    'rgba(255, 99, 132, 0.7)',
+    'rgba(54, 162, 235, 0.7)',
+    'rgba(255, 206, 86, 0.7)',
+    'rgba(75, 192, 192, 0.7)',
+    'rgba(153, 102, 255, 0.7)'
+  ];
+  
+  const container = document.getElementById('pecas-container');
+  container.innerHTML = '';
+  
+  topPecas.forEach((peca, index) => {
+    const pecaElement = document.createElement('div');
+    pecaElement.className = 'peca-info';
+    pecaElement.style.backgroundColor = cores[index % cores.length];
+    
+    pecaElement.innerHTML = `
+      <span class="peca-nome">${peca.nome}</span>
+      <span class="peca-quantidade">${peca.quantidade} unidades</span>
+      ${peca.data ? `<span class="peca-data">Data: ${peca.data}</span>` : ''}
+    `;
+    
+    container.appendChild(pecaElement);
+  });
+}
+
+function renderizarGrafico(topPecas) {
+  const labels = topPecas.map(peca => peca.nome);
+  const porcentagens = topPecas.map(peca => parseFloat(peca.porcentagem));
+  const quantidades = topPecas.map(peca => peca.quantidade);
+  
+  const cores = [
+    'rgba(255, 99, 132, 0.7)',
+    'rgba(54, 162, 235, 0.7)',
+    'rgba(255, 206, 86, 0.7)',
+    'rgba(75, 192, 192, 0.7)',
+    'rgba(153, 102, 255, 0.7)'
+  ];
+  
+  const ctx = document.getElementById('myChart')?.getContext('2d');
+  
+  if (!ctx) {
+    console.error("Canvas não encontrado");
+    return;
+  }
+  
+  // Destruir gráfico existente se houver
+  if (myChartInstance) {
+    myChartInstance.destroy();
+  }
+  
+  // Criar novo gráfico apenas se houver peças para mostrar
+  if (topPecas.length > 0) {
+    myChartInstance = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: porcentagens,
+          backgroundColor: cores,
+          hoverBackgroundColor: cores.map(c => c.replace('0.7', '1')),
+          hoverBorderWidth: 2,
+          hoverBorderColor: 'black'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const quantidade = quantidades[context.dataIndex];
+                const porcentagem = context.raw;
+                return [
+                  `${label}: ${quantidade} unidades`,
+                  `${porcentagem}% do total`
+                ];
+              }
+            }
+          },
+          legend: {
+            display: false
+          },
+          datalabels: {
+            formatter: (value, ctx) => {
+              return `${ctx.chart.data.labels[ctx.dataIndex]}\n${value}%`;
+            },
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 12
+            }
+          }
+        }
+      }
+    });
+  } else {
+    // Mostrar mensagem quando não há dados
+    ctx.font = '16px Arial';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
+    ctx.fillText('Nenhuma peça encontrada no período selecionado', ctx.canvas.width / 2, ctx.canvas.height / 2);
+  }
+}       
+
+    </script>
+        </div>
+
+        <!-- Tentando fazer aparecer mensagem quando passar o mouse por cima do gráfico
+         <script>
+            function aparecerTexto() {
+                  document.getElementById("slice slice1").innerHTML = "Texto";
+            }
+            function reset() {
+                  document.getElementById("slice slice1").innerHTML = "";
+            }
+        </script>-->
+          </div>       
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
   <script src="../tela_geral/tela_geral.js"></script>
+  <script src="../tela_geral/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 </body>
 </html>

@@ -265,6 +265,8 @@ async function uploadFotoPerfil(file) {
       alert('Erro ao enviar foto: ' + error.message);
   }
 }
+
+ 
   
   let informações = [
     {

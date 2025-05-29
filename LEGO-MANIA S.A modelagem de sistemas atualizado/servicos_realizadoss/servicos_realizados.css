@@ -1,3 +1,5 @@
+
+
 .section_conteudo {
   background-color: var(--white);
   border-radius: 10px;
@@ -5,9 +7,9 @@
   border: 2px solid black;
   padding: 20px;
   margin-bottom: 20px;
-  max-width: 1000px;
-  margin-left: 2.5%;
-  margin: auto;
+  width:86%;
+  margin-left:65px;
+  margin-top:50px;
 }
 
 .section-header {
@@ -248,66 +250,6 @@
   max-width: 500px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   position: relative;
-  transform: translate(125px, 32px);
-}
-
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  overflow: auto;
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 5% auto;
-  padding: 20px;
-  border-radius: 8px;
-  width: 60%;
-  max-width: 600px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.close-btn {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.close-btn:hover {
-  color: black;
-}
-
-.modal-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #eee;
-  padding: 8px 0;
-}
-
-.detail-label {
-  font-weight: 600;
-  color: #555;
-}
-
-.detail-value {
-  text-align: right;
-  color: #333;
 }
 
 .close-btn {
@@ -349,45 +291,6 @@
   resize: vertical;
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-      width: 60px;
-      overflow: hidden;
-  }
-
-  .logo, .menu button span {
-      display: none;
-  }
-
-  .menu button {
-      justify-content: center;
-      padding: 15px 0;
-  }
-
-  .menu button i {
-      margin-right: 0;
-      font-size: 1.1rem;
-  }
-
-  .main-content {
-      margin-left: 60px;
-  }
-
-  .section-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 15px;
-  }
-
-  .actions {
-      width: 100%;
-      flex-direction: column;
-  }
-
-  .search-box input {
-      width: 100%;
-  }
-}
 .service-table th {
     position: relative;
     padding-right: 25px !important;
@@ -433,30 +336,4 @@
     padding: 0.4rem;
     border: 1px solid #555;
     border-radius: 5px;
-  }
-  .horario{
-    transform: translateY(-4px)
-  }
-  .btnperfil {
-    width: 33px; /* Tamanho igual ao do ícone */
-    height: 33px;
-    background-image: url('https://cdn-icons-png.freepik.com/512/64/64572.png');
-    background-size: contain; /* Mantém a proporção sem cortar */
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: transparent !important;
-    border: none;
-    cursor: none;
-    flex-shrink: 0; /* Impede que o botão encolha */
-  }
-
-  .mensagem-vazia {
-    background-color: #fff3cd;
-    color: #856404;
-    padding: 10px 15px;
-    border: 1px solid #ffeeba;
-    border-radius: 4px;
-    margin-top: 10px;
-    font-weight: 500;
-    font-size: 14px;
   }
