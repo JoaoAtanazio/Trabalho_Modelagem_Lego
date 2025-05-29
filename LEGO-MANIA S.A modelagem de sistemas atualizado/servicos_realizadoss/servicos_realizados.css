@@ -7,6 +7,7 @@
   margin-bottom: 20px;
   max-width: 1000px;
   margin-left: 2.5%;
+  margin: auto;
 }
 
 .section-header {
@@ -348,7 +349,45 @@
   resize: vertical;
 }
 
+@media (max-width: 768px) {
+  .sidebar {
+      width: 60px;
+      overflow: hidden;
+  }
 
+  .logo, .menu button span {
+      display: none;
+  }
+
+  .menu button {
+      justify-content: center;
+      padding: 15px 0;
+  }
+
+  .menu button i {
+      margin-right: 0;
+      font-size: 1.1rem;
+  }
+
+  .main-content {
+      margin-left: 60px;
+  }
+
+  .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+  }
+
+  .actions {
+      width: 100%;
+      flex-direction: column;
+  }
+
+  .search-box input {
+      width: 100%;
+  }
+}
 .service-table th {
     position: relative;
     padding-right: 25px !important;

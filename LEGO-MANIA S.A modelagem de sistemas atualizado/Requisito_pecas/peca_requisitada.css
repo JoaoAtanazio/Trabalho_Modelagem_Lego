@@ -1,3 +1,4 @@
+/* Botões */
 .buttons {
   display: flex;
   flex-direction: column;
@@ -7,7 +8,7 @@
 
 .btn {
   background-color: #aaa;
-  border:  1px solid black;
+  border: 1px solid black;
   padding: 0.4rem;
   border-radius: 15px;
   font-size: 1rem;
@@ -16,10 +17,11 @@
   margin-top: 10px;
 }
 
+/* Container principal reduzido */
 .cadastro-box {
-  width: 45vw;
-  min-height: 300px; /* Altura mínima reduzida */
-  max-height: 600px; /* Altura máxima */
+  width: 60vw; /* Diminuído de 70vw */
+  min-height: 700px;
+  max-height: 90vh;
   position: fixed;
   top: 50%;
   left: 60%;
@@ -30,79 +32,81 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: all 0.3s ease;
 }
 
-.cadastro-box h2 {
-margin-bottom: 2rem;
-font-size: 2.2rem;
-text-align: center;
-}
-
-.form-buttons {
-display:flex;
-gap: 10px;
-margin-top: 1rem;
-justify-content: center;
-border-top: 1px solid #ccc;
-background-color: #f9f9f9;
-flex-shrink: 0;
-border-bottom-right-radius: 15px;
-border-bottom-left-radius: 15px;
-transform: translateY(-10px);
-}
-
-/* NOVOS estilos para layout fixo do título e botões */
+/* Cabeçalho */
 .cadastro-header {
   padding: 13px;
   text-align: center;
   font-size: 24px;
   font-weight: bold;
   border-bottom: 1px solid #ccc;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  background-color: #f9f9f9;
-  flex-shrink: 0;
-  font-size: 24px;
-  font-weight: 600;
   background: linear-gradient(45deg, #c2bdbd, #3a3737, #aaa, #303030);
-  background-size: 400% 400%; /* Amplia o gradiente para permitir a animação */
+  background-size: 400% 400%;
   animation: gradientAnimation 15s ease infinite;
+  color: white;
+  flex-shrink: 0;
 }
 
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Quando não há dados, ajusta o form-scroll */
-.no-data .form-scroll {
-  justify-content: center;
-  align-items: center;
-}
-
-/* Área de conteúdo rolável */
+/* Área de conteúdo */
 .form-scroll {
   flex-grow: 1;
-  overflow-y: auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  overflow: visible;
+}
+
+/* Container das peças - 3 em cima e 3 embaixo */
+.pecas-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Blocos de peças menores */
+.peca-info {
+  padding: 30px;
+  justify-content: center;
+  border-radius: 8px;
+  color: white;
+  width: 150px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  height: 80px; /* Altura reduzida */
+}
+
+/* Elementos dentro dos blocos */
+.peca-quantidade, .peca-data, .peca-porcentagem, .peca-nome {
+  font-size: 16px;
+  margin: 1px 0;
+  text-align: center;
+}
+
+/* Container do gráfico aumentado */
+.chart-container {
+  width: 100%;
+  height: 400px; /* Aumentado de 300px */
+  margin: 15px 0;
   position: relative;
+  flex-shrink: 0;
 }
 
-#myChart {
-  margin: auto;
-  box-sizing: border-box;
+/* Botões na base */
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  justify-content: center;
+  border-top: 1px solid #ccc;
+  background-color: #f9f9f9;
+  flex-shrink: 0;
 }
 
+/* Seletor de datas */
 .date-range {
   display: flex;
   justify-content: center;
@@ -128,55 +132,18 @@ transform: translateY(-10px);
   border-radius: 5px;
 }
 
-.pecas-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin: 20px 0;
-  justify-content: center;
-}
-
-.peca-info {
-  padding: 5px 15px;
-  border-radius: 6px;
-  color: white;
-  font-weight: 500;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 120px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  text-align: center;
-}
-
-.peca-nome {
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.peca-quantidade {
-  font-size: 12px;
-  background-color: rgba(0,0,0,0.2);
-  padding: 2px 8px;
-  border-radius: 10px;
-}
-
-.chart-container {
-  position: relative;
-  height: 300px;
-  width: 100%;
-}
-
-/* Mensagem quando não há dados */
+/* Mensagem sem dados */
 .no-data-message {
   text-align: center;
   padding: 20px;
-  font-size: 1.2rem;
+  font-size: 16px;
   color: #666;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  display: none; /* Inicialmente oculta */
+  margin: auto;
+}
+
+/* Animações */
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
