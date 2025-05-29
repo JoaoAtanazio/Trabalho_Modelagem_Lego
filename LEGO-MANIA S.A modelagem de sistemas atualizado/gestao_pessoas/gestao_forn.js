@@ -33,42 +33,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function loadSampleData() {
-        // Dados de exemplo para fornecedores
-        allSuppliers = [
-            {
-                id: 1,
-                nome: 'Joseph',
-                cpf_cnpj: '727.338.970.13',
-                telefone: '(48) 99462-3412',
-                ramo: 'Ramo de carcaça',
-                cep: '46288-123',
-                email: 'JosephJ&G@gmail.com',
-                visible: true
-            },
-            {
-                id: 2,
-                nome: 'Fornecedor ABC',
-                cpf_cnpj: '12.345.678/0001-90',
-                telefone: '(11) 98765-4321',
-                ramo: 'Peças eletrônicas',
-                cep: '04538-132',
-                email: 'contato@abc.com.br',
-                visible: true
-            },
-            {
-                id: 3,
-                nome: 'Distribuidora XYZ',
-                cpf_cnpj: '98.765.432/0001-21',
-                telefone: '(11) 91234-5678',
-                ramo: 'Componentes plásticos',
-                cep: '01310-100',
-                email: 'vendas@xyz.com.br',
-                visible: true
-            }
-        ];
-        
-        filteredSuppliers = [...allSuppliers];
-    }
+  // Se houver dados no localStorage, usa eles. Senão, carrega exemplo.
+  const stored = localStorage.getItem('fornecedores');
+  if (stored) {
+    allSuppliers = JSON.parse(stored);
+  } else {
+    allSuppliers = [
+      {
+        id: 1,
+        nome: 'Fornecedor Exemplo',
+        cpf_cnpj: '00.000.000/0001-00',
+        telefone: '(11) 90000-0000',
+        ramo: 'Exemplo de ramo',
+        cep: '00000-000',
+        email: 'exemplo@fornecedor.com',
+        visible: true
+      }
+    ];
+  }
+
+  filteredSuppliers = [...allSuppliers];
+}
     
     function setupEventListeners() {
         // Pesquisa
