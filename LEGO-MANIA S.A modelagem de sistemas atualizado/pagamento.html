@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cadastro - Lego Mania</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="d-flex vh-100 bg-light">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="bg-dark text-white p-3" style="width: 250px;">
+            <h4 class="mb-4">Menu</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a href="principal.html" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="perfil.html" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
+                </li>
+                <li class="nav-item mb-2 dropdown">
+                    <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-plus me-2"></i> Cadastro 
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
+                        <li><a class="dropdown-item" href="cadastro_cliente.html">Cliente</a></li>
+                        <li><a class="dropdown-item" href="cadastro_funcionario.html">Funcionário</a></li>
+                        <li><a class="dropdown-item" href="cadastro_fornecedor.html">Fornecedor</a></li>
+                        <li><a class="dropdown-item" href="cadastro_pecas.html">Peças no estoque</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item mb-2 dropdown">
+                    <a class="nav-link text-white dropdown-toggle" href="#" id="gestaoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-people me-2"></i> Gestão de Pessoas
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="gestaoDropdown">
+                        <li><a class="dropdown-item" href="gestao_cliente.html">Clientes</a></li>
+                        <li><a class="dropdown-item" href="gestao_funcionario.html">Funcionários</a></li>
+                        <li><a class="dropdown-item" href="gestao_fornecedor.html">Fornecedores</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item mb-2 dropdown">
+                    <a class="nav-link text-white dropdown-toggle" href="#" id="ordemDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-tools me-2"></i> Ordem de Serviços 
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ordemDropdown">
+                        <li><a class="dropdown-item" href="nova_ordem.html">Nova O.S</a></li>
+                        <li><a class="dropdown-item" href="consultar_ordem.html">Consultar</a></li>
+                        <li><a class="dropdown-item" href="pagamento.html">Pagamento</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item mb-2 dropdown">
+                    <a class="nav-link text-white dropdown-toggle" href="#" id="financiasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-graph-up me-2"></i> Relatório de Financias
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="financiasDropdown">
+                        <li><a class="dropdown-item" href="relatorio_despesas.html">Despesas</a></li>
+                        <li><a class="dropdown-item" href="relatorio_lucro.html">Ganho Bruto</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item mb-2 dropdown">
+                    <a class="nav-link text-white dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-boxes me-2"></i> Relatório de Estoque
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="estoqueDropdown">
+                        <li><a class="dropdown-item" href="relatorio_saida.html">Saída de Peças</a></li>
+                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.html">Peças no Estoque</a></li>
+                        <li><a class="dropdown-item" href="relatorio_uso.html">Relatório de Uso</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="login.html" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo principal -->
+        <div class="flex-grow-1 d-flex flex-column">
+            <!-- Header -->
+            <nav class="navbar navbar-light bg-white shadow-sm">
+                <div class="container-fluid">
+                    <button class="btn btn-dark" id="menu-toggle"><i class="bi bi-list"></i></button>
+                    <span class="navbar-brand mb-0 h1">
+                        <small class="text-muted">Horário atual:</small>
+                        <span id="liveClock" class="badge bg-secondary"></span>
+                    </span>
+                </div>
+            </nav>
+
+            <!-- Conteúdo - Formulário -->
+            <div class="flex-grow-1 p-3" style="overflow-y: auto;">
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-10 col-lg-8">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-primary text-white py-2">
+                                    <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Forma de Pagamento</h5>
+                                </div>
+                                <div class="card-body p-3">
+                                    <form>
+                                        <!-- Número da Ordem -->
+                                        <div class="mb-2">
+                                            <label for="numero_ordem" class="form-label">Número da Ordem</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                                <input type="text" class="form-control" id="numero_ordem" placeholder="Número da ordem de serviço" required>
+                                            </div>
+                                        </div>
+            
+                                        <!-- Cliente -->
+                                        <div class="mb-2">
+                                            <label for="cliente" class="form-label">Cliente</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                                <input type="text" class="form-control" id="cliente" placeholder="Nome do cliente" required>
+                                            </div>
+                                        </div>
+            
+                                        <!-- Valor Total -->
+                                        <div class="mb-2">
+                                            <label for="valor_total" class="form-label">Valor Total</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                                <input type="text" class="form-control" id="valor_total" placeholder="R$ 0,00" required>
+                                            </div>
+                                        </div>
+            
+                                        <!-- Data de Vencimento -->
+                                        <div class="mb-2">
+                                            <label for="data_vencimento" class="form-label">Data de Vencimento</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-calendar-x"></i></span>
+                                                <input type="date" class="form-control" id="data_vencimento" required>
+                                            </div>
+                                        </div>
+            
+                                        <!-- Método de Pagamento -->
+                                        <div class="mb-3">
+                                            <label for="metodo_pagamento" class="form-label">Método de Pagamento</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-wallet2"></i></span>
+                                                <select class="form-select" id="metodo_pagamento" required>
+                                                    <option value="" selected disabled>Selecione o método de pagamento</option>
+                                                    <option value="credito">Cartão (Crédito)</option>
+                                                    <option value="debito">Cartão (Débito)</option>
+                                                    <option value="pix">PIX</option>
+                                                    <option value="dinheiro">Dinheiro</option>
+                                                </select>
+                                            </div>
+                                        </div>
+            
+                                        <!-- Botões -->
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                            <button type="reset" class="btn btn-outline-secondary btn-sm me-md-2">
+                                                <i class="bi bi-x-circle"></i> Limpar
+                                            </button>
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-check-circle"></i> Registrar Pagamento
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card-footer text-muted text-center py-2">
+                                    <small>Todos os campos são obrigatórios</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <script>
+        // Alternar exibição do menu
+        document.getElementById("menu-toggle").addEventListener("click", function () {
+            document.getElementById("sidebar").classList.toggle("d-none");
+        });
+
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('pt-BR');
+            document.getElementById('liveClock').textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock(); // Inicializa imediatamente
+    </script>
+</body>
+</html>
