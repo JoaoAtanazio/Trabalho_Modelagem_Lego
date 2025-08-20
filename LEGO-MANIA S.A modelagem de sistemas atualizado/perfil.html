@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body{
-            overflow-x: hidden;
+            overflow-y: hidden !important;
         }
     </style>
     <title>Home - Lego mania</title>
@@ -39,7 +39,7 @@
         </li>
         <li class="nav-item mb-2 dropdown">
           <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-plus me-2"></i> Gestão de Pessoas
+            <i class="bi bi-people me-2"></i> Gestão de Pessoas
           </a>
           <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
               <li><a class="dropdown-item" href="gestao_cliente.html">Clientes</a></li>
@@ -49,7 +49,7 @@
         </li>
         <li class="nav-item mb-2 dropdown">
           <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-plus me-2"></i> Ordem de Serviços 
+            <i class="bi bi-tools me-2"></i> Ordem de Serviços 
           </a>
           <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
               <li><a class="dropdown-item" href="nova_ordem.html">Nova O.S</a></li>
@@ -59,7 +59,7 @@
           </li>
           <li class="nav-item mb-2 dropdown">
             <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-plus me-2"></i> Relatório de Financias
+                <i class="bi bi-graph-up me-2"></i> Relatório de Financias
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
                 <li><a class="dropdown-item" href="relatorio_despesas.html">Despesas</a></li>
@@ -68,7 +68,7 @@
           </li>
           <li class="nav-item mb-2 dropdown">
             <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-plus me-2"></i> Relatório de Estoque
+                <i class="bi bi-boxes me-2"></i> Relatório de Estoque
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
                 <li><a class="dropdown-item" href="relatorio_saida.html">Saída de Peças</a></li>
@@ -116,7 +116,7 @@
                           <h6 class="mb-0"><i class="bi bi-person-badge me-2"></i>Foto de Perfil</h6>
                       </div>
                       <div class="card-body text-center">
-                          <img src="https://i.pravatar.cc/150?img=5" 
+                          <img src="/imagem//perfil_funcionario.png" 
                                class="rounded-circle mb-3 border border-3 border-dark shadow-sm" 
                                alt="Foto de Perfil" 
                                width="150" height="150">
@@ -125,10 +125,14 @@
                           <p class="text-muted mb-3">Usuário</p>
                           
                           <div class="d-grid gap-2">
-                              <button class="btn btn-outline-dark btn-sm">
-                                  <i class="bi bi-camera me-1"></i> Alterar Foto
-                              </button>
-                          </div>
+                            <label class="btn btn-outline-dark btn-sm" style="cursor:pointer; margin:0;">
+                                <i class="bi bi-camera me-1"></i> Alterar Foto
+                                <input type="file" accept="image/*" style="display:none;">
+                            </label>
+                          </div> <br>
+                          <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="bi bi-check-circle me-1"></i> Salvar
+                          </button>
                       </div>
                   </div>
               </div>
