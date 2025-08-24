@@ -29,7 +29,8 @@
         $sql="SELECT * FROM usuario ORDER BY nome_usuario ASC";
         $stmt = $pdo->prepare($sql);
     }
-
+$stmt->execute();
+$usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -43,6 +44,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
@@ -133,7 +135,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Gestão de Usuários</h5>
                         <button class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle me-1"></i> Novo Usuários
+                            <i class="bi bi-plus-circle me-1"><a href="cadastro_usuario.php" class="novo_usuario"> Novo Usuário</a></i>
                         </button>
                     </div>
                     
