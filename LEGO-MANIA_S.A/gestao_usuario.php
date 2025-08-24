@@ -9,6 +9,8 @@
     } 
     $usuario = []; // INICIALIZA A VARIAVEL PARA EVITAR ERROS
 
+    // Buscar Usuario
+
     // SE O FORMULARIO FOR ENVIADO, BUSCA O USUARIO PELO ID OU NOME
     if($_SERVER["REQUEST_METHOD"]== "POST" && !empty($_POST['busca'])){
         $busca = trim($_POST['busca']);
@@ -29,6 +31,27 @@
         $sql="SELECT * FROM usuario ORDER BY nome_usuario ASC";
         $stmt = $pdo->prepare($sql);
     }
+        
+    // Excluir Usuario
+
+    // Se um id for passado via GET exclui o usuario
+    if(isset($_GET['id']) && is_numeric($_GET['id'])){
+        $id_usuario = $_GET['id'];
+
+        // Exclui o usuario do banco de dados
+        $sql = "DELETE FROM usuario WHERE id_usuario = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id',$id_usuario,PDO::PARAM_INT);
+
+        if($stmt->execute()){
+            echo "<script>alert('Usuario excluido com sucesso!');window.location.href='gestao_usuario.php';</script>";
+        } else{
+            echo "<script>alert('Erro ao excluir o usuario!');</script>";
+        }
+    }
+
+    
+
 $stmt->execute();
 $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
 ?>
@@ -155,19 +178,19 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
                                 </div>
                                 <div class="col-md-3">
                                     <select class="form-select form-select-sm">
-                                        <option selected>Todos os cargos</option>
-                                        <option>Administrador</option>
-                                        <option>Funcionário</option>
-                                        <option>Secretaria</option>
-                                        <option>Técnico</option>
+                                        <option selected value="0">Todos os cargos</option>
+                                        <option value="1">Administrador</option>
+                                        <option value="2">Funcionário</option>
+                                        <option value="3">Secretaria</option>
+                                        <option value="4">Técnico</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <select class="form-select form-select-sm">
-                                        <option selected>Status</option>
-                                        <option>Ativo</option>
-                                        <option>Inativo</option>
-                                        <option>Férias</option>
+                                    <select name="id_perfil" id="id_perfil" class="form-select form-select-sm" onchange="this.form.submit()">
+                                        <option value="">Todos os cargos</option>
+                                        <option value="1">Administrador</option>
+                                        <option value="2">Funcionário</option>
+                                        <option value="3">Secretaria</option>
                                     </select>
                                 </div>
                             </div>
@@ -182,25 +205,25 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
                                     <table class="table table-striped table-hover table-bordered mb-0">
                                         <thead class="table-dark">
                                             <tr>
-                                                <th>ID</th>
-                                                <th>Nome Usuário</th>
-                                                <th>E-mail</th>
-                                                <th>Perfil</th>
-                                                <th>Status</th>
+                                                <th><center>ID</center></th>
+                                                <th><center>Nome Usuário</center></th>
+                                                <th><center>E-mail</center></th>
+                                                <th><center>Perfil</center></th>
+                                                <th><center>Status</center></th>
                                                 <th class="text-center">Ações</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach($usuarios as $usuario): ?>
                                                 <tr>
-                                                    <td><?=htmlspecialchars($usuario['id_usuario'])?></td>
-                                                    <td><?=htmlspecialchars($usuario['nome_usuario'])?></td>
-                                                    <td><?=htmlspecialchars($usuario['email'])?></td>
-                                                    <td><?=htmlspecialchars($usuario['id_perfil'])?></td>
+                                                    <td><center><?=htmlspecialchars($usuario['id_usuario'])?></center></td>
+                                                    <td><center><?=htmlspecialchars($usuario['nome_usuario'])?></center></td>
+                                                    <td><center><?=htmlspecialchars($usuario['email'])?></center></td>
+                                                    <td><center><?=htmlspecialchars($usuario['id_perfil'])?></center></td>
                                                     <td><span class="badge bg-success">Ativo</span></td>
                                                     <td class="text-center">
                                                         <a href="alterar_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>" class="btn btn-sm btn-primary me-1">Alterar</a>
-                                                        <a href="excluir_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>" class="btn btn-sm btn-danger"
+                                                        <a href="gestao_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>" class="btn btn-sm btn-danger"
                                                         onclick="return confirm('Tem certeza que deseja excluir este usuário?')">Excluir</a>
                                                         <a href="ocultar_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>" class="btn btn-sm btn-secondary">Ocultar</a>
                                                     </td>
