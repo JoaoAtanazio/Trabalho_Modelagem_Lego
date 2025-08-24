@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 24/08/2025 às 16:35
+-- Tempo de geração: 24/08/2025 às 19:25
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -147,7 +147,8 @@ CREATE TABLE `perfil` (
 INSERT INTO `perfil` (`id_perfil`, `nome_perfil`) VALUES
 (1, 'Administrador'),
 (2, 'Funcionario'),
-(3, 'Secretaria');
+(3, 'Secretaria'),
+(4, 'Tecnico');
 
 -- --------------------------------------------------------
 
@@ -169,12 +170,10 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `nome_usuario`, `senha`, `email`, `senha_temporaria`, `id_perfil`) VALUES
-(6, 'João Admin', '123', 'carlos@empresa.com', 0, 1),
-(7, 'Mariana Admin', 'adm456', 'mariana.admin@email.com', 0, 1),
-(8, 'Carlos Func', 'func123', 'carlos.func@email.com', 0, 2),
-(9, 'Fernanda Func', 'func456', 'fernanda.func@email.com', 1, 2),
-(10, 'Ana Secretaria', 'sec123', 'ana.secretaria@email.com', 0, 3),
-(11, 'Lucas Secretaria', 'sec456', 'lucas.secretaria@email.com', 1, 3);
+(12, 'Admin', '$2y$10$RjRfXwZANRJomQAL3Aao6e74U4CHBopq0OcPJBJ8mi1H4UdAJorkG', 'admin@admin', 0, 1),
+(13, 'João Atanazio', '$2y$10$0gm1pa6kfazfeFfsXts3SuqVxSqTcMceprpLvtevIKu7Lo/hmcOxO', 'joao@joao', 0, 1),
+(14, 'Gustavo', '$2y$10$FEb8YR10n2R9enne6tqKSOUUkdBJVjg8MIywqwoEBFnDN1vpqPITm', 'gustavo@gustavo', 0, 1),
+(15, 'Sergio', '$2y$10$W8oy.GSh5PLe4/y8OMs3COEUHerWX.nXwWGiKLsmsCxut6ShHzRtS', 'sergio@sergio', 0, 1);
 
 --
 -- Índices para tabelas despejadas
@@ -283,13 +282,13 @@ ALTER TABLE `peca_estoque`
 -- AUTO_INCREMENT de tabela `perfil`
 --
 ALTER TABLE `perfil`
-  MODIFY `id_perfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_perfil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Restrições para tabelas despejadas
