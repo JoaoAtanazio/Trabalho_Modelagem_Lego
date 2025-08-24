@@ -1,9 +1,44 @@
+<?php
+    session_start();
+    require_once 'conexao.php';
+
+    // VERIFICA SE O USUARIO TEM PERMISSÃO
+    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
+
+    if($_SESSION['perfil']!=1){
+        echo "Acesso Negado!";
+    }
+
+    if($_SERVER['REQUEST_METHOD']== "POST"){
+        $nome_usuario = $_POST['nome_usuario'];
+        $email = $_POST['email'];
+        $senha = password_hash($_POST['senha'],PASSWORD_DEFAULT);
+        $id_perfil = $_POST['id_perfil'];
+
+        $sql = "INSERT INTO usuario(nome_usuario,email,senha,id_perfil) VALUES (:nome_usuario,:email,:senha,:id_perfil)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':nome_usuario',$nome_usuario);
+        $stmt->bindParam(':email',$email);
+        $stmt->bindParam(':senha',$senha);
+        $stmt->bindParam(':id_perfil',$id_perfil);
+
+        if($stmt->execute()){
+            echo "<script>alert('Usuario cadastrado com sucesso!');</script>";
+        }
+        else{
+            echo "<script>alert('Erro ao cadastrar Usuario!');</script>";
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Cadastro - Lego Mania</title>
+    <script src="javascript/validacoes_form.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
@@ -17,20 +52,21 @@
             <h4 class="mb-4">Menu</h4>
             <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                    <a href="principal.html" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
+                    <a href="principal.php" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="perfil.html" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
+                    <a href="perfil.php" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
                 </li>
                 <li class="nav-item mb-2 dropdown">
                     <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-plus me-2"></i> Cadastro 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
-                        <li><a class="dropdown-item" href="cadastro_cliente.html">Cliente</a></li>
-                        <li><a class="dropdown-item" href="cadastro_funcionario.html">Funcionário</a></li>
-                        <li><a class="dropdown-item" href="cadastro_fornecedor.html">Fornecedor</a></li>
-                        <li><a class="dropdown-item" href="cadastro_pecas.html">Peças no estoque</a></li>
+                        <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
+                        <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
+                        <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
+                        <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
+                        <li><a class="dropdown-item" href="cadastro_pecas.php">Peças no estoque</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -38,9 +74,10 @@
                         <i class="bi bi-people me-2"></i> Gestão de Pessoas
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="gestaoDropdown">
-                        <li><a class="dropdown-item" href="gestao_cliente.html">Clientes</a></li>
-                        <li><a class="dropdown-item" href="gestao_funcionario.html">Funcionários</a></li>
-                        <li><a class="dropdown-item" href="gestao_fornecedor.html">Fornecedores</a></li>
+                        <li><a class="dropdown-item" href="gestao_usuario.php">Usuarios</a></li>
+                        <li><a class="dropdown-item" href="gestao_cliente.php">Clientes</a></li>
+                        <li><a class="dropdown-item" href="gestao_funcionario.php">Funcionários</a></li>
+                        <li><a class="dropdown-item" href="gestao_fornecedor.php">Fornecedores</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -48,9 +85,9 @@
                         <i class="bi bi-tools me-2"></i> Ordem de Serviços 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ordemDropdown">
-                        <li><a class="dropdown-item" href="nova_ordem.html">Nova O.S</a></li>
-                        <li><a class="dropdown-item" href="consultar_ordem.html">Consultar</a></li>
-                        <li><a class="dropdown-item" href="pagamento.html">Pagamento</a></li>
+                        <li><a class="dropdown-item" href="nova_ordem.php">Nova O.S</a></li>
+                        <li><a class="dropdown-item" href="consultar_ordem.php">Consultar</a></li>
+                        <li><a class="dropdown-item" href="pagamento.php">Pagamento</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -58,8 +95,8 @@
                         <i class="bi bi-graph-up me-2"></i> Relatório de Financias
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="financiasDropdown">
-                        <li><a class="dropdown-item" href="relatorio_despesas.html">Despesas</a></li>
-                        <li><a class="dropdown-item" href="relatorio_lucro.html">Ganho Bruto</a></li>
+                        <li><a class="dropdown-item" href="relatorio_despesas.php">Despesas</a></li>
+                        <li><a class="dropdown-item" href="relatorio_lucro.php">Ganho Bruto</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -67,13 +104,13 @@
                         <i class="bi bi-boxes me-2"></i> Relatório de Estoque
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="estoqueDropdown">
-                        <li><a class="dropdown-item" href="relatorio_saida.html">Saída de Peças</a></li>
-                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.html">Peças no Estoque</a></li>
-                        <li><a class="dropdown-item" href="relatorio_uso.html">Relatório de Uso</a></li>
+                        <li><a class="dropdown-item" href="relatorio_saida.php">Saída de Peças</a></li>
+                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
+                        <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="login.html" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+                    <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
                 </li>
             </ul>
         </nav>
@@ -98,58 +135,49 @@
                         <div class="col-12 col-md-10 col-lg-8">
                             <div class="card shadow-sm">
                                 <div class="card-header bg-primary text-white py-2">
-                                    <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Forma de Pagamento</h5>
+                                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Cadastro de Usuario</h5>
                                 </div>
                                 <div class="card-body p-3">
-                                    <form>
-                                        <!-- Número da Ordem -->
+                                    <form action="cadastro_usuario.php" method="POST">
+                                        <!-- Nome -->
                                         <div class="mb-2">
-                                            <label for="numero_ordem" class="form-label">Número da Ordem</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-hash"></i></span>
-                                                <input type="text" class="form-control" id="numero_ordem" placeholder="Número da ordem de serviço" required>
-                                            </div>
-                                        </div>
-            
-                                        <!-- Cliente -->
-                                        <div class="mb-2">
-                                            <label for="cliente" class="form-label">Cliente</label>
+                                            <label for="nome_usuario" class="form-label">Nome</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                <input type="text" class="form-control" id="cliente" placeholder="Nome do cliente" required>
+                                                <input type="text" class="form-control" id="nome_usuario" name="nome_usuario" placeholder="Digite o nome completo" required>
                                             </div>
                                         </div>
             
-                                        <!-- Valor Total -->
+                                        <!-- Perfil -->
                                         <div class="mb-2">
-                                            <label for="valor_total" class="form-label">Valor Total</label>
+                                            <label for="id_perfil" class="form-label">Perfil</label>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-                                                <input type="text" class="form-control" id="valor_total" placeholder="R$ 0,00" required>
-                                            </div>
-                                        </div>
-            
-                                        <!-- Data de Vencimento -->
-                                        <div class="mb-2">
-                                            <label for="data_vencimento" class="form-label">Data de Vencimento</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-calendar-x"></i></span>
-                                                <input type="date" class="form-control" id="data_vencimento" required>
-                                            </div>
-                                        </div>
-            
-                                        <!-- Método de Pagamento -->
-                                        <div class="mb-3">
-                                            <label for="metodo_pagamento" class="form-label">Método de Pagamento</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-wallet2"></i></span>
-                                                <select class="form-select" id="metodo_pagamento" required>
-                                                    <option value="" selected disabled>Selecione o método de pagamento</option>
-                                                    <option value="credito">Cartão (Crédito)</option>
-                                                    <option value="debito">Cartão (Débito)</option>
-                                                    <option value="pix">PIX</option>
-                                                    <option value="dinheiro">Dinheiro</option>
+                                                <span class="input-group-text"><i class="bi bi-person-rolodex"></i></span>
+                                                <select class="form-select" id="id_perfil" name="id_perfil" required>
+                                                    <option value="" selected disabled>Selecione o perfil</option>
+                                                    <option value="1">Administrador</option>
+                                                    <option value="2">Funcionario</option>
+                                                    <option value="3">Secretaria</option>
+                                                    <option value="4">Técnico</option>
                                                 </select>
+                                            </div>
+                                        </div>
+            
+                                        <!-- Email -->
+                                        <div class="mb-2">
+                                            <label for="email" class="form-label">E-mail</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                                <input type="email" class="form-control" id="email" name="email" placeholder="funcionario@empresa.com" required>
+                                            </div>
+                                        </div>
+            
+                                        <!-- Senha -->
+                                        <div class="mb-2">
+                                            <label for="senha" class="form-label">Senha</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                                <input type="password" class="form-control" id="senha" name="senha" placeholder="Crie uma senha" required>
                                             </div>
                                         </div>
             
@@ -159,7 +187,7 @@
                                                 <i class="bi bi-x-circle"></i> Limpar
                                             </button>
                                             <button type="submit" class="btn btn-primary btn-sm">
-                                                <i class="bi bi-check-circle"></i> Registrar Pagamento
+                                                <i class="bi bi-check-circle"></i> Cadastrar
                                             </button>
                                         </div>
                                     </form>
@@ -188,3 +216,4 @@
     </script>
 </body>
 </html>
+

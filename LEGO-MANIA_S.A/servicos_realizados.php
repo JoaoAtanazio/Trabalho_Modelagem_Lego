@@ -57,20 +57,21 @@
             <h4 class="mb-4">Menu</h4>
             <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                    <a href="principal.html" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
+                    <a href="principal.php" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="perfil.html" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
+                    <a href="perfil.php" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
                 </li>
                 <li class="nav-item mb-2 dropdown">
                     <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-person-plus me-2"></i> Cadastro 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark">
-                        <li><a class="dropdown-item" href="cadastro_cliente.html">Cliente</a></li>
-                        <li><a class="dropdown-item" href="cadastro_funcionario.html">Funcionário</a></li>
-                        <li><a class="dropdown-item" href="cadastro_fornecedor.html">Fornecedor</a></li>
-                        <li><a class="dropdown-item" href="cadastro_pecas.html">Peças no estoque</a></li>
+                        <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
+                        <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
+                        <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
+                        <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
+                        <li><a class="dropdown-item" href="cadastro_pecas.php">Peças no estoque</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -78,9 +79,9 @@
                         <i class="bi bi-people me-2"></i> Gestão de Pessoas
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark">
-                        <li><a class="dropdown-item" href="gestao_cliente.html">Clientes</a></li>
-                        <li><a class="dropdown-item" href="gestao_funcionario.html">Funcionários</a></li>
-                        <li><a class="dropdown-item" href="gestao_fornecedor.html">Fornecedores</a></li>
+                        <li><a class="dropdown-item" href="gestao_cliente.php">Clientes</a></li>
+                        <li><a class="dropdown-item" href="gestao_funcionario.php">Funcionários</a></li>
+                        <li><a class="dropdown-item" href="gestao_fornecedor.php">Fornecedores</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -88,9 +89,9 @@
                         <i class="bi bi-tools me-2"></i> Ordem de Serviços 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark">
-                        <li><a class="dropdown-item" href="nova_ordem.html">Nova O.S</a></li>
-                        <li><a class="dropdown-item" href="consultar_ordem.html">Consultar</a></li>
-                        <li><a class="dropdown-item" href="pagamento.html">Pagamento</a></li>
+                        <li><a class="dropdown-item" href="nova_ordem.php">Nova O.S</a></li>
+                        <li><a class="dropdown-item" href="consultar_ordem.php">Consultar</a></li>
+                        <li><a class="dropdown-item" href="pagamento.php">Pagamento</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -98,8 +99,8 @@
                         <i class="bi bi-graph-up me-2"></i> Relatório de Financias
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark">
-                        <li><a class="dropdown-item" href="relatorio_despesas.html">Despesas</a></li>
-                        <li><a class="dropdown-item" href="relatorio_lucro.html">Ganho Bruto</a></li>
+                        <li><a class="dropdown-item" href="relatorio_despesas.php">Despesas</a></li>
+                        <li><a class="dropdown-item" href="relatorio_lucro.php">Ganho Bruto</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -107,13 +108,13 @@
                         <i class="bi bi-boxes me-2"></i> Relatório de Estoque
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark">
-                        <li><a class="dropdown-item" href="relatorio_saida.html">Saída de Peças</a></li>
-                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.html">Peças no Estoque</a></li>
-                        <li><a class="dropdown-item" href="relatorio_uso.html">Relatório de Uso</a></li>
+                        <li><a class="dropdown-item" href="relatorio_saida.php">Saída de Peças</a></li>
+                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
+                        <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="login.html" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+                    <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
                 </li>
             </ul>
         </nav>

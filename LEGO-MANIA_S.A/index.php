@@ -1,3 +1,38 @@
+ <?php 
+    session_start();
+    require_once 'conexao.php';
+
+    if($_SERVER['REQUEST_METHOD'] == "POST") {
+        $email = $_POST['email'];
+        $senha = $_POST['senha'];
+
+        $sql = "SELECT * FROM usuario WHERE email = :email";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':email', $email);  
+        $stmt->execute();
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($usuario && password_verify($senha, $usuario['senha'])) {
+            // Login bem sucedido define variáveis de sessão
+            $_SESSION['usuario'] = $usuario['nome'];  // corrigido
+            $_SESSION['perfil'] = $usuario['id_perfil'];
+            $_SESSION['id_usuario'] = $usuario['id_usuario'];
+
+            // Verifica se a senha é temporária
+            if($usuario['senha_temporaria']) {
+                header("Location: alterar_senha.php");
+                exit();
+            } else {
+                header("Location: principal.php");
+                exit();
+            }
+        } else {
+            echo "<script>alert('E-mail ou senha incorretos');window.location.href='index.php';</script>";
+        }
+    }
+?> 
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -23,10 +58,10 @@
             <small class="text-muted">Acesse sua conta</small>
         </div>
 
-        <form>
+        <form action="index.php" method="POST">
             <div class="mb-3">
-                <label for="usuario" class="form-label">Usuário</label>
-                <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Digite seu usuario" required>
+                <label for="email" class="form-label">E-mail</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="Digite seu email" required>
             </div>
             <div class="mb-3">
                 <label for="senha" class="form-label">Senha</label>
@@ -40,7 +75,7 @@
                     Lembrar-me
                 </label>
                 </div>
-                <a href="esqueceu_senha.html" class="text-decoration-none">Esqueceu a senha?</a>
+                <a href="esqueceu_senha.php" class="text-decoration-none">Esqueceu a senha?</a>
             </div>
 
             <button type="submit" class="btn btn-dark w-100">Entrar</button><br><br><br>

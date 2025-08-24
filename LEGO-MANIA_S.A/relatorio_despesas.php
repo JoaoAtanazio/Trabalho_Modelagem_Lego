@@ -17,20 +17,21 @@
             <h4 class="mb-4">Menu</h4>
             <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                    <a href="principal.html" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
+                    <a href="principal.php" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="perfil.html" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
+                    <a href="perfil.php" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
                 </li>
                 <li class="nav-item mb-2 dropdown">
                     <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-plus me-2"></i> Cadastro 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
-                        <li><a class="dropdown-item" href="cadastro_cliente.html">Cliente</a></li>
-                        <li><a class="dropdown-item" href="cadastro_funcionario.html">Funcionário</a></li>
-                        <li><a class="dropdown-item" href="cadastro_fornecedor.html">Fornecedor</a></li>
-                        <li><a class="dropdown-item" href="cadastro_pecas.html">Peças no estoque</a></li>
+                        <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
+                        <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
+                        <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
+                        <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
+                        <li><a class="dropdown-item" href="cadastro_pecas.php">Peças no estoque</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -38,9 +39,9 @@
                         <i class="bi bi-people me-2"></i> Gestão de Pessoas
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="gestaoDropdown">
-                        <li><a class="dropdown-item" href="gestao_cliente.html">Clientes</a></li>
-                        <li><a class="dropdown-item" href="gestao_funcionario.html">Funcionários</a></li>
-                        <li><a class="dropdown-item" href="gestao_fornecedor.html">Fornecedores</a></li>
+                        <li><a class="dropdown-item" href="gestao_cliente.php">Clientes</a></li>
+                        <li><a class="dropdown-item" href="gestao_funcionario.php">Funcionários</a></li>
+                        <li><a class="dropdown-item" href="gestao_fornecedor.php">Fornecedores</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -48,9 +49,9 @@
                         <i class="bi bi-tools me-2"></i> Ordem de Serviços 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ordemDropdown">
-                        <li><a class="dropdown-item" href="nova_ordem.html">Nova O.S</a></li>
-                        <li><a class="dropdown-item" href="consultar_ordem.html">Consultar</a></li>
-                        <li><a class="dropdown-item" href="pagamento.html">Pagamento</a></li>
+                        <li><a class="dropdown-item" href="nova_ordem.php">Nova O.S</a></li>
+                        <li><a class="dropdown-item" href="consultar_ordem.php">Consultar</a></li>
+                        <li><a class="dropdown-item" href="pagamento.php">Pagamento</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -58,8 +59,8 @@
                         <i class="bi bi-graph-up me-2"></i> Relatório de Financias
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="financiasDropdown">
-                        <li><a class="dropdown-item" href="relatorio_despesas.html">Despesas</a></li>
-                        <li><a class="dropdown-item" href="relatorio_lucro.html">Ganho Bruto</a></li>
+                        <li><a class="dropdown-item" href="relatorio_despesas.php">Despesas</a></li>
+                        <li><a class="dropdown-item" href="relatorio_lucro.php">Ganho Bruto</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -67,13 +68,13 @@
                         <i class="bi bi-boxes me-2"></i> Relatório de Estoque
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="estoqueDropdown">
-                        <li><a class="dropdown-item" href="relatorio_saida.html">Saída de Peças</a></li>
-                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.html">Peças no Estoque</a></li>
-                        <li><a class="dropdown-item" href="relatorio_uso.html">Relatório de Uso</a></li>
+                        <li><a class="dropdown-item" href="relatorio_saida.php">Saída de Peças</a></li>
+                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
+                        <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="login.html" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+                    <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
                 </li>
             </ul>
         </nav>
@@ -96,7 +97,7 @@
                 <div class="container-fluid">
                     <!-- Cabeçalho -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Relatório de Despesas e Lucros - Ordens de Serviço</h5>
+                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Relatório de Despesas - Ordens de Serviço</h5>
                         <div>
                             <button class="btn btn-outline-secondary btn-sm me-2">
                                 <i class="bi bi-download me-1"></i> Exportar
@@ -159,54 +160,14 @@
                         </div>
                     </div>
             
-                    <!-- Novos cards para lucros -->
-                    <div class="row mb-4">
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0 bg-success bg-opacity-10">
-                                <div class="card-body text-center">
-                                    <div class="text-success mb-2">
-                                        <i class="bi bi-currency-exchange fs-1"></i>
-                                    </div>
-                                    <h4 class="card-title">R$ 45.680,00</h4>
-                                    <p class="card-text text-muted">Faturamento Total</p>
-                                    <span class="badge bg-success">+15%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0 bg-primary bg-opacity-10">
-                                <div class="card-body text-center">
-                                    <div class="text-primary mb-2">
-                                        <i class="bi bi-graph-up-arrow fs-1"></i>
-                                    </div>
-                                    <h4 class="card-title">R$ 16.930,00</h4>
-                                    <p class="card-text text-muted">Lucro Bruto</p>
-                                    <span class="badge bg-primary">+22%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card shadow-sm border-0 bg-info bg-opacity-10">
-                                <div class="card-body text-center">
-                                    <div class="text-info mb-2">
-                                        <i class="bi bi-percent fs-1"></i>
-                                    </div>
-                                    <h4 class="card-title">37,1%</h4>
-                                    <p class="card-text text-muted">Margem de Lucro</p>
-                                    <span class="badge bg-info">+4%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            
                     <div class="row mb-4">
                         <div class="col-lg-8 mb-3">
                             <div class="card shadow-sm">
                                 <div class="card-header bg-white py-3">
-                                    <h6 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Evolução de Despesas e Faturamento</h6>
+                                    <h6 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Evolução de Despesas por Mês</h6>
                                 </div>
                                 <div class="card-body">
-                                    <canvas id="graficoEvolucaoDespesasFaturamento" height="250"></canvas>
+                                    <canvas id="graficoEvolucaoDespesas" height="250"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -222,15 +183,15 @@
                         </div>
                     </div>
             
-                    <!-- Gráfico de lucro por OS -->
+                    <!-- Novo gráfico para comparação de despesas por OS -->
                     <div class="row mb-4">
                         <div class="col-12">
                             <div class="card shadow-sm">
                                 <div class="card-header bg-white py-3">
-                                    <h6 class="mb-0"><i class="bi bi-currency-dollar me-2"></i>Lucro por Ordem de Serviço (Top 10)</h6>
+                                    <h6 class="mb-0"><i class="bi bi-currency-dollar me-2"></i>Despesas por Ordem de Serviço (Top 10)</h6>
                                 </div>
                                 <div class="card-body">
-                                    <canvas id="graficoLucroPorOS" height="300"></canvas>
+                                    <canvas id="graficoDespesasPorOS" height="300"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -437,54 +398,40 @@
             
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
-                // Dados simulados para demonstração (serão substituídos por dados do PHP)
-                const dadosParaPHP = {
-                    meses: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                    despesasMaoObra: [2200, 2450, 2800, 3120, 2950, 3200],
-                    despesasPecas: [1800, 1950, 2200, 2450, 2600, 2850],
-                    despesasTransporte: [800, 750, 950, 1100, 1050, 1200],
-                    despesasOutras: [500, 600, 750, 800, 900, 950],
-                    faturamento: [5200, 5800, 6500, 7200, 6800, 7500],
-                    lucro: [1900, 2150, 2400, 2730, 2300, 2650],
-                    // Dados para o gráfico de lucro por OS
-                    osLabels: ['OS-2023-002', 'OS-2023-004', 'OS-2023-001', 'OS-2023-005', 'OS-2023-003'],
-                    osLucros: [3200, 1850, 1650, 1200, 950]
-                };
-            
-                // Gráfico de evolução de despesas e faturamento
-                const ctxEvolucao = document.getElementById('graficoEvolucaoDespesasFaturamento').getContext('2d');
+                // Gráfico de evolução de despesas
+                const ctxEvolucao = document.getElementById('graficoEvolucaoDespesas').getContext('2d');
                 new Chart(ctxEvolucao, {
                     type: 'line',
                     data: {
-                        labels: dadosParaPHP.meses,
+                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
                         datasets: [{
-                            label: 'Faturamento',
-                            data: dadosParaPHP.faturamento,
-                            borderColor: '#0d6efd',
-                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                            fill: true,
-                            tension: 0.3,
-                            borderWidth: 2
-                        }, {
-                            label: 'Lucro',
-                            data: dadosParaPHP.lucro,
+                            label: 'Mão de Obra',
+                            data: [2200, 2450, 2800, 3120, 2950, 3200],
                             borderColor: '#198754',
                             backgroundColor: 'rgba(25, 135, 84, 0.1)',
                             fill: true,
-                            tension: 0.3,
-                            borderWidth: 2
+                            tension: 0.3
                         }, {
-                            label: 'Despesas Totais',
-                            data: dadosParaPHP.despesasMaoObra.map((val, idx) => 
-                                val + dadosParaPHP.despesasPecas[idx] + 
-                                dadosParaPHP.despesasTransporte[idx] + 
-                                dadosParaPHP.despesasOutras[idx]
-                            ),
-                            borderColor: '#dc3545',
-                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            label: 'Peças e Materiais',
+                            data: [1800, 1950, 2200, 2450, 2600, 2850],
+                            borderColor: '#ffc107',
+                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
                             fill: true,
-                            tension: 0.3,
-                            borderWidth: 2
+                            tension: 0.3
+                        }, {
+                            label: 'Transporte',
+                            data: [800, 750, 950, 1100, 1050, 1200],
+                            borderColor: '#0dcaf0',
+                            backgroundColor: 'rgba(13, 202, 240, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }, {
+                            label: 'Outras Despesas',
+                            data: [500, 600, 750, 800, 900, 950],
+                            borderColor: '#6c757d',
+                            backgroundColor: 'rgba(108, 117, 125, 0.1)',
+                            fill: true,
+                            tension: 0.3
                         }]
                     },
                     options: {
@@ -492,13 +439,6 @@
                         plugins: {
                             legend: {
                                 position: 'top',
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return context.dataset.label + ': R$ ' + context.raw.toFixed(2).replace('.', ',');
-                                    }
-                                }
                             }
                         },
                         scales: {
@@ -507,11 +447,6 @@
                                 title: {
                                     display: true,
                                     text: 'Valor (R$)'
-                                },
-                                ticks: {
-                                    callback: function(value) {
-                                        return 'R$ ' + value.toFixed(0);
-                                    }
                                 }
                             }
                         }
@@ -539,46 +474,48 @@
                     }
                 });
             
-                // Gráfico de lucro por OS
-                const ctxLucroOS = document.getElementById('graficoLucroPorOS').getContext('2d');
-                new Chart(ctxLucroOS, {
+                // Gráfico de despesas por OS
+                const ctxDespesasOS = document.getElementById('graficoDespesasPorOS').getContext('2d');
+                new Chart(ctxDespesasOS, {
                     type: 'bar',
                     data: {
-                        labels: dadosParaPHP.osLabels,
+                        labels: ['OS-2023-002', 'OS-2023-004', 'OS-2023-001', 'OS-2023-005', 'OS-2023-003'],
                         datasets: [{
-                            label: 'Lucro por OS (R$)',
-                            data: dadosParaPHP.osLucros,
-                            backgroundColor: '#198754',
-                            borderColor: 'rgba(25, 135, 84, 0.8)',
-                            borderWidth: 1
+                            label: 'Mão de Obra',
+                            data: [1200, 850, 650, 420, 380],
+                            backgroundColor: '#198754'
+                        }, {
+                            label: 'Peças',
+                            data: [1850, 950, 320, 280, 1250],
+                            backgroundColor: '#ffc107'
+                        }, {
+                            label: 'Transporte',
+                            data: [180, 280, 120, 90, 150],
+                            backgroundColor: '#0dcaf0'
+                        }, {
+                            label: 'Outros',
+                            data: [120, 80, 60, 45, 90],
+                            backgroundColor: '#6c757d'
                         }]
                     },
                     options: {
                         responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return 'Lucro: R$ ' + context.raw.toFixed(2).replace('.', ',');
-                                    }
-                                }
-                            }
-                        },
                         scales: {
+                            x: {
+                                stacked: true,
+                            },
                             y: {
+                                stacked: true,
                                 beginAtZero: true,
                                 title: {
                                     display: true,
                                     text: 'Valor (R$)'
-                                },
-                                ticks: {
-                                    callback: function(value) {
-                                        return 'R$ ' + value;
-                                    }
                                 }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
                             }
                         }
                     }
@@ -587,44 +524,19 @@
                 // Funções para integração futura com PHP
                 function editarDespesa(id) {
                     console.log('Editando despesa:', id);
-                    // Futuramente: redirecionar para página de edição com parâmetros PHP
-                    // window.location.href = 'editar_despesa.php?id=' + id;
+                    // Futuramente: redirecionar para página de edição
                 }
                 
                 function excluirDespesa(id) {
                     console.log('Excluindo despesa:', id);
                     if (confirm('Tem certeza que deseja excluir esta despesa?')) {
-                        // Futuramente: enviar requisição AJAX para exclusão no PHP
-                        /*
-                        fetch('excluir_despesa.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ id: id })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                location.reload();
-                            } else {
-                                alert('Erro ao excluir despesa: ' + data.message);
-                            }
-                        });
-                        */
+                        // Futuramente: enviar requisição AJAX para exclusão
                     }
                 }
                 
                 function detalhesDespesa(id) {
                     console.log('Visualizando detalhes da despesa:', id);
-                    // Futuramente: abrir modal com detalhes via PHP
-                    /*
-                    fetch('detalhes_despesa.php?id=' + id)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Preencher e exibir modal com os dados
-                        });
-                    */
+                    // Futuramente: abrir modal com detalhes
                 }
                 
                 // Event listeners para filtros
@@ -632,7 +544,6 @@
                     const termo = document.getElementById('pesquisaDespesas').value;
                     console.log('Pesquisando despesas por:', termo);
                     // Futuramente: enviar requisição para backend PHP
-                    // aplicarFiltros();
                 });
                 
                 // Outros event listeners para filtros
@@ -648,45 +559,8 @@
                     const ordem = document.getElementById('ordenacaoDespesas').value;
                     
                     console.log('Aplicando filtros:', { categoria, os, mes, ordem });
-                    
                     // Futuramente: enviar requisição para backend PHP com os filtros
-                    /*
-                    const formData = new FormData();
-                    formData.append('categoria', categoria);
-                    formData.append('os', os);
-                    formData.append('mes', mes);
-                    formData.append('ordem', ordem);
-                    
-                    fetch('filtrar_despesas.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Atualizar tabela com os dados filtrados
-                        atualizarTabela(data);
-                    });
-                    */
                 }
-                
-                // Função para atualizar a tabela (será usada com retorno do PHP)
-                function atualizarTabela(dados) {
-                    console.log('Atualizando tabela com dados:', dados);
-                    // Implementação futura para preencher a tabela com dados do PHP
-                }
-                
-                // Simular carregamento de dados do PHP
-                document.addEventListener('DOMContentLoaded', function() {
-                    console.log('Página carregada. Pronta para integração com PHP.');
-                    // Aqui seria onde chamaríamos o PHP para carregar os dados iniciais
-                    /*
-                    fetch('carregar_dados.php')
-                        .then(response => response.json())
-                        .then(data => {
-                            // Preencher gráficos e tabela com dados reais
-                        });
-                    */
-                });
             </script>
     <script>
         // Alternar exibição do menu

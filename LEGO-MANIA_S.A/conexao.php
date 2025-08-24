@@ -5,7 +5,7 @@
 $host = 'localhost';
 
 // $dbname: Define o nome do banco de dados ao qual queremos nos conectar.
-$bdnome = 'bd_legomania';
+$dbname = 'lego_mania';
 
 // $user: Define o nome de usuário para acessar o banco de dados.
 $user = 'root';
@@ -19,7 +19,7 @@ try {
     // Tenta criar uma nova conexão com o banco de dados usando PDO.
 
     // "mysql:host=$host;dbname=$dbname" é o DSN (Data Source Name).
-    $pdo = new PDO("mysql:host=$host;bdnome=$dbname", $user, $senha);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $senha);
 
     // Configura o PDO para lançar exceções em caso de erros.
     // PDO::ATTR_ERRMODE: Define o modo de relatório de erros.

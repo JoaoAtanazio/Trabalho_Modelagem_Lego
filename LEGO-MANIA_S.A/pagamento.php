@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Cadastro - Lego Mania</title>
-    <script src="javascript/validacoes_form.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
@@ -18,20 +17,21 @@
             <h4 class="mb-4">Menu</h4>
             <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                    <a href="principal.html" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
+                    <a href="principal.php" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="perfil.html" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
+                    <a href="perfil.php" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
                 </li>
                 <li class="nav-item mb-2 dropdown">
                     <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-plus me-2"></i> Cadastro 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
-                        <li><a class="dropdown-item" href="cadastro_cliente.html">Cliente</a></li>
-                        <li><a class="dropdown-item" href="cadastro_funcionario.html">Funcionário</a></li>
-                        <li><a class="dropdown-item" href="cadastro_fornecedor.html">Fornecedor</a></li>
-                        <li><a class="dropdown-item" href="cadastro_pecas.html">Peças no estoque</a></li>
+                        <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
+                        <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
+                        <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
+                        <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
+                        <li><a class="dropdown-item" href="cadastro_pecas.php">Peças no estoque</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -39,9 +39,9 @@
                         <i class="bi bi-people me-2"></i> Gestão de Pessoas
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="gestaoDropdown">
-                        <li><a class="dropdown-item" href="gestao_cliente.html">Clientes</a></li>
-                        <li><a class="dropdown-item" href="gestao_funcionario.html">Funcionários</a></li>
-                        <li><a class="dropdown-item" href="gestao_fornecedor.html">Fornecedores</a></li>
+                        <li><a class="dropdown-item" href="gestao_cliente.php">Clientes</a></li>
+                        <li><a class="dropdown-item" href="gestao_funcionario.php">Funcionários</a></li>
+                        <li><a class="dropdown-item" href="gestao_fornecedor.php">Fornecedores</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -49,9 +49,9 @@
                         <i class="bi bi-tools me-2"></i> Ordem de Serviços 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ordemDropdown">
-                        <li><a class="dropdown-item" href="nova_ordem.html">Nova O.S</a></li>
-                        <li><a class="dropdown-item" href="consultar_ordem.html">Consultar</a></li>
-                        <li><a class="dropdown-item" href="pagamento.html">Pagamento</a></li>
+                        <li><a class="dropdown-item" href="nova_ordem.php">Nova O.S</a></li>
+                        <li><a class="dropdown-item" href="consultar_ordem.php">Consultar</a></li>
+                        <li><a class="dropdown-item" href="pagamento.php">Pagamento</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -59,8 +59,8 @@
                         <i class="bi bi-graph-up me-2"></i> Relatório de Financias
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="financiasDropdown">
-                        <li><a class="dropdown-item" href="relatorio_despesas.html">Despesas</a></li>
-                        <li><a class="dropdown-item" href="relatorio_lucro.html">Ganho Bruto</a></li>
+                        <li><a class="dropdown-item" href="relatorio_despesas.php">Despesas</a></li>
+                        <li><a class="dropdown-item" href="relatorio_lucro.php">Ganho Bruto</a></li>
                     </ul>
                 </li>
                 <li class="nav-item mb-2 dropdown">
@@ -68,13 +68,13 @@
                         <i class="bi bi-boxes me-2"></i> Relatório de Estoque
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="estoqueDropdown">
-                        <li><a class="dropdown-item" href="relatorio_saida.html">Saída de Peças</a></li>
-                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.html">Peças no Estoque</a></li>
-                        <li><a class="dropdown-item" href="relatorio_uso.html">Relatório de Uso</a></li>
+                        <li><a class="dropdown-item" href="relatorio_saida.php">Saída de Peças</a></li>
+                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
+                        <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="login.html" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+                    <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
                 </li>
             </ul>
         </nav>
@@ -99,49 +99,30 @@
                         <div class="col-12 col-md-10 col-lg-8">
                             <div class="card shadow-sm">
                                 <div class="card-header bg-primary text-white py-2">
-                                    <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Cadastro de Peças no Estoque</h5>
+                                    <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Forma de Pagamento</h5>
                                 </div>
                                 <div class="card-body p-3">
                                     <form>
-                                        <!-- Peça -->
+                                        <!-- Número da Ordem -->
                                         <div class="mb-2">
-                                            <label for="peca" class="form-label">Peça</label>
+                                            <label for="numero_ordem" class="form-label">Ordem de Serviço</label>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-puzzle"></i></span>
-                                                <input type="text" class="form-control" id="peca" name="peca"  placeholder="Digite o nome da peça" required>
+                                                <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                                <input type="text" class="form-control" id="numero_ordem" placeholder="Buscar por ID ou NOME" required>
                                             </div>
                                         </div>
             
-                                        <!-- Data de Cadastro -->
-                                        <div class="mb-2">
-                                            <label for="data_cadastro" class="form-label">Data de Cadastro</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>
-                                                <input type="date" class="form-control" id="data_cadastro" name="data_cadastro" required>
-                                            </div>
-                                        </div>
-            
-                                        <!-- Quantidade -->
-                                        <div class="mb-2">
-                                            <label for="quantidade" class="form-label">Quantidade</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-123"></i></span>
-                                                <input type="number" class="form-control" id="quantidade" name="quantidade" placeholder="0" min="0" required>
-                                            </div>
-                                        </div>
-            
-                                        <!-- Tipo -->
+                                        <!-- Método de Pagamento -->
                                         <div class="mb-3">
-                                            <label for="tipo" class="form-label">Tipo</label>
+                                            <label for="metodo_pagamento" class="form-label">Método de Pagamento</label>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                                                <select class="form-select" id="tipo" required>
-                                                    <option value="" selected disabled>Selecione o tipo</option>
-                                                    <option value="eletronico">Eletrônico</option>
-                                                    <option value="mecanico">Mecânico</option>
-                                                    <option value="plastic">Plástico</option>
-                                                    <option value="metal">Metal</option>
-                                                    <option value="outro">Outro</option>
+                                                <span class="input-group-text"><i class="bi bi-wallet2"></i></span>
+                                                <select class="form-select" id="metodo_pagamento" required>
+                                                    <option value="" selected disabled>Selecione o método de pagamento</option>
+                                                    <option value="credito">Cartão (Crédito)</option>
+                                                    <option value="debito">Cartão (Débito)</option>
+                                                    <option value="pix">PIX</option>
+                                                    <option value="dinheiro">Dinheiro</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -152,7 +133,7 @@
                                                 <i class="bi bi-x-circle"></i> Limpar
                                             </button>
                                             <button type="submit" class="btn btn-primary btn-sm">
-                                                <i class="bi bi-check-circle"></i> Cadastrar
+                                                <i class="bi bi-check-circle"></i> Registrar Pagamento
                                             </button>
                                         </div>
                                     </form>
@@ -165,7 +146,6 @@
                     </div>
                 </div>
             </div>
-
     <script>
         // Alternar exibição do menu
         document.getElementById("menu-toggle").addEventListener("click", function () {
@@ -180,6 +160,5 @@
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
     </script>
-
 </body>
 </html>

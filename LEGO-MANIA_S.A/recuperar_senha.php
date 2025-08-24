@@ -11,29 +11,33 @@
 <body>
 
 <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
-        <div class="text-center mb-4">
-            <h3 class="text-dark"><i class="bi bi-lock-fill"></i></h3>
-            <h4 class="mb-0">Recuperar Senha</h4>
-            <small class="text-muted">Digite seu e-mail para redefinir a senha</small>
-        </div>
-
-        <form action="recuperar_senha.php" method="POST">
-            <div class="mb-3">
-                <label for="email" class="form-label">E-mail</label>
-                <input type="email" class="form-control" id="email" placeholder="Digite seu e-mail" required>
-            </div>
-
-            <button type="submit" class="btn btn-dark w-100">Enviar Link de Recuperação</button>
-        </form>
-
-        <div class="text-center mt-3">
-            <a href="login.html" class="text-decoration-none">&larr; Voltar para o Login</a>
-        </div>
+  <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+    <div class="text-center mb-4">
+      <h3 class="text-dark"><i class="bi bi-shield-lock-fill"></i></h3>
+      <h4 class="mb-0">Verificação de Código</h4>
+      <small class="text-muted">Digite o código enviado para seu e-mail</small>
     </div>
+
+    <form>
+      <div class="mb-3">
+        <label for="codigo" class="form-label">Código</label>
+        <input type="text" class="form-control text-center fw-bold" id="codigo" placeholder="Ex: 123456" required>
+      </div>
+
+      <button type="submit" class="btn btn-dark w-100">Verificar Código</button>
+    </form>
+
+    <div class="text-center mt-3">
+      <a href="esqueceu_senha.php" class="text-decoration-none">&larr; Voltar</a>
+    </div>
+  </div>
 </div>
 
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 </body>
 </html>
+
+
+
+
