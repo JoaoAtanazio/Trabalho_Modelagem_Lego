@@ -50,6 +50,7 @@
         }
     }
 
+    // Alterar usuario
     
 
 $stmt->execute();
