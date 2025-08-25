@@ -27,7 +27,7 @@
                 <i class="bi bi-person-plus me-2"></i> Cadastro 
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
-                <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
+                <li><a class="dropdown-item" href="cadastro_usuario.php" id="cadastro_usuario">Usuario</a></li>
                 <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
                 <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
                 <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>

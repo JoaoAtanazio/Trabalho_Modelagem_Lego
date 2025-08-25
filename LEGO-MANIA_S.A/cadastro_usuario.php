@@ -87,7 +87,7 @@ $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
                         <i class="bi bi-person-plus me-2"></i> Cadastro 
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
-                        <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
+                        <li><a class="dropdown-item" href="cadastro_usuario.php" id="cadastro_usuario">Usuario</a></li>
                         <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
                         <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
                         <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
@@ -185,10 +185,10 @@ $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
                                                 <span class="input-group-text"><i class="bi bi-person-rolodex"></i></span>
                                                 <select class="form-select" id="id_perfil" name="id_perfil" required>
                                                     <option value="" selected disabled>Selecione o perfil</option>
-                                                    <option value="1">Administrador</option>
-                                                    <option value="2">Funcionario</option>
-                                                    <option value="3">Secretaria</option>
-                                                    <option value="4">Técnico</option>
+                                                    <option value="1" id="adminoption">Administrador</option>
+                                                    <option value="2" id="funcoption">Funcionario</option>
+                                                    <option value="3" id="secretariaoption">Secretaria</option>
+                                                    <option value="4" id="tecoption">Técnico</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -216,7 +216,7 @@ $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
                                             <button type="reset" class="btn btn-outline-secondary btn-sm me-md-2">
                                                 <i class="bi bi-x-circle"></i> Limpar
                                             </button>
-                                            <button type="submit" class="btn btn-primary btn-sm">
+                                            <button type="submit" class="btn btn-primary btn-sm" id="botaocadastro">
                                                 <i class="bi bi-check-circle"></i> Cadastrar
                                             </button>
                                         </div>
