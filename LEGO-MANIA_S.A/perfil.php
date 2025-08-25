@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editar_perfil'])) {
             // Registra a ação no log
             registrarLog("Atualização de perfil", "usuario", $id_usuario);
             
-            echo "<script>alert('Perfil atualizado com sucesso!'); window.location.reload();</script>";
+            echo "<script>alert('Perfil atualizado com sucesso!'); window.location.href='perfil.php';</script>";
         }
     } catch (PDOException $e) {
         echo "<script>alert('Erro ao atualizar perfil: " . $e->getMessage() . "');</script>";
@@ -220,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['alterar_senha'])) {
                                 <form method="POST" action="perfil.php">
                                     <div class="row mb-3">
                                         <div class="col-md-6">
-                                            <label for="nome" class="form-label">Nome Completo</label>
+                                            <label for="nome" class="form-label">Nome de Usuário</label>
                                             <input type="text" class="form-control" id="nome" name="nome" 
                                                    value="<?php echo htmlspecialchars($usuario['nome_usuario']); ?>" 
                                                    <?php echo (!isset($_POST['editar'])) ? 'readonly' : ''; ?>>
@@ -233,19 +233,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['alterar_senha'])) {
                                         </div>
                                     </div>
                                     
+                                    <hr>
+
                                     <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="usuario" class="form-label">Nome de Usuário</label>
-                                            <input type="text" class="form-control" id="usuario" 
-                                                   value="<?php echo htmlspecialchars($usuario['nome_usuario']); ?>" readonly>
-                                        </div>
                                         <div class="col-md-6">
                                             <label for="perfil" class="form-label">Perfil</label>
                                             <input type="text" class="form-control" id="perfil" 
                                                    value="<?php echo htmlspecialchars($usuario['nome_perfil']); ?>" readonly>
                                         </div>
+                                        <div class="col-md-6">
+                                            <label for="status" class="form-label">Status</label>
+                                            <input type="text" class="form-control" id="status" 
+                                                   value="<?php echo ($usuario['senha_temporaria'] == 1) ? 'Senha Temporária' : 'Ativo'; ?>" readonly>
+                                        </div>
                                     </div>
-                                    
+                        
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="data_cadastro" class="form-label">Data de Cadastro</label>
@@ -253,10 +255,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['alterar_senha'])) {
                                                    value="<?php echo date('d/m/Y', strtotime($usuario['dt_cadastro'] ?? date('Y-m-d'))); ?>" readonly>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="status" class="form-label">Status</label>
-                                            <input type="text" class="form-control" id="status" 
-                                                   value="<?php echo ($usuario['senha_temporaria'] == 1) ? 'Senha Temporária' : 'Ativo'; ?>" readonly>
-                                        </div>
+                                            <label for="data_cadastro" class="form-label">Senha</label>
+                                            <input type="text" class="form-control" id="data_cadastro" 
+                                                   value="**********" readonly>
+                                        </div> 
                                     </div>
 
                                     <?php if (!isset($_POST['editar'])): ?>
