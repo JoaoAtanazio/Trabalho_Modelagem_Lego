@@ -78,7 +78,8 @@
                     <a class="nav-link text-white dropdown-toggle" href="#" id="gestaoDropdown" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-people me-2"></i> Gestão de Pessoas
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-dark">
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="gestaoDropdown">
+                        <li><a class="dropdown-item" href="gestao_usuario.php">Usuarios</a></li>
                         <li><a class="dropdown-item" href="gestao_cliente.php">Clientes</a></li>
                         <li><a class="dropdown-item" href="gestao_funcionario.php">Funcionários</a></li>
                         <li><a class="dropdown-item" href="gestao_fornecedor.php">Fornecedores</a></li>
@@ -112,6 +113,11 @@
                         <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
                         <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
                     </ul>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="logs.php" class="nav-link text-white">
+                        <i class="bi bi-clock-history me-2"></i> Logs
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>

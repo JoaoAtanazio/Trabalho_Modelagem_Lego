@@ -1,34 +1,59 @@
 <?php
-    session_start();
-    require_once 'conexao.php';
+session_start();
+require_once 'conexao.php';
 
-    // VERIFICA SE O USUARIO TEM PERMISSÃO
-    // SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR
+// VERIFICA SE O USUARIO TEM PERMISSÃO
+if ($_SESSION['perfil'] != 1) {
+    echo "<script>alert('Acesso Negado!'); window.location.href='principal.php';</script>";
+    exit();
+}
 
-    if($_SESSION['perfil']!=1){
-        echo "Acesso Negado!";
-    }
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    $nome_usuario = $_POST['nome_usuario'];
+    $email = $_POST['email'];
+    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+    $id_perfil = $_POST['id_perfil'];
 
-    if($_SERVER['REQUEST_METHOD']== "POST"){
-        $nome_usuario = $_POST['nome_usuario'];
-        $email = $_POST['email'];
-        $senha = password_hash($_POST['senha'],PASSWORD_DEFAULT);
-        $id_perfil = $_POST['id_perfil'];
+    $sql = "INSERT INTO usuario(nome_usuario, email, senha, id_perfil) VALUES (:nome_usuario, :email, :senha, :id_perfil)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':nome_usuario', $nome_usuario);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':senha', $senha);
+    $stmt->bindParam(':id_perfil', $id_perfil);
 
-        $sql = "INSERT INTO usuario(nome_usuario,email,senha,id_perfil) VALUES (:nome_usuario,:email,:senha,:id_perfil)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':nome_usuario',$nome_usuario);
-        $stmt->bindParam(':email',$email);
-        $stmt->bindParam(':senha',$senha);
-        $stmt->bindParam(':id_perfil',$id_perfil);
-
-        if($stmt->execute()){
-            echo "<script>alert('Usuario cadastrado com sucesso!');</script>";
+    if ($stmt->execute()) {
+        // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+        $id_novo_usuario = $pdo->lastInsertId();
+        
+        // Descobrir o nome do perfil para incluir na ação
+        $sql_perfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
+        $stmt_perfil = $pdo->prepare($sql_perfil);
+        $stmt_perfil->bindParam(':id_perfil', $id_perfil);
+        $stmt_perfil->execute();
+        $perfil = $stmt_perfil->fetch(PDO::FETCH_ASSOC);
+        $nome_perfil = $perfil['nome_perfil'];
+        
+        // Incluir informações na ação
+        $acao = "Cadastro de usuário: " . $nome_usuario . " (" . $email . ") como " . $nome_perfil;
+        
+        // Registrar o log
+        if (function_exists('registrarLog')) {
+            registrarLog($acao, "usuario", $id_novo_usuario);
+        } else {
+            error_log("Função registrarLog não encontrada!");
         }
-        else{
-            echo "<script>alert('Erro ao cadastrar Usuario!');</script>";
+        
+        echo "<script>alert('Usuário cadastrado com sucesso!');</script>";
+    } else {
+        echo "<script>alert('Erro ao cadastrar usuário!');</script>";
     }
 }
+
+// Buscar perfis para o dropdown
+$sql_perfis = "SELECT * FROM perfil";
+$stmt_perfis = $pdo->query($sql_perfis);
+$perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
+
 
 ?>
 
@@ -108,6 +133,11 @@
                         <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
                         <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
                     </ul>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="logs.php" class="nav-link text-white">
+                        <i class="bi bi-clock-history me-2"></i> Logs
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>

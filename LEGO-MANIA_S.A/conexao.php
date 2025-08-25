@@ -31,4 +31,39 @@ try {
     // die() interrompe a execução do script e exibe uma mensagem.
     die("Erro de conexão com o banco de dados: " . $e->getMessage());
 }
+
+// Função para registrar logs no sistema
+function registrarLog($acao, $tabela_afetada, $id_registro = null) {
+    global $pdo;
+    
+    // Verifica se a sessão está ativa e tem os dados necessários
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    
+    if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['perfil'])) {
+        error_log("Tentativa de registrar log sem sessão de usuário válida");
+        return false;
+    }
+    
+    try {
+        $sql = "INSERT INTO log_acao (id_usuario, id_perfil, acao, tabela_afetada, id_registro) 
+                VALUES (:id_usuario, :id_perfil, :acao, :tabela_afetada, :id_registro)";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            ':id_usuario' => $_SESSION['id_usuario'],
+            ':id_perfil' => $_SESSION['perfil'],
+            ':acao' => $acao,
+            ':tabela_afetada' => $tabela_afetada,
+            ':id_registro' => $id_registro
+        ]);
+        
+        return true;
+    } catch (PDOException $e) {
+        error_log("Erro ao registrar log: " . $e->getMessage());
+        return false;
+    }
+}
+
 ?>
