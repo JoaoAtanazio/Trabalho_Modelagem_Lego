@@ -50,9 +50,6 @@
         }
     }
 
-    // Alterar usuario
-    
-
 $stmt->execute();
 $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
 ?>
@@ -184,15 +181,6 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
 
                                 </div>
                                 <div class="col-md-3">
-                                    <select class="form-select form-select-sm">
-                                        <option selected value="0">Todos os cargos</option>
-                                        <option value="1">Administrador</option>
-                                        <option value="2">Funcionário</option>
-                                        <option value="3">Secretaria</option>
-                                        <option value="4">Técnico</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
                                     <select name="id_perfil" id="id_perfil" class="form-select form-select-sm" onchange="this.form.submit()">
                                         <option value="">Todos os cargos</option>
                                         <option value="1">Administrador</option>
@@ -229,7 +217,7 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
                                                     <td><center><?=htmlspecialchars($usuario['id_perfil'])?></center></td>
                                                     <td><span class="badge bg-success">Ativo</span></td>
                                                     <td class="text-center">
-                                                        <a href="alterar_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>" class="btn btn-sm btn-primary me-1">Alterar</a>
+                                                        <a href="#" class="btn btn-sm btn-primary me-1" onclick="carregarDadosUsuario(<?=htmlspecialchars($usuario['id_usuario'])?>)">Alterar</a>
                                                         <a href="gestao_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>" class="btn btn-sm btn-danger"
                                                         onclick="return confirm('Tem certeza que deseja excluir este usuário?')">Excluir</a>
                                                         <a href="ocultar_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>" class="btn btn-sm btn-secondary">Ocultar</a>
@@ -274,6 +262,47 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
                 </div>
             </div>
 
+            <!-- Modal para Alterar Usuário -->
+            <div class="modal fade" id="modalUsuario" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Alterar Usuário</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="alterar_usuario.php">
+                            <div class="modal-body">
+                                <input type="hidden" id="id_usuario" name="id_usuario">
+                                
+                                <div class="mb-3">
+                                    <label for="nome_usuario" class="form-label">Nome do Usuário</label>
+                                    <input type="text" class="form-control" id="nome_usuario" name="nome_usuario" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="senha" class="form-label">Nova Senha (deixe em branco para manter a atual)</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="senha" name="senha">
+                                        <button type="button" class="btn btn-outline-secondary" id="toggleSenha">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" name="alterar_usuario" class="btn btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
     <script>
         // Alternar exibição do menu
         document.getElementById("menu-toggle").addEventListener("click", function () {
@@ -287,7 +316,32 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
         }
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
+
+        // Função para carregar dados do usuário no modal
+        function carregarDadosUsuario(id) {
+            fetch('buscar_usuario.php?id=' + id)
+                .then(response => response.json())
+                .then(usuario => {
+                    document.getElementById('id_usuario').value = usuario.id_usuario;
+                    document.getElementById('nome_usuario').value = usuario.nome_usuario;
+                    document.getElementById('email').value = usuario.email;
+                    
+                    // Abre o modal
+                    var modal = new bootstrap.Modal(document.getElementById('modalUsuario'));
+                    modal.show();
+                })
+                .catch(error => console.error('Erro:', error));
+        }
+
+        // Alternar visibilidade da senha
+        document.getElementById('toggleSenha').addEventListener('click', function() {
+            const senhaInput = document.getElementById('senha');
+            const tipo = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            senhaInput.setAttribute('type', tipo);
+            this.innerHTML = tipo === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+        });
     </script>
+
 
 </body>
 </html>
