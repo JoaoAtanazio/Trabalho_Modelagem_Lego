@@ -78,7 +78,7 @@
                 <a href="esqueceu_senha.php" class="text-decoration-none">Esqueceu a senha?</a>
             </div>
 
-            <button type="submit" class="btn btn-dark w-100">Entrar</button><br><br><br>
+            <button type="submit" class="btn btn-dark w-100" id="entrar_button">Entrar</button><br><br><br>
         </form>
     </div>
 </div>
