@@ -1,3 +1,8 @@
+<?php
+    session_start();
+    require_once 'conexao.php';
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -103,7 +108,7 @@
 
     <!-- Conteúdo -->
     <div class="p-4">
-      <h3>Bem-vindo!</h3>
+      <h3>Bem-vindo, <?php echo $_SESSION["usuario"]; ?>!</h3>
     </div>
   </div>
 </div> 
