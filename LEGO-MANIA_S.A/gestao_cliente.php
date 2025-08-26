@@ -1,3 +1,98 @@
+<?php
+    session_start();
+    require_once 'conexao.php';
+
+    // VERIFICA SE O USUARIO TEM PERMISSÃO DE ADM OU SECRETARIA
+    if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=3){
+        echo "<script>alert('Acesso negado!');window.location.href='principal.php';</script>";
+        exit();
+    } 
+
+    // INICIALIZA VARIÁVEIS
+    $filtro_status = '';
+    $busca = '';
+    $clientes = [];
+
+    // VERIFICA SE HÁ FILTRO POR STATUS (GET)
+    if(isset($_GET['status']) && !empty($_GET['status'])) {
+        $filtro_status = $_GET['status'];
+    }
+
+    // VERIFICA SE HÁ BUSCA POR TEXTO (GET)
+    if(isset($_GET['busca']) && !empty($_GET['busca'])){
+        $busca = trim($_GET['busca']);
+    }
+
+    // CONSTRUIR A QUERY BASE
+    $sql = "SELECT c.*, f.nome_funcionario 
+            FROM cliente c 
+            LEFT JOIN funcionario f ON c.id_funcionario = f.id_funcionario";
+    $where_conditions = [];
+    $params = [];
+
+    // ADICIONAR FILTRO POR STATUS SE EXISTIR
+    if(!empty($filtro_status)) {
+        $where_conditions[] = "c.status = :status";
+        $params[':status'] = $filtro_status;
+    }
+
+    // ADICIONAR FILTRO POR BUSCA SE EXISTIR
+    if(!empty($busca)) {
+        if(is_numeric($busca)){
+            $where_conditions[] = "c.id_cliente = :busca";
+            $params[':busca'] = $busca;
+        } else {
+            $where_conditions[] = "(c.nome_cliente LIKE :busca_nome OR c.cpf_cnpj LIKE :busca_cpf)";
+            $params[':busca_nome'] = "%$busca%";
+            $params[':busca_cpf'] = "%$busca%";
+        }
+    }
+
+    // COMBINAR CONDITIONS SE HOUVER
+    if (!empty($where_conditions)) {
+        $sql .= " WHERE " . implode(" AND ", $where_conditions);
+    }
+
+    $sql .= " ORDER BY c.nome_cliente ASC";
+
+    // PREPARAR E EXECUTAR A QUERY
+    $stmt = $pdo->prepare($sql);
+
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
+
+    $stmt->execute();
+    $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    // INATIVAR CLIENTE //
+
+    // Inativar Cliente em vez de excluir
+    if(isset($_GET['id']) && is_numeric($_GET['id'])){
+        $id_cliente = $_GET['id'];
+        
+        // Verificar se está inativando ou reativando
+        if(isset($_GET['acao']) && $_GET['acao'] == 'reativar') {
+            // Reativar cliente
+            $sql = "UPDATE cliente SET status = 'Ativo', data_inatividade = NULL, observacao_inatividade = NULL WHERE id_cliente = :id";
+            $mensagem = 'Cliente reativado com sucesso!';
+        } else {
+            // Inativar cliente - redireciona para página de inativação
+            header("Location: inativar_cliente.php?id=" . $id_cliente);
+            exit();
+        }
+    
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id', $id_cliente, PDO::PARAM_INT);
+
+        if($stmt->execute()){
+            echo "<script>alert('$mensagem');window.location.href='gestao_cliente.php';</script>";
+        } else{
+            echo "<script>alert('Erro ao alterar status do cliente!');</script>";
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -104,38 +199,39 @@
                     <!-- Cabeçalho com título e botão de novo cliente -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><i class="bi bi-people me-2"></i>Gestão de Clientes</h5>
-                        <button class="btn btn-primary btn-sm">
+                        <a href="cadastro_cliente.php" class="btn btn-primary btn-sm">
                             <i class="bi bi-plus-circle me-1"></i> Novo Cliente
-                        </button>
+                        </a>
                     </div>
                     
                     <!-- Barra de pesquisa e filtros -->
                     <div class="card shadow-sm mb-3">
                         <div class="card-body py-2">
-                            <div class="row g-2">
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" class="form-control" placeholder="Pesquisar clientes...">
-                                        <button class="btn btn-outline-secondary" type="button">Pesquisar</button>
+                            <form method="GET" action="gestao_cliente.php" id="filterForm">
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <input type="text" id="busca" name="busca" class="form-control" 
+                                                placeholder="Pesquisar por ID, nome ou CPF/CNPJ..." 
+                                                value="<?= isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : '' ?>">
+                                            <button class="btn btn-outline-secondary" type="submit">Pesquisar</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select name="status" id="status" class="form-select form-select-sm">
+                                            <option value="">Todos os status</option>
+                                            <option value="Ativo" <?= (isset($_GET['status']) && $_GET['status'] == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
+                                            <option value="Inativo" <?= (isset($_GET['status']) && $_GET['status'] == 'Inativo') ? 'selected' : '' ?>>Inativo</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <?php if(isset($_GET['busca']) || isset($_GET['status'])): ?>
+                                            <a href="gestao_cliente.php" class="btn btn-outline-danger btn-sm">Limpar Filtros</a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <select class="form-select form-select-sm">
-                                        <option selected>Todos os status</option>
-                                        <option>Ativo</option>
-                                        <option>Inativo</option>
-                                        <option>Bloqueado</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="form-select form-select-sm">
-                                        <option selected>Ordenar por nome</option>
-                                        <option>Mais recentes</option>
-                                        <option>Data cadastro</option>
-                                    </select>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                     
@@ -143,122 +239,65 @@
                     <div class="card shadow-sm">
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover table-striped mb-0">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Nome</th>
-                                            <th scope="col">CPF/CNPJ</th>
-                                            <th scope="col">Telefone</th>
-                                            <th scope="col">E-mail</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col" class="text-center">Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">1001</th>
-                                            <td>João Silva</td>
-                                            <td>123.456.789-00</td>
-                                            <td>(11) 99999-9999</td>
-                                            <td>joao.silva@email.com</td>
-                                            <td><span class="badge bg-success">Ativo</span></td>
-                                            <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary" title="Alterar">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger" title="Excluir">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-secondary" title="Ocultar">
-                                                    <i class="bi bi-eye-slash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">1002</th>
-                                            <td>Maria Santos</td>
-                                            <td>987.654.321-00</td>
-                                            <td>(11) 98888-8888</td>
-                                            <td>maria.santos@email.com</td>
-                                            <td><span class="badge bg-success">Ativo</span></td>
-                                            <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary" title="Alterar">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger" title="Excluir">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-secondary" title="Ocultar">
-                                                    <i class="bi bi-eye-slash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">1003</th>
-                                            <td>Empresa ABC Ltda</td>
-                                            <td>12.345.678/0001-90</td>
-                                            <td>(11) 3777-7777</td>
-                                            <td>contato@empresaabc.com.br</td>
-                                            <td><span class="badge bg-warning text-dark">Inativo</span></td>
-                                            <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary" title="Alterar">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger" title="Excluir">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-secondary" title="Ocultar">
-                                                    <i class="bi bi-eye-slash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">1004</th>
-                                            <td>Pedro Costa</td>
-                                            <td>456.789.123-00</td>
-                                            <td>(11) 97777-7777</td>
-                                            <td>pedro.costa@email.com</td>
-                                            <td><span class="badge bg-danger">Bloqueado</span></td>
-                                            <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary" title="Alterar">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger" title="Excluir">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-secondary" title="Ocultar">
-                                                    <i class="bi bi-eye-slash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">1005</th>
-                                            <td>Ana Oliveira</td>
-                                            <td>789.123.456-00</td>
-                                            <td>(11) 96666-6666</td>
-                                            <td>ana.oliveira@email.com</td>
-                                            <td><span class="badge bg-success">Ativo</span></td>
-                                            <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary" title="Alterar">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger" title="Excluir">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-secondary" title="Ocultar">
-                                                    <i class="bi bi-eye-slash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <?php if(!empty($clientes)): ?>
+                                    <table class="table table-striped table-hover table-bordered mb-0">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th><center>ID</center></th>
+                                                <th><center>Nome</center></th>
+                                                <th><center>CPF/CNPJ</center></th>
+                                                <th><center>Telefone</center></th>
+                                                <th><center>E-mail</center></th>
+                                                <th><center>Status</center></th>
+                                                <th class="text-center">Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach($clientes as $cliente): ?>
+                                                <tr>
+                                                    <td><center><?=htmlspecialchars($cliente['id_cliente'])?></center></td>
+                                                    <td><center><?=htmlspecialchars($cliente['nome_cliente'])?></center></td>
+                                                    <td><center><?=htmlspecialchars($cliente['cpf_cnpj'])?></center></td>
+                                                    <td><center><?=htmlspecialchars($cliente['telefone'])?></center></td>
+                                                    <td><center><?=htmlspecialchars($cliente['email'])?></center></td>
+                                                    <td>
+                                                        <center>
+                                                            <?php if($cliente['status'] == 'Ativo'): ?>
+                                                                <span class="badge bg-success">Ativo</span>
+                                                            <?php else: ?>
+                                                                <span class="badge bg-danger badge-details" onclick="mostrarDetalhesCliente(<?=htmlspecialchars($cliente['id_cliente'])?>)">
+                                                                    Inativo <i class="bi bi-info-circle"></i>
+                                                                </span>
+                                                            <?php endif; ?>
+                                                        </center> 
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="#" class="btn btn-sm btn-primary me-1" onclick="carregarDadosCliente(<?=htmlspecialchars($cliente['id_cliente'])?>)">Alterar</a>
+                                                        
+                                                        <?php if($cliente['status'] == 'Ativo'): ?>
+                                                            <a href="inativar_cliente.php?id=<?=htmlspecialchars($cliente['id_cliente'])?>" class="btn btn-sm btn-danger me-1">Inativar</a>
+                                                        <?php else: ?>
+                                                            <a href="gestao_cliente.php?id=<?=htmlspecialchars($cliente['id_cliente'])?>&acao=reativar" class="btn btn-sm btn-success me-1" onclick="return confirm('Tem certeza que deseja reativar este cliente?')">Reativar</a>
+                                                        <?php endif; ?>
+                                                        
+                                                        <button class="btn btn-sm btn-info" onclick="mostrarDetalhesCliente(<?=htmlspecialchars($cliente['id_cliente'])?>)">
+                                                            <i class="bi bi-info-circle"></i> Detalhes
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach;?>
+                                        </tbody>
+                                    </table>
+
+                                <?php else: ?><br>
+                                    <center><p>Nenhum cliente encontrado.</p></center>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="card-footer py-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span class="text-muted">Mostrando 5 de 42 clientes</span>
+                                    <span class="text-muted">Mostrando <?= count($clientes) ?> de <?= count($clientes) ?> clientes</span>
                                 </div>
                                 <nav>
                                     <ul class="pagination pagination-sm mb-0">
@@ -285,6 +324,67 @@
                 </div>
             </div>
 
+            <!-- Modal para Alterar Cliente -->
+            <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Alterar Cliente</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="alterar_cliente.php">
+                            <div class="modal-body">
+                                <input type="hidden" id="id_cliente" name="id_cliente">
+                                
+                                <div class="mb-3">
+                                    <label for="nome_cliente" class="form-label">Nome do Cliente</label>
+                                    <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="cpf_cnpj" class="form-label">CPF/CNPJ</label>
+                                    <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="telefone" class="form-label">Telefone</label>
+                                    <input type="text" class="form-control" id="telefone" name="telefone">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="email" name="email">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" name="alterar_cliente" class="btn btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para Detalhes do Cliente -->
+            <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Detalhes do Cliente</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="detalhesCliente">
+                            <!-- Conteúdo será preenchido via JavaScript -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <!-- SCRIPTS -->
+                                    
     <script>
         // Alternar exibição do menu
         document.getElementById("menu-toggle").addEventListener("click", function () {
@@ -298,6 +398,135 @@
         }
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
+
+        // Função para carregar dados do cliente no modal
+        function carregarDadosCliente(id) {
+            fetch('buscar_cliente.php?id=' + id)
+                .then(response => response.json())
+                .then(cliente => {
+                    document.getElementById('id_cliente').value = cliente.id_cliente;
+                    document.getElementById('nome_cliente').value = cliente.nome_cliente;
+                    document.getElementById('cpf_cnpj').value = cliente.cpf_cnpj;
+                    document.getElementById('telefone').value = cliente.telefone;
+                    document.getElementById('email').value = cliente.email;
+                    
+                    // Abre o modal
+                    var modal = new bootstrap.Modal(document.getElementById('modalCliente'));
+                    modal.show();
+                })
+                .catch(error => console.error('Erro:', error));
+        }
+
+        // Função para mostrar detalhes do cliente
+        function mostrarDetalhesCliente(id) {
+            // Busca os dados básicos do cliente
+            fetch('buscar_cliente.php?id=' + id)
+                .then(response => response.json())
+                .then(clienteBasico => {
+                    // Agora busca os dados completos com informações de inatividade
+                    fetch('buscar_dados_completos_cliente.php?id=' + id)
+                        .then(response => response.json())
+                        .then(clienteCompleto => {
+                            let detalhesHTML = `
+                                <div class="mb-3">
+                                    <strong>ID:</strong> ${clienteBasico.id_cliente}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Nome:</strong> ${clienteBasico.nome_cliente}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>CPF/CNPJ:</strong> ${clienteBasico.cpf_cnpj}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Telefone:</strong> ${clienteBasico.telefone}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>E-mail:</strong> ${clienteBasico.email}
+                                </div>
+                            `;
+
+                            // Adiciona informações de inatividade se disponíveis
+                            if (clienteCompleto.status === 'Inativo') {
+                                let tempoInativo = '';
+                                if (clienteCompleto.data_inatividade) {
+                                    const dataInatividade = new Date(clienteCompleto.data_inatividade);
+                                    const agora = new Date();
+                                    const diffTime = Math.abs(agora - dataInatividade);
+                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    tempoInativo = `${diffDays} dia(s)`;
+                                }
+
+                                detalhesHTML += `
+                                    <div class="mb-3">
+                                        <strong>Status:</strong> 
+                                        <span class="badge bg-danger">Inativo</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Data de Inativação:</strong> ${clienteCompleto.data_inatividade || 'Não informada'}
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Tempo Inativo:</strong> ${tempoInativo || 'Não calculado'}
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Motivo da Inativação:</strong> ${clienteCompleto.motivo_inatividade || 'Não informado'}
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong>Observações:</strong> ${clienteCompleto.observacao_inatividade || 'Nenhuma observação'}
+                                    </div>
+                                `;
+                            } else {
+                                detalhesHTML += `
+                                    <div class="mb-3">
+                                        <strong>Status:</strong> 
+                                        <span class="badge bg-success">Ativo</span>
+                                    </div>
+                                `;
+                            }
+
+                            document.getElementById('detalhesCliente').innerHTML = detalhesHTML;
+                            
+                            // Abre o modal
+                            var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+                            modal.show();
+                        })
+                        .catch(error => {
+                            // Se falhar a segunda requisição, mostra apenas os dados básicos
+                            let detalhesHTML = `
+                                <div class="mb-3">
+                                    <strong>ID:</strong> ${clienteBasico.id_cliente}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Nome:</strong> ${clienteBasico.nome_cliente}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>CPF/CNPJ:</strong> ${clienteBasico.cpf_cnpj}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Telefone:</strong> ${clienteBasico.telefone}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>E-mail:</strong> ${clienteBasico.email}
+                                </div>
+                                <div class="mb-3 text-warning">
+                                    <em>Informações de status não disponíveis</em>
+                                </div>
+                            `;
+                            document.getElementById('detalhesCliente').innerHTML = detalhesHTML;
+                            
+                            var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+                            modal.show();
+                        });
+                })
+                .catch(error => {
+                    alert('Erro ao carregar dados do cliente');
+                    console.error('Erro:', error);
+                });
+        }
+
+        // Submeter formulário quando os filtros forem alterados
+        document.getElementById('status').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
     </script>
 
 </body>

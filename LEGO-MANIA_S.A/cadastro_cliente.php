@@ -1,3 +1,75 @@
+<?php
+session_start();
+require_once 'conexao.php';
+
+// VERIFICA SE O USUARIO TEM PERMISSÃO
+if ($_SESSION['perfil'] == 4) {
+    echo "<script>alert('Acesso Negado!'); window.location.href='principal.php';</script>";
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    $id_funcionario = $_SESSION['id_usuario']; 
+    $nome_cliente = $_POST['nome'];
+    $cpf_cnpj = $_POST['cpf_cnpj'];
+    $endereco = $_POST['endereco'];
+    $bairro = $_POST['bairro'];
+    $cep = $_POST['cep'];
+    $cidade = $_POST['cidade'];
+    $estado = $_POST['estado'];
+    $telefone = $_POST['telefone'];
+    $email = $_POST['email'];
+
+    $sql = "INSERT INTO cliente(id_funcionario,nome_cliente,cpf_cnpj,endereco,bairro,cep,cidade,estado,telefone,email) 
+            VALUES (:id_funcionario,:nome_cliente,:cpf_cnpj,:endereco,:bairro,:cep,:cidade,:estado,:telefone,:email)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id_funcionario', $id_funcionario);
+    $stmt->bindParam(':nome_cliente', $nome_cliente);
+    $stmt->bindParam(':cpf_cnpj', $cpf_cnpj);
+    $stmt->bindParam(':endereco', $endereco);
+    $stmt->bindParam(':bairro', $bairro);
+    $stmt->bindParam(':cep', $cep);
+    $stmt->bindParam(':cidade', $cidade);
+    $stmt->bindParam(':estado', $estado);
+    $stmt->bindParam(':telefone', $telefone);
+    $stmt->bindParam(':email', $email);
+
+
+    if ($stmt->execute()) {
+        // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+        $id_novo_usuario = $pdo->lastInsertId();
+        
+        // Descobrir o nome do perfil para incluir na ação
+        $sql_perfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
+        $stmt_perfil = $pdo->prepare($sql_perfil);
+        $stmt_perfil->bindParam(':id_perfil', $id_perfil);
+        $stmt_perfil->execute();
+        $perfil = $stmt_perfil->fetch(PDO::FETCH_ASSOC);
+        $nome_perfil = $perfil['nome_perfil'];
+        
+        // Incluir informações na ação
+        $acao = "Cadastro de cliente: " . $nome_cliente . " (" . $email . ") pelo " . $nome_perfil;
+        
+        // Registrar o log
+        if (function_exists('registrarLog')) {
+            registrarLog($acao, "cliente", $id_novo_usuario);
+        } else {
+            error_log("Função registrarLog não encontrada!");
+        }
+        
+        echo "<script>alert('Cliente cadastrado com sucesso!');</script>";
+    } else {
+        echo "<script>alert('Erro ao cadastrar cliente!');</script>";
+    }
+}
+
+// Buscar perfis para o dropdown
+$sql_clientes = "SELECT * FROM cliente";
+$stmt_clientes = $pdo->query($sql_clientes);
+$clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
+
+
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -106,10 +178,10 @@
                         <div class="col-12 col-md-10 col-lg-8">
                             <div class="card shadow-sm">
                                 <div class="card-header bg-primary text-white py-2">
-                                    <h5 class="mb-0"><i class="bi bi-person-plus-fill me-2"></i>Formulário de Cadastro</h5>
+                                    <h5 class="mb-0"><i class="bi bi-person-plus-fill me-2"></i>Cadastro de cliente</h5>
                                 </div>
                                 <div class="card-body p-3">
-                                    <form action="#" method="POST">
+                                    <form action="cadastro_cliente.php" method="POST">
                                         <!-- Nome -->
                                         <div class="mb-2">
                                             <label for="nome" class="form-label">Nome Completo</label>
