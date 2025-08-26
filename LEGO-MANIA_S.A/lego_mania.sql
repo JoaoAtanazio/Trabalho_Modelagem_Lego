@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26/08/2025 às 16:54
+-- Tempo de geração: 26/08/2025 às 22:06
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -79,8 +79,21 @@ CREATE TABLE `funcionario` (
   `cidade` varchar(100) DEFAULT NULL,
   `estado` varchar(50) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `dt_nascimento` date DEFAULT NULL
+  `dt_nascimento` date DEFAULT NULL,
+  `status` enum('Ativo','Inativo') DEFAULT 'Ativo',
+  `id_motivo_inatividade` int(11) DEFAULT NULL,
+  `data_inatividade` date DEFAULT NULL,
+  `observacao_inatividade` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `funcionario`
+--
+
+INSERT INTO `funcionario` (`id_funcionario`, `nome_funcionario`, `cpf_funcionario`, `salario`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `email`, `dt_nascimento`, `status`, `id_motivo_inatividade`, `data_inatividade`, `observacao_inatividade`) VALUES
+(12, 'dalton', '44444444444', 99999999.99, 'wadawdwwawa', 'gsdgdsgs', '22222-222', 'hsdhshsdhsd', 'PR', 'adm@tste123', '2000-02-25', 'Inativo', 7, '2025-08-26', '5 ANOS DE FIRMA'),
+(13, 'Adminfefs', '53523523226232', 52325235.23, 'sefsefsefs', 'eesfsefse', '33333333', 'fseesgsegsegsees', 'PI', 'n@te123', '3355-05-23', 'Ativo', NULL, NULL, NULL),
+(14, 'JULIO', '12130093914', 224.45, 'sefsefsefs', 'BOM RETIRO', '33232322', 'Joinville', 'PE', 'bom@retiro', '2007-02-04', 'Ativo', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -105,7 +118,12 @@ CREATE TABLE `log_acao` (
 INSERT INTO `log_acao` (`id_log`, `id_usuario`, `id_perfil`, `acao`, `tabela_afetada`, `id_registro`, `data_hora`) VALUES
 (1, 19, 1, 'Limpeza completa dos logs do sistema', 'log_acao', NULL, '2025-08-25 00:09:24'),
 (2, 19, 1, 'Cadastro de usuário: joe (joe@gmail.com) como Administrador', 'usuario', 30, '2025-08-25 00:20:15'),
-(3, 12, 1, 'Atualização de perfil', 'usuario', 12, '2025-08-26 12:55:35');
+(3, 12, 1, 'Atualização de perfil', 'usuario', 12, '2025-08-26 12:55:35'),
+(4, 12, 1, 'Cadastro de usuário: Gustavo (admin@teste123) como Administrador', 'usuario', 31, '2025-08-26 16:51:41'),
+(5, 12, 1, 'Cadastro de funcionário: Dalton (22222222222)', 'funcionario', 12, '2025-08-26 17:48:13'),
+(6, 12, 1, 'Cadastro de funcionário: dalton (44444444444)', 'funcionario', 12, '2025-08-26 19:04:46'),
+(7, 12, 1, '12', 'Cadastro de funcionário: Adminfefs (53523523226232)', 0, '2025-08-26 19:09:13'),
+(8, 12, 1, '12', 'Cadastro de funcionário: JULIO (12130093914)', 0, '2025-08-26 19:09:59');
 
 -- --------------------------------------------------------
 
@@ -228,11 +246,12 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` (`id_usuario`, `nome_usuario`, `senha`, `email`, `senha_temporaria`, `id_perfil`, `status`, `id_motivo_inatividade`, `data_inatividade`, `observacao_inatividade`) VALUES
 (12, 'Admin', '$2y$10$RjRfXwZANRJomQAL3Aao6e74U4CHBopq0OcPJBJ8mi1H4UdAJorkG', 'admin@admin', 0, 1, 'Ativo', NULL, NULL, NULL),
 (16, 'adm', '$2y$10$zj8t1ATAceJaMDwlk.6D4.3AfuRo7edaZL5YORJYYqKBPY.wNjAkq', 'adm@adm', 0, 1, 'Ativo', NULL, NULL, NULL),
-(19, 'Dalton', '$2y$10$sGEf6OMfgrUAoi7o4r3/1eUCGxIUf9PqD4Hc5QQjyHEGH8jtv1VMu', 'Dalton@Dalton', 0, 1, 'Inativo', 1, '2025-08-26', '2 meses'),
+(19, 'Dalton Marcelino', '$2y$10$sGEf6OMfgrUAoi7o4r3/1eUCGxIUf9PqD4Hc5QQjyHEGH8jtv1VMu', 'Dalton@Dalton', 0, 1, 'Inativo', 1, '2025-08-26', '2 meses'),
 (22, 'Dalton', '$2y$10$R3QcQUV8AoBk23W2pJ3Xiuo2I9ee.Uzkcxn7CP6XDDbTgDDYOkLYC', 'Dalton12@Dalton', 0, 2, 'Inativo', 1, '2025-08-26', '12 meses'),
 (23, 'joaozinho', '$2y$10$SCi19TOitx2U1ZFiAa.Bju.tzQG1JhgX8wMheK5ivt.BFyXlrp5U6', 'joaozinho@joaozinho', 0, 1, 'Ativo', NULL, NULL, NULL),
 (28, 'logs', '$2y$10$mhhzHehNFHKgp6TuIPeuCueRYzT4QnWs0INQvHODSZsHMc3.L4yKW', 'logs@logs', 0, 1, 'Ativo', NULL, NULL, NULL),
-(29, 'COBRA', '$2y$10$6R5zhbs09a1i4LQMD3UIXeU.qRa7S/VmV5OQBOMAkKJYJGUUwEyC2', 'cobra@cobra', 0, 1, 'Ativo', NULL, NULL, NULL);
+(29, 'COBRA', '$2y$10$6R5zhbs09a1i4LQMD3UIXeU.qRa7S/VmV5OQBOMAkKJYJGUUwEyC2', 'cobra@cobra', 0, 1, 'Ativo', NULL, NULL, NULL),
+(31, 'Gustavo', '$2y$10$kLdUxZtMScvUoEARMPdb9e3QJ3nNyDgnvxdHJd1Q5nc8nLeEL4J2i', 'admin@teste123', 0, 1, 'Ativo', NULL, NULL, NULL);
 
 --
 -- Índices para tabelas despejadas
@@ -259,7 +278,8 @@ ALTER TABLE `fornecedor`
 --
 ALTER TABLE `funcionario`
   ADD PRIMARY KEY (`id_funcionario`),
-  ADD UNIQUE KEY `cpf_funcionario` (`cpf_funcionario`);
+  ADD UNIQUE KEY `cpf_funcionario` (`cpf_funcionario`),
+  ADD KEY `fk_funcionario_motivo` (`id_motivo_inatividade`);
 
 --
 -- Índices de tabela `log_acao`
@@ -332,13 +352,13 @@ ALTER TABLE `fornecedor`
 -- AUTO_INCREMENT de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `id_funcionario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de tabela `log_acao`
 --
 ALTER TABLE `log_acao`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `motivo_inatividade`
@@ -374,7 +394,7 @@ ALTER TABLE `perfil`
 -- AUTO_INCREMENT de tabela `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- Restrições para tabelas despejadas
@@ -391,6 +411,12 @@ ALTER TABLE `cliente`
 --
 ALTER TABLE `fornecedor`
   ADD CONSTRAINT `fornecedor_ibfk_1` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionario` (`id_funcionario`);
+
+--
+-- Restrições para tabelas `funcionario`
+--
+ALTER TABLE `funcionario`
+  ADD CONSTRAINT `fk_funcionario_motivo` FOREIGN KEY (`id_motivo_inatividade`) REFERENCES `motivo_inatividade` (`id_motivo`);
 
 --
 -- Restrições para tabelas `log_acao`
