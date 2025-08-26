@@ -1,3 +1,100 @@
+<?php
+session_start();
+require_once 'conexao.php';
+
+// VERIFICA SE O USUARIO ESTÁ LOGADO E TEM PERMISSÃO
+if (!isset($_SESSION['id_usuario'])) {
+    echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    // Recebe e sanitiza os dados do formulário
+    $nome_funcionario = trim($_POST['nome']);
+    $cpf_funcionario = preg_replace('/[^0-9]/', '', $_POST['cpf_cnpj']); // Remove caracteres não numéricos
+    $salario = str_replace(['R$', '.', ','], ['', '', '.'], $_POST['salario']);
+    $endereco = trim($_POST['endereco']);
+    $bairro = trim($_POST['bairro']);
+    $cep = preg_replace('/[^0-9]/', '', $_POST['cep']);
+    $cidade = trim($_POST['cidade']);
+    $estado = trim($_POST['estado']);
+    $email = trim($_POST['email']);
+    $dt_nascimento = $_POST['nascimento'];
+    
+    // ID do usuário que está cadastrando (para log)
+    $id_usuario_cadastrante = $_SESSION['id_usuario'];
+
+    // Validações básicas
+    if (empty($nome_funcionario) || empty($cpf_funcionario) || empty($salario)) {
+        echo "<script>alert('Preencha todos os campos obrigatórios!');</script>";
+        exit();
+    }
+
+    // Validar CPF (11 dígitos) ou CNPJ (14 dígitos)
+    if (strlen($cpf_funcionario) != 11 && strlen($cpf_funcionario) != 14) {
+        echo "<script>alert('CPF/CNPJ inválido! Deve ter 11 ou 14 dígitos.');</script>";
+        exit();
+    }
+
+    try {
+        // Verificar se CPF/CNPJ já existe
+        $verificaCPF = $pdo->prepare("SELECT COUNT(*) FROM funcionario WHERE cpf_funcionario = :cpf");
+        $verificaCPF->bindParam(':cpf', $cpf_funcionario, PDO::PARAM_STR);
+        $verificaCPF->execute();
+
+        if ($verificaCPF->fetchColumn() > 0) {
+            echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
+            exit();
+        }
+
+        // Prepara a query SQL para inserir na tabela funcionario (sem id_funcionario)
+        $sql = "INSERT INTO funcionario (nome_funcionario, cpf_funcionario, salario, endereco, bairro, cep, cidade, estado, email, dt_nascimento) 
+                VALUES (:nome_funcionario, :cpf_funcionario, :salario, :endereco, :bairro, :cep, :cidade, :estado, :email, :dt_nascimento)";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':nome_funcionario', $nome_funcionario, PDO::PARAM_STR);
+        $stmt->bindParam(':cpf_funcionario', $cpf_funcionario, PDO::PARAM_STR);
+        $stmt->bindParam(':salario', $salario, PDO::PARAM_STR);
+        $stmt->bindParam(':endereco', $endereco, PDO::PARAM_STR);
+        $stmt->bindParam(':bairro', $bairro, PDO::PARAM_STR);
+        $stmt->bindParam(':cep', $cep, PDO::PARAM_STR);
+        $stmt->bindParam(':cidade', $cidade, PDO::PARAM_STR);
+        $stmt->bindParam(':estado', $estado, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':dt_nascimento', $dt_nascimento, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+            $id_novo_funcionario = $pdo->lastInsertId();
+            
+            // Incluir informações na ação
+            $acao = "Cadastro de funcionário: " . $nome_funcionario . " (" . $cpf_funcionario . ")";
+            
+            // Registrar o log
+            if (function_exists('registrarLog')) {
+                registrarLog($id_usuario_cadastrante, $acao, "funcionario", $id_novo_funcionario);
+            } else {
+                error_log("Função registrarLog não encontrada! Ação: " . $acao);
+            }
+            
+            echo "<script>
+                alert('Funcionário cadastrado com sucesso!');
+                window.location.href = 'cadastro_funcionario.php';
+            </script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar funcionário!');</script>";
+        }
+    } catch (PDOException $e) {
+        if ($e->getCode() == 23000) {
+            echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar funcionário: " . addslashes($e->getMessage()) . "');</script>";
+            error_log("Erro PDO: " . $e->getMessage());
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -109,26 +206,17 @@
                                     <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Cadastro de Funcionário</h5>
                                 </div>
                                 <div class="card-body p-3">
-                                    <form action="#" method="POST">
+                                    <form action="cadastro_funcionario.php" method="POST">
                                         <!-- Nome -->
                                         <div class="mb-2">
                                             <label for="nome" class="form-label">Nome Completo</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome completo" required>
+                                                <input type="text" id="nome" name="nome" class="form-control" placeholder="Digite o nome completo" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')" required>
+
                                             </div>
                                         </div>
-            
-                                        <!-- CPF/CNPJ -->
-                                        <div class="mb-2">
-                                            <label for="cpf_cnpj" class="form-label">CPF</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-card-checklist"></i></span>
-                                                <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" placeholder="000.000.000-00" required>
-                                            </div>
-                                            <div class="form-text">Digite apenas números</div>
-                                        </div>
-            
+                                                              
                                         <!-- Salário -->
                                         <div class="mb-2">
                                             <label for="salario" class="form-label">Salário</label>
@@ -137,7 +225,17 @@
                                                 <input type="text" class="form-control" id="salario" name="salario" placeholder="R$ 0,00" required>
                                             </div>
                                         </div>
-            
+
+                                        <!-- CPF/CNPJ -->
+                                        <div class="mb-2">
+                                            <label for="cpf_cnpj" class="form-label">CPF/CNPJ</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-card-checklist"></i></span>
+                                                <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" placeholder="000.000.000-00 ou 00.000.000/0000-00" required>
+                                            </div>
+                                            <div class="form-text">Digite apenas números</div>
+                                        </div>
+
                                         <div class="mb-2">
                                             <label for="endereco" class="form-label">Endereço:</label>
                                             <div class="input-group input-group-sm">
@@ -155,11 +253,11 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <label for="cep2" class="form-label">CEP:</label>
+                                                <label for="cep" class="form-label">CEP:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
                                                     <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" required>
-                                                    <button class="btn btn-outline-secondary" type="button" id="buscarCep" name="buscarCep">
+                                                    <button class="btn btn-outline-primary" type="button" id="buscarCep" name="buscarCep">
                                                         <i class="bi bi-search"></i> Buscar
                                                     </button>
                                                 </div>
@@ -229,24 +327,6 @@
                                             </div>
                                         </div>
             
-                                        <!-- Senha -->
-                                        <div class="mb-2">
-                                            <label for="senha" class="form-label">Senha</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                                <input type="password" class="form-control" id="senha" name="senha" placeholder="Crie uma senha" required>
-                                            </div>
-                                        </div>
-            
-                                        <!-- Confirmar Senha -->
-                                        <div class="mb-3">
-                                            <label for="confirmar_senha" class="form-label">Confirmar Senha</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                                                <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" placeholder="Digite a senha novamente" required>
-                                            </div>
-                                        </div>
-            
                                         <!-- Botões -->
                                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                             <button type="reset" class="btn btn-outline-secondary btn-sm me-md-2">
@@ -279,6 +359,96 @@
         }
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
+
+        // Formatação do campo de salário
+        document.getElementById('salario').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = (value / 100).toFixed(2) + '';
+            value = value.replace(".", ",");
+            value = value.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+            value = value.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            e.target.value = 'R$ ' + value;
+        });
+
+        // Formatação do campo de CPF/CNPJ
+document.getElementById('cpf_cnpj').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    
+    // Verifica se é CPF (até 11 dígitos) ou CNPJ (mais de 11 dígitos)
+    if (value.length <= 11) {
+        // Formatação para CPF
+        if (value.length > 9) {
+            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        } else if (value.length > 6) {
+            value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+        } else if (value.length > 3) {
+            value = value.replace(/(\d{3})(\d+)/, '$1.$2');
+        }
+    } else {
+        // Formatação para CNPJ (limita a 14 dígitos)
+        if (value.length > 14) value = value.slice(0, 14);
+        
+        if (value.length > 12) {
+            value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+        } else if (value.length > 8) {
+            value = value.replace(/(\d{2})(\d{3})(\d{3})(\d+)/, '$1.$2.$3/$4');
+        } else if (value.length > 5) {
+            value = value.replace(/(\d{2})(\d{3})(\d+)/, '$1.$2.$3');
+        }
+    }
+    e.target.value = value;
+});
+
+    // Buscar CEP via API
+    document.getElementById('buscarCep').addEventListener('click', function() {
+        const cep = document.getElementById('cep').value.replace(/\D/g, '');
+        console.log('CEP digitado:', cep); // Debug
+        
+        if (cep.length !== 8) {
+            alert('CEP inválido! Digite um CEP com 8 dígitos.');
+            return;
+        }
+    
+    // Mostrar loading
+    this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Buscando...';
+    this.disabled = true;
+    
+    // Fazer requisição para a API ViaCEP
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.erro) {
+                alert('CEP não encontrado!');
+                return;
+            }
+            
+            // Preencher os campos com os dados retornados
+            document.getElementById('endereco').value = data.logradouro || '';
+            document.getElementById('bairro').value = data.bairro || '';
+            document.getElementById('cidade').value = data.localidade || '';
+            document.getElementById('estado').value = data.uf || '';
+        })
+        .catch(error => {
+            console.error('Erro ao buscar CEP:', error);
+            alert('Erro ao buscar CEP. Tente novamente.');
+        })
+        .finally(() => {
+            // Restaurar botão
+            this.innerHTML = '<i class="bi bi-search"></i> Buscar';
+            this.disabled = false;
+        });
+    });
+
+    // Formatação do campo de CEP (mantido)
+    document.getElementById('cep').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 8) value = value.slice(0, 8);
+        
+        if (value.length > 5) {
+            value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
+        }
+        e.target.value = value;
+    });
     </script>
 </body>
 </html>
