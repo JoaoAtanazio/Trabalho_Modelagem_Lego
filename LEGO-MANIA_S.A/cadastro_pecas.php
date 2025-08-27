@@ -1,3 +1,93 @@
+<?php
+session_start();
+require_once 'conexao.php';
+
+// VERIFICA SE O USUARIO ESTÁ LOGADO E TEM PERMISSÃO
+if (!isset($_SESSION['id_usuario'])) {
+    echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
+    exit();
+}
+
+// Buscar fornecedores ativos
+$fornecedores = [];
+try {
+    $stmt = $pdo->prepare("SELECT id_fornecedor, nome_fornecedor FROM fornecedor WHERE status = 'Ativo' ORDER BY nome_fornecedor");
+    $stmt->execute();
+    $fornecedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Erro ao buscar fornecedores: " . $e->getMessage());
+}
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    // Recebe e sanitiza os dados do formulário
+    $nome_peca = trim($_POST['nome_peca']);
+    $descricao_peca = trim($_POST['descricao_peca']);
+    $data_cadastro = $_POST['data_cadastro'];
+    $quantidade = (int)$_POST['quantidade'];
+    $tipo = trim($_POST['tipo']);
+    $id_fornecedor = (int)$_POST['id_fornecedor'];
+    
+    // ID do usuário que está cadastrando (para log)
+    $id_usuario_cadastrante = $_SESSION['id_usuario'];
+
+    // Validações básicas
+    if (empty($nome_peca) || empty($quantidade) || empty($id_fornecedor)) {
+        echo "<script>alert('Preencha todos os campos obrigatórios!');</script>";
+        exit();
+    }
+
+    try {
+        // Verificar se fornecedor existe e está ativo
+        $verificaFornecedor = $pdo->prepare("SELECT COUNT(*) FROM fornecedor WHERE id_fornecedor = :id_fornecedor AND status = 'Ativo'");
+        $verificaFornecedor->bindParam(':id_fornecedor', $id_fornecedor, PDO::PARAM_INT);
+        $verificaFornecedor->execute();
+
+        if ($verificaFornecedor->fetchColumn() == 0) {
+            echo "<script>alert('Erro: Fornecedor selecionado não é válido!');</script>";
+            exit();
+        }
+
+        // Prepara a query SQL para inserir na tabela peca_estoque
+        $sql = "INSERT INTO peca_estoque (id_funcionario, id_fornecedor, nome_peca, descricao_peca, qtde, tipo, dt_cadastro) 
+                VALUES (:id_funcionario, :id_fornecedor, :nome_peca, :descricao_peca, :qtde, :tipo, :dt_cadastro)";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id_funcionario', $id_usuario_cadastrante, PDO::PARAM_INT);
+        $stmt->bindParam(':id_fornecedor', $id_fornecedor, PDO::PARAM_INT);
+        $stmt->bindParam(':nome_peca', $nome_peca, PDO::PARAM_STR);
+        $stmt->bindParam(':descricao_peca', $descricao_peca, PDO::PARAM_STR);
+        $stmt->bindParam(':qtde', $quantidade, PDO::PARAM_INT);
+        $stmt->bindParam(':tipo', $tipo, PDO::PARAM_STR);
+        $stmt->bindParam(':dt_cadastro', $data_cadastro, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+            $id_nova_peca = $pdo->lastInsertId();
+            
+            // Incluir informações na ação
+            $acao = "Cadastro de peça: " . $nome_peca . " (Quantidade: " . $quantidade . ")";
+            
+            // Registrar o log
+            if (function_exists('registrarLog')) {
+                registrarLog($id_usuario_cadastrante, $acao, "peca_estoque", $id_nova_peca);
+            } else {
+                error_log("Função registrarLog não encontrada! Ação: " . $acao);
+            }
+            
+            echo "<script>
+                alert('Peça cadastrada com sucesso!');
+                window.location.href = 'cadastro_pecas.php';
+            </script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar peça!');</script>";
+        }
+    } catch (PDOException $e) {
+        echo "<script>alert('Erro ao cadastrar peça: " . addslashes($e->getMessage()) . "');</script>";
+        error_log("Erro PDO: " . $e->getMessage());
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -109,19 +199,28 @@
                                     <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Cadastro de Peças no Estoque</h5>
                                 </div>
                                 <div class="card-body p-3">
-                                    <form>
-                                        <!-- Peça -->
+                                    <form action="cadastro_pecas.php" method="POST">
+                                        <!-- Nome da Peça -->
                                         <div class="mb-2">
-                                            <label for="peca" class="form-label">Peça</label>
+                                            <label for="nome_peca" class="form-label">Nome da Peça *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-puzzle"></i></span>
-                                                <input type="text" class="form-control" id="peca" name="peca"  placeholder="Digite o nome da peça" required>
+                                                <input type="text" class="form-control" id="nome_peca" name="nome_peca" placeholder="Digite o nome da peça" required>
+                                            </div>
+                                        </div>
+            
+                                        <!-- Descrição da Peça -->
+                                        <div class="mb-2">
+                                            <label for="descricao_peca" class="form-label">Descrição da Peça</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                                <textarea class="form-control" id="descricao_peca" name="descricao_peca" placeholder="Descreva a peça (opcional)" rows="2"></textarea>
                                             </div>
                                         </div>
             
                                         <!-- Data de Cadastro -->
                                         <div class="mb-2">
-                                            <label for="data_cadastro" class="form-label">Data de Cadastro</label>
+                                            <label for="data_cadastro" class="form-label">Data de Cadastro *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>
                                                 <input type="date" class="form-control" id="data_cadastro" name="data_cadastro" required>
@@ -130,7 +229,7 @@
             
                                         <!-- Quantidade -->
                                         <div class="mb-2">
-                                            <label for="quantidade" class="form-label">Quantidade</label>
+                                            <label for="quantidade" class="form-label">Quantidade *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-123"></i></span>
                                                 <input type="number" class="form-control" id="quantidade" name="quantidade" placeholder="0" min="0" required>
@@ -138,27 +237,35 @@
                                         </div>
             
                                         <!-- Tipo -->
-                                        <div class="mb-3">
-                                            <label for="tipo" class="form-label">Tipo</label>
+                                        <div class="mb-2">
+                                            <label for="tipo" class="form-label">Tipo *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                                                <select class="form-select" id="tipo" required>
+                                                <select class="form-select" id="tipo" name="tipo" required>
                                                     <option value="" selected disabled>Selecione o tipo</option>
                                                     <option value="eletronico">Eletrônico</option>
                                                     <option value="mecanico">Mecânico</option>
-                                                    <option value="plastic">Plástico</option>
+                                                    <option value="plastico">Plástico</option>
                                                     <option value="metal">Metal</option>
                                                     <option value="outro">Outro</option>
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <!-- Nome do Fornecedor -->
-                                        <div class="mb-2">
-                                            <label for="nome_fornecedor" class="form-label">Nome do Fornecedor</label>
+                                        <!-- Fornecedor -->
+                                        <div class="mb-3">
+                                            <label for="id_fornecedor" class="form-label">Fornecedor *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-building"></i></span>
-                                                <input type="text" class="form-control" id="nome_fornecedor" placeholder="Digite o nome do fornecedor" required>
+                                                <select class="form-select select2-fornecedor" id="id_fornecedor" name="id_fornecedor" required>
+                                                    <option value="" selected disabled>Selecione um fornecedor</option>
+                                                    <?php foreach ($fornecedores as $fornecedor): ?>
+                                                        <option value="<?= $fornecedor['id_fornecedor'] ?>"><?= htmlspecialchars($fornecedor['nome_fornecedor']) ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-text">
+                                                <a href="cadastro_fornecedor.php" class="text-decoration-none">Cadastrar novo fornecedor</a>
                                             </div>
                                         </div>
             
@@ -174,7 +281,7 @@
                                     </form>
                                 </div>
                                 <div class="card-footer text-muted text-center py-2">
-                                    <small>Todos os campos são obrigatórios</small>
+                                    <small>Campos marcados com * são obrigatórios</small>
                                 </div>
                             </div>
                         </div>
@@ -182,7 +289,10 @@
                 </div>
             </div>
 
-    <script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/pt-BR.js"></script>
+<script>
         // Alternar exibição do menu
         document.getElementById("menu-toggle").addEventListener("click", function () {
             document.getElementById("sidebar").classList.toggle("d-none");
@@ -195,7 +305,37 @@
         }
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
-    </script>
 
+        // Inicializar Select2 para fornecedores
+        $(document).ready(function() {
+            $('.select2-fornecedor').select2({
+                language: "pt-BR",
+                placeholder: "",
+                allowClear: false,
+                width: '100%'
+            });
+            
+            // Definir data atual como padrão
+            document.getElementById('data_cadastro').valueAsDate = new Date();
+            
+            // Validação do formulário
+            $('form').on('submit', function(e) {
+                let isValid = true;
+                $('input[required], select[required]').each(function() {
+                    if ($(this).val() === '') {
+                        isValid = false;
+                        $(this).addClass('is-invalid');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                }
+            });
+        });
+</script>
 </body>
 </html>
