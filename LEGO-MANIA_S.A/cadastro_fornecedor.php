@@ -1,3 +1,101 @@
+<?php
+session_start();
+require_once 'conexao.php';
+
+// VERIFICA SE O USUARIO ESTÁ LOGADO E TEM PERMISSÃO
+if (!isset($_SESSION['id_usuario'])) {
+    echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    // Recebe e sanitiza os dados do formulário
+    $nome_fornecedor = trim($_POST['nome_fornecedor']);
+    $cpf_cnpj = preg_replace('/[^0-9]/', '', $_POST['cpf_cnpj']);
+    $ramo_atividade = trim($_POST['ramo']);
+    $telefone = preg_replace('/[^0-9]/', '', $_POST['telefone']);
+    $endereco = trim($_POST['endereco']);
+    $bairro = trim($_POST['bairro']);
+    $cep = preg_replace('/[^0-9]/', '', $_POST['cep']);
+    $cidade = trim($_POST['cidade']);
+    $estado = trim($_POST['estado']);
+    $email = trim($_POST['email']);
+    
+    // ID do usuário que está cadastrando (para log)
+    $id_usuario_cadastrante = $_SESSION['id_usuario'];
+
+    // Validações básicas
+    if (empty($nome_fornecedor) || empty($cpf_cnpj) || empty($telefone) || empty($email)) {
+        echo "<script>alert('Preencha todos os campos obrigatórios!');</script>";
+        exit();
+    }
+
+    // Validar CPF (11 dígitos) ou CNPJ (14 dígitos)
+    if (strlen($cpf_cnpj) != 11 && strlen($cpf_cnpj) != 14) {
+        echo "<script>alert('CPF/CNPJ inválido! Deve ter 11 ou 14 dígitos.');</script>";
+        exit();
+    }
+
+    try {
+        // Verificar se CPF/CNPJ já existe
+        $verificaCPF = $pdo->prepare("SELECT COUNT(*) FROM fornecedor WHERE cpf_cnpj = :cpf_cnpj");
+        $verificaCPF->bindParam(':cpf_cnpj', $cpf_cnpj, PDO::PARAM_STR);
+        $verificaCPF->execute();
+
+        if ($verificaCPF->fetchColumn() > 0) {
+            echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
+            exit();
+        }
+
+        // Prepara a query SQL para inserir na tabela fornecedor
+        $sql = "INSERT INTO fornecedor (id_funcionario, nome_fornecedor, cpf_cnpj, ramo_atividade, telefone, endereco, bairro, cep, cidade, estado, email) 
+                VALUES (:id_funcionario, :nome_fornecedor, :cpf_cnpj, :ramo_atividade, :telefone, :endereco, :bairro, :cep, :cidade, :estado, :email)";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id_funcionario', $id_usuario_cadastrante, PDO::PARAM_INT);
+        $stmt->bindParam(':nome_fornecedor', $nome_fornecedor, PDO::PARAM_STR);
+        $stmt->bindParam(':cpf_cnpj', $cpf_cnpj, PDO::PARAM_STR);
+        $stmt->bindParam(':ramo_atividade', $ramo_atividade, PDO::PARAM_STR);
+        $stmt->bindParam(':telefone', $telefone, PDO::PARAM_STR);
+        $stmt->bindParam(':endereco', $endereco, PDO::PARAM_STR);
+        $stmt->bindParam(':bairro', $bairro, PDO::PARAM_STR);
+        $stmt->bindParam(':cep', $cep, PDO::PARAM_STR);
+        $stmt->bindParam(':cidade', $cidade, PDO::PARAM_STR);
+        $stmt->bindParam(':estado', $estado, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+            $id_novo_fornecedor = $pdo->lastInsertId();
+            
+            // Incluir informações na ação
+            $acao = "Cadastro de fornecedor: " . $nome_fornecedor . " (" . $cpf_cnpj . ")";
+            
+            // Registrar o log
+            if (function_exists('registrarLog')) {
+                registrarLog($id_usuario_cadastrante, $acao, "fornecedor", $id_novo_fornecedor);
+            } else {
+                error_log("Função registrarLog não encontrada! Ação: " . $acao);
+            }
+            
+            echo "<script>
+                alert('Fornecedor cadastrado com sucesso!');
+                window.location.href = 'cadastro_fornecedor.php';
+            </script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar fornecedor!');</script>";
+        }
+    } catch (PDOException $e) {
+        if ($e->getCode() == 23000) {
+            echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar fornecedor: " . addslashes($e->getMessage()) . "');</script>";
+            error_log("Erro PDO: " . $e->getMessage());
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -109,32 +207,32 @@
                                     <h5 class="mb-0"><i class="bi bi-building me-2"></i>Cadastro de Fornecedor</h5>
                                 </div>
                                 <div class="card-body p-3">
-                                    <form>
+                                    <form action="cadastro_fornecedor.php" method="POST">
                                         <!-- Nome do Fornecedor -->
                                         <div class="mb-2">
-                                            <label for="nome_fornecedor" class="form-label">Nome do Fornecedor</label>
+                                            <label for="nome_fornecedor" class="form-label">Nome do Fornecedor *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-building"></i></span>
-                                                <input type="text" class="form-control" id="nome_fornecedor" placeholder="Digite o nome do fornecedor" required>
+                                                <input type="text" class="form-control" id="nome_fornecedor" name="nome_fornecedor" placeholder="Digite o nome do fornecedor" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')" required>
                                             </div>
                                         </div>
             
                                         <!-- CPF/CNPJ -->
                                         <div class="mb-2">
-                                            <label for="cpf_cnpj" class="form-label">CPF ou CNPJ</label>
+                                            <label for="cpf_cnpj" class="form-label">CPF ou CNPJ *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-card-checklist"></i></span>
-                                                <input type="text" class="form-control" id="cpf_cnpj" placeholder="000.000.000-00 ou 00.000.000/0000-00" required>
+                                                <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" placeholder="000.000.000-00 ou 00.000.000/0000-00" required>
                                             </div>
                                             <div class="form-text">Digite apenas números</div>
                                         </div>
             
                                         <!-- Telefone -->
                                         <div class="mb-2">
-                                            <label for="telefone" class="form-label">Telefone</label>
+                                            <label for="telefone" class="form-label">Telefone *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                                <input type="tel" class="form-control" id="telefone" placeholder="(00) 00000-0000" required>
+                                                <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
                                             </div>
                                         </div>
             
@@ -143,7 +241,7 @@
                                             <label for="ramo" class="form-label">Ramo de Atividade</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
-                                                <input type="text" class="form-control" id="ramo" placeholder="Digite o ramo de atividade" required>
+                                                <input type="text" class="form-control" id="ramo" name="ramo" placeholder="Digite o ramo de atividade">
                                             </div>
                                         </div>
             
@@ -151,7 +249,7 @@
                                             <label for="endereco" class="form-label">Endereço:</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite seu endereço" required>
+                                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite seu endereço">
                                             </div>
                                         </div>
                             
@@ -160,14 +258,14 @@
                                                 <label for="bairro" class="form-label">Bairro:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                                    <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Digite seu bairro" required>
+                                                    <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Digite seu bairro">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <label for="cep2" class="form-label">CEP:</label>
+                                                <label for="cep" class="form-label">CEP:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                                    <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" required>
+                                                    <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000">
                                                     <button class="btn btn-outline-secondary" type="button" id="buscarCep" name="buscarCep">
                                                         <i class="bi bi-search"></i> Buscar
                                                     </button>
@@ -180,14 +278,14 @@
                                                 <label for="cidade" class="form-label">Cidade:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-building"></i></span>
-                                                    <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite sua cidade" required>
+                                                    <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite sua cidade">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="estado" class="form-label">Estado:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                                    <select class="form-select" id="estado" name="estado" required>
+                                                    <select class="form-select" id="estado" name="estado">
                                                         <option value="" selected disabled>Selecione</option>
                                                         <option value="AC">AC</option>
                                                         <option value="AL">AL</option>
@@ -223,10 +321,10 @@
             
                                         <!-- Email -->
                                         <div class="mb-3">
-                                            <label for="email" class="form-label">E-mail</label>
+                                            <label for="email" class="form-label">E-mail *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                                <input type="email" class="form-control" id="email" placeholder="fornecedor@empresa.com" required>
+                                                <input type="email" class="form-control" id="email" name="email" placeholder="fornecedor@empresa.com" required>
                                             </div>
                                         </div>
             
@@ -242,14 +340,14 @@
                                     </form>
                                 </div>
                                 <div class="card-footer text-muted text-center py-2">
-                                    <small>Todos os campos são obrigatórios</small>
+                                    <small>Campos marcados com * são obrigatórios</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-    <script>
+<script>
         // Alternar exibição do menu
         document.getElementById("menu-toggle").addEventListener("click", function () {
             document.getElementById("sidebar").classList.toggle("d-none");
@@ -262,6 +360,101 @@
         }
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
-    </script>
+
+        // Formatação do campo de CPF/CNPJ
+        document.getElementById('cpf_cnpj').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            // Verifica se é CPF (até 11 dígitos) ou CNPJ (mais de 11 dígitos)
+            if (value.length <= 11) {
+                // Formatação para CPF
+                if (value.length > 9) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                } else if (value.length > 6) {
+                    value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+                } else if (value.length > 3) {
+                    value = value.replace(/(\d{3})(\d+)/, '$1.$2');
+                }
+            } else {
+                // Formatação para CNPJ (limita a 14 dígitos)
+                if (value.length > 14) value = value.slice(0, 14);
+                
+                if (value.length > 12) {
+                    value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+                } else if (value.length > 8) {
+                    value = value.replace(/(\d{2})(\d{3})(\d{3})(\d+)/, '$1.$2.$3/$4');
+                } else if (value.length > 5) {
+                    value = value.replace(/(\d{2})(\d{3})(\d+)/, '$1.$2.$3');
+                }
+            }
+            e.target.value = value;
+        });
+
+        // Formatação do campo de telefone
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 11) value = value.slice(0, 11);
+            
+            if (value.length > 10) {
+                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/(\d{2})(\d+)/, '($1) $2');
+            }
+            e.target.value = value;
+        });
+
+        // Buscar CEP via API
+        document.getElementById('buscarCep').addEventListener('click', function() {
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            
+            if (cep.length !== 8) {
+                alert('CEP inválido! Digite um CEP com 8 dígitos.');
+                return;
+            }
+        
+            // Mostrar loading
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Buscando...';
+            this.disabled = true;
+            
+            // Fazer requisição para a API ViaCEP
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        alert('CEP não encontrado!');
+                        return;
+                    }
+                    
+                    // Preencher os campos com os dados retornados
+                    document.getElementById('endereco').value = data.logradouro || '';
+                    document.getElementById('bairro').value = data.bairro || '';
+                    document.getElementById('cidade').value = data.localidade || '';
+                    document.getElementById('estado').value = data.uf || '';
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar CEP:', error);
+                    alert('Erro ao buscar CEP. Tente novamente.');
+                })
+                .finally(() => {
+                    // Restaurar botão
+                    this.innerHTML = '<i class="bi bi-search"></i> Buscar';
+                    this.disabled = false;
+                });
+        });
+
+        // Formatação do campo de CEP
+        document.getElementById('cep').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            
+            if (value.length > 5) {
+                value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+</script>
 </body>
 </html>
