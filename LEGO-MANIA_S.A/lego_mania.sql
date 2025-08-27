@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 27/08/2025 às 05:31
+-- Tempo de geração: 27/08/2025 às 20:55
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -38,16 +38,20 @@ CREATE TABLE `cliente` (
   `cidade` varchar(100) DEFAULT NULL,
   `estado` varchar(50) DEFAULT NULL,
   `telefone` varchar(20) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL
+  `email` varchar(100) DEFAULT NULL,
+  `status` enum('Ativo','Inativo') DEFAULT 'Ativo',
+  `data_inatividade` date DEFAULT NULL,
+  `observacao_inatividade` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `cliente`
 --
 
-INSERT INTO `cliente` (`id_cliente`, `id_funcionario`, `nome_cliente`, `cpf_cnpj`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `telefone`, `email`) VALUES
-(1, 12, 'DALTON MARCELINO', '55555555588', 'bom retiro', 'Bom retiro', '89223200', 'Joinville', 'SC', '57575757575', 'dalton@empresa.com'),
-(2, 12, 'DALTONuuuu', '64774754578', 'São Paulo - 337', 'Bom retiro', '89223200', 'Joinville', 'SC', '47756568667', 'daltonuuu@daltonuuuu');
+INSERT INTO `cliente` (`id_cliente`, `id_funcionario`, `nome_cliente`, `cpf_cnpj`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `telefone`, `email`, `status`, `data_inatividade`, `observacao_inatividade`) VALUES
+(1, 12, 'DALTON MARCELINO', '55555555588', 'bom retiro', 'Bom retiro', '89223200', 'Joinville', 'SC', '57575757575', 'dalton@empresa.com', 'Inativo', '2025-08-27', '231231'),
+(2, 12, 'DALTONuuuu', '64774754578', 'São Paulo - 337', 'Bom retiro', '89223200', 'Joinville', 'SC', '47756568667', 'daltonuuu@daltonuuuu', 'Ativo', NULL, NULL),
+(3, 12, 'Atanázio espedições ultraaéres', '12345254612', 'Rua Newton Puerta Lentz', 'Jardim Sofia', '89223450', 'Joinville', 'SC', '4234939234', 'Daltongaypkrl@gmail.com', 'Inativo', '2025-08-27', 'Pediu para ser inativo por questões de querer se mudar');
 
 -- --------------------------------------------------------
 
@@ -144,7 +148,9 @@ INSERT INTO `log_acao` (`id_log`, `id_usuario`, `id_perfil`, `acao`, `tabela_afe
 (9, 12, 1, 'Cadastro de cliente: DALTON MARCELINO (dalton@empresa.com) pelo ', 'cliente', 1, '2025-08-27 01:57:26'),
 (10, 12, 1, '12', 'Cadastro de fornecedor: DIEGO (44444444444444)', 0, '2025-08-27 02:30:19'),
 (11, 12, 1, '12', 'Cadastro de cliente: DALTONuuuu (daltonuuu@daltonuuuu)', 0, '2025-08-27 02:40:03'),
-(12, 12, 1, '12', 'Cadastro de fornecedor: dasda (22222222222222)', 0, '2025-08-27 03:03:38');
+(12, 12, 1, '12', 'Cadastro de fornecedor: dasda (22222222222222)', 0, '2025-08-27 03:03:38'),
+(13, 12, 1, 'Cadastro de usuário: Dalton espedições ultraaéreas (Daltongaypkrl@gmail.com) como Secretaria', 'usuario', 32, '2025-08-27 16:41:19'),
+(14, 12, 1, '12', 'Cadastro de cliente: Atanázio espedições ultraaéres (Daltongaypkrl@gmail.com)', 0, '2025-08-27 16:43:32');
 
 -- --------------------------------------------------------
 
@@ -189,19 +195,10 @@ CREATE TABLE `nova_ordem` (
   `prioridade` varchar(20) DEFAULT NULL,
   `observacao` text DEFAULT NULL,
   `dt_recebimento` date DEFAULT NULL,
-  `valor_total` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `pagamento`
---
-
-CREATE TABLE `pagamento` (
-  `id_pagamento` int(11) NOT NULL,
-  `id_cliente` int(11) NOT NULL,
-  `metodo_pag` varchar(50) NOT NULL
+  `valor_total` decimal(10,2) NOT NULL,
+  `metodo_pag` varchar(50) DEFAULT NULL,
+  `id_peca_est` int(11) DEFAULT NULL,
+  `id_cliente` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -273,7 +270,8 @@ INSERT INTO `usuario` (`id_usuario`, `nome_usuario`, `senha`, `email`, `senha_te
 (23, 'joaozinho', '$2y$10$SCi19TOitx2U1ZFiAa.Bju.tzQG1JhgX8wMheK5ivt.BFyXlrp5U6', 'joaozinho@joaozinho', 0, 1, 'Ativo', NULL, NULL, NULL),
 (28, 'logs', '$2y$10$mhhzHehNFHKgp6TuIPeuCueRYzT4QnWs0INQvHODSZsHMc3.L4yKW', 'logs@logs', 0, 1, 'Ativo', NULL, NULL, NULL),
 (29, 'COBRA', '$2y$10$6R5zhbs09a1i4LQMD3UIXeU.qRa7S/VmV5OQBOMAkKJYJGUUwEyC2', 'cobra@cobra', 0, 1, 'Ativo', NULL, NULL, NULL),
-(31, 'Gustavo', '$2y$10$kLdUxZtMScvUoEARMPdb9e3QJ3nNyDgnvxdHJd1Q5nc8nLeEL4J2i', 'admin@teste123', 0, 1, 'Ativo', NULL, NULL, NULL);
+(31, 'Gustavo', '$2y$10$kLdUxZtMScvUoEARMPdb9e3QJ3nNyDgnvxdHJd1Q5nc8nLeEL4J2i', 'admin@teste123', 0, 1, 'Ativo', NULL, NULL, NULL),
+(32, 'Dalton espedições ultraaéreas', '$2y$10$xntfhMLPQmWvUT6h29X3Uu9BMApBOHN3H60UcjuU4cA4sSug7yF5K', 'Daltongaypkrl@gmail.com', 0, 3, 'Ativo', NULL, NULL, NULL);
 
 --
 -- Índices para tabelas despejadas
@@ -322,14 +320,9 @@ ALTER TABLE `motivo_inatividade`
 --
 ALTER TABLE `nova_ordem`
   ADD PRIMARY KEY (`id_ordem`),
-  ADD KEY `id_funcionario` (`id_funcionario`);
-
---
--- Índices de tabela `pagamento`
---
-ALTER TABLE `pagamento`
-  ADD PRIMARY KEY (`id_pagamento`),
-  ADD KEY `id_cliente` (`id_cliente`);
+  ADD KEY `id_funcionario` (`id_funcionario`),
+  ADD KEY `fk_id_peca_est` (`id_peca_est`),
+  ADD KEY `fk_id_cliente` (`id_cliente`);
 
 --
 -- Índices de tabela `peca_estoque`
@@ -362,7 +355,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `fornecedor`
@@ -380,7 +373,7 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `log_acao`
 --
 ALTER TABLE `log_acao`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de tabela `motivo_inatividade`
@@ -393,12 +386,6 @@ ALTER TABLE `motivo_inatividade`
 --
 ALTER TABLE `nova_ordem`
   MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `pagamento`
---
-ALTER TABLE `pagamento`
-  MODIFY `id_pagamento` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `peca_estoque`
@@ -416,7 +403,7 @@ ALTER TABLE `perfil`
 -- AUTO_INCREMENT de tabela `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- Restrições para tabelas despejadas
@@ -451,13 +438,9 @@ ALTER TABLE `log_acao`
 -- Restrições para tabelas `nova_ordem`
 --
 ALTER TABLE `nova_ordem`
+  ADD CONSTRAINT `fk_id_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`),
+  ADD CONSTRAINT `fk_id_peca_est` FOREIGN KEY (`id_peca_est`) REFERENCES `peca_estoque` (`id_peca_est`),
   ADD CONSTRAINT `nova_ordem_ibfk_1` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionario` (`id_funcionario`);
-
---
--- Restrições para tabelas `pagamento`
---
-ALTER TABLE `pagamento`
-  ADD CONSTRAINT `pagamento_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`);
 
 --
 -- Restrições para tabelas `peca_estoque`
