@@ -37,7 +37,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inativar_cliente'])) {
     $stmt->bindParam(':id', $id_cliente, PDO::PARAM_INT);
     
     if($stmt->execute()) {
-        echo "<script>alert('Usuário inativado com sucesso!');window.location.href='gestao_cliente.php';</script>";
+        echo "<script>alert('Cliente inativado com sucesso!');window.location.href='gestao_cliente.php';</script>";
     } else {
         echo "<script>alert('Erro ao inativar cliente!');</script>";
     }
