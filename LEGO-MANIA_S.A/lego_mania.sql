@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26/08/2025 às 22:06
+-- Tempo de geração: 27/08/2025 às 05:31
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -41,6 +41,14 @@ CREATE TABLE `cliente` (
   `email` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Despejando dados para a tabela `cliente`
+--
+
+INSERT INTO `cliente` (`id_cliente`, `id_funcionario`, `nome_cliente`, `cpf_cnpj`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `telefone`, `email`) VALUES
+(1, 12, 'DALTON MARCELINO', '55555555588', 'bom retiro', 'Bom retiro', '89223200', 'Joinville', 'SC', '57575757575', 'dalton@empresa.com'),
+(2, 12, 'DALTONuuuu', '64774754578', 'São Paulo - 337', 'Bom retiro', '89223200', 'Joinville', 'SC', '47756568667', 'daltonuuu@daltonuuuu');
+
 -- --------------------------------------------------------
 
 --
@@ -59,8 +67,17 @@ CREATE TABLE `fornecedor` (
   `cep` varchar(15) DEFAULT NULL,
   `cidade` varchar(100) DEFAULT NULL,
   `estado` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL
+  `email` varchar(100) DEFAULT NULL,
+  `status` enum('Ativo','Inativo','Pendente','Bloqueado','Suspenso') DEFAULT 'Ativo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `fornecedor`
+--
+
+INSERT INTO `fornecedor` (`id_fornecedor`, `id_funcionario`, `nome_fornecedor`, `cpf_cnpj`, `ramo_atividade`, `telefone`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `email`, `status`) VALUES
+(1, 12, 'DIEGO', '44444444444444', 'MADEIRA', '22222222222', 'Rua tabaute', 'São Paulo', '67967969', 'Joinville', 'SC', 'diego@fornecedor', 'Pendente'),
+(2, 12, 'dasda', '22222222222222', 'ttttttttttttttttttt', '22222222222', 'jgyjygj', 'ygjygjyjgyjygj', '89223200', 'Joinville', 'SC', 'gsg@gesg', 'Ativo');
 
 -- --------------------------------------------------------
 
@@ -91,8 +108,8 @@ CREATE TABLE `funcionario` (
 --
 
 INSERT INTO `funcionario` (`id_funcionario`, `nome_funcionario`, `cpf_funcionario`, `salario`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `email`, `dt_nascimento`, `status`, `id_motivo_inatividade`, `data_inatividade`, `observacao_inatividade`) VALUES
-(12, 'dalton', '44444444444', 99999999.99, 'wadawdwwawa', 'gsdgdsgs', '22222-222', 'hsdhshsdhsd', 'PR', 'adm@tste123', '2000-02-25', 'Inativo', 7, '2025-08-26', '5 ANOS DE FIRMA'),
-(13, 'Adminfefs', '53523523226232', 52325235.23, 'sefsefsefs', 'eesfsefse', '33333333', 'fseesgsegsegsees', 'PI', 'n@te123', '3355-05-23', 'Ativo', NULL, NULL, NULL),
+(12, 'dalton', '44444444444', 99999999.99, 'wadawdwwawa', 'gsdgdsgs', '22222-222', 'hsdhshsdhsd', 'PR', 'adm@tste123', '2000-02-25', 'Ativo', NULL, NULL, NULL),
+(13, 'Adminfefs', '53523523226232', 52325235.23, 'sefsefsefs', 'eesfsefse', '33333333', 'fseesgsegsegsees', 'PI', 'n@te123', '3355-05-23', 'Inativo', 9, '2025-08-26', ''),
 (14, 'JULIO', '12130093914', 224.45, 'sefsefsefs', 'BOM RETIRO', '33232322', 'Joinville', 'PE', 'bom@retiro', '2007-02-04', 'Ativo', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -123,7 +140,11 @@ INSERT INTO `log_acao` (`id_log`, `id_usuario`, `id_perfil`, `acao`, `tabela_afe
 (5, 12, 1, 'Cadastro de funcionário: Dalton (22222222222)', 'funcionario', 12, '2025-08-26 17:48:13'),
 (6, 12, 1, 'Cadastro de funcionário: dalton (44444444444)', 'funcionario', 12, '2025-08-26 19:04:46'),
 (7, 12, 1, '12', 'Cadastro de funcionário: Adminfefs (53523523226232)', 0, '2025-08-26 19:09:13'),
-(8, 12, 1, '12', 'Cadastro de funcionário: JULIO (12130093914)', 0, '2025-08-26 19:09:59');
+(8, 12, 1, '12', 'Cadastro de funcionário: JULIO (12130093914)', 0, '2025-08-26 19:09:59'),
+(9, 12, 1, 'Cadastro de cliente: DALTON MARCELINO (dalton@empresa.com) pelo ', 'cliente', 1, '2025-08-27 01:57:26'),
+(10, 12, 1, '12', 'Cadastro de fornecedor: DIEGO (44444444444444)', 0, '2025-08-27 02:30:19'),
+(11, 12, 1, '12', 'Cadastro de cliente: DALTONuuuu (daltonuuu@daltonuuuu)', 0, '2025-08-27 02:40:03'),
+(12, 12, 1, '12', 'Cadastro de fornecedor: dasda (22222222222222)', 0, '2025-08-27 03:03:38');
 
 -- --------------------------------------------------------
 
@@ -193,7 +214,8 @@ CREATE TABLE `peca_estoque` (
   `id_peca_est` int(11) NOT NULL,
   `id_funcionario` int(11) NOT NULL,
   `id_fornecedor` int(11) NOT NULL,
-  `peca` varchar(100) NOT NULL,
+  `nome_peca` varchar(100) NOT NULL,
+  `descricao_peca` text DEFAULT NULL,
   `qtde` int(11) NOT NULL,
   `tipo` varchar(50) DEFAULT NULL,
   `dt_cadastro` date DEFAULT NULL
@@ -340,13 +362,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `fornecedor`
 --
 ALTER TABLE `fornecedor`
-  MODIFY `id_fornecedor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_fornecedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `funcionario`
@@ -358,7 +380,7 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `log_acao`
 --
 ALTER TABLE `log_acao`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `motivo_inatividade`
