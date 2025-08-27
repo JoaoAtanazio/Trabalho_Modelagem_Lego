@@ -2,73 +2,104 @@
 session_start();
 require_once 'conexao.php';
 
-// VERIFICA SE O USUARIO TEM PERMISSÃO
+// VERIFICA SE O USUARIO ESTÁ LOGADO
+if (!isset($_SESSION['id_usuario'])) {
+    echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
+    exit();
+}
+
+// VERIFICA SE O USUARIO TEM PERMISSÃO (Técnico não pode acessar)
 if ($_SESSION['perfil'] == 4) {
     echo "<script>alert('Acesso Negado!'); window.location.href='principal.php';</script>";
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    // Recebe e sanitiza os dados do formulário
     $id_funcionario = $_SESSION['id_usuario']; 
-    $nome_cliente = $_POST['nome'];
-    $cpf_cnpj = $_POST['cpf_cnpj'];
-    $endereco = $_POST['endereco'];
-    $bairro = $_POST['bairro'];
-    $cep = $_POST['cep'];
-    $cidade = $_POST['cidade'];
-    $estado = $_POST['estado'];
-    $telefone = $_POST['telefone'];
-    $email = $_POST['email'];
+    $nome_cliente = trim($_POST['nome']);
+    $cpf_cnpj = preg_replace('/[^0-9]/', '', $_POST['cpf_cnpj']);
+    $endereco = trim($_POST['endereco']);
+    $bairro = trim($_POST['bairro']);
+    $cep = preg_replace('/[^0-9]/', '', $_POST['cep']);
+    $cidade = trim($_POST['cidade']);
+    $estado = trim($_POST['estado']);
+    $telefone = preg_replace('/[^0-9]/', '', $_POST['telefone']);
+    $email = trim($_POST['email']);
 
-    $sql = "INSERT INTO cliente(id_funcionario,nome_cliente,cpf_cnpj,endereco,bairro,cep,cidade,estado,telefone,email) 
-            VALUES (:id_funcionario,:nome_cliente,:cpf_cnpj,:endereco,:bairro,:cep,:cidade,:estado,:telefone,:email)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':id_funcionario', $id_funcionario);
-    $stmt->bindParam(':nome_cliente', $nome_cliente);
-    $stmt->bindParam(':cpf_cnpj', $cpf_cnpj);
-    $stmt->bindParam(':endereco', $endereco);
-    $stmt->bindParam(':bairro', $bairro);
-    $stmt->bindParam(':cep', $cep);
-    $stmt->bindParam(':cidade', $cidade);
-    $stmt->bindParam(':estado', $estado);
-    $stmt->bindParam(':telefone', $telefone);
-    $stmt->bindParam(':email', $email);
+    // Validações básicas
+    if (empty($nome_cliente) || empty($cpf_cnpj) || empty($telefone) || empty($email)) {
+        echo "<script>alert('Preencha todos os campos obrigatórios!');</script>";
+        exit();
+    }
 
+    // Validar CPF (11 dígitos) ou CNPJ (14 dígitos)
+    if (strlen($cpf_cnpj) != 11 && strlen($cpf_cnpj) != 14) {
+        echo "<script>alert('CPF/CNPJ inválido! Deve ter 11 ou 14 dígitos.');</script>";
+        exit();
+    }
 
-    if ($stmt->execute()) {
-        // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
-        $id_novo_usuario = $pdo->lastInsertId();
-        
-        // Descobrir o nome do perfil para incluir na ação
-        $sql_perfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
-        $stmt_perfil = $pdo->prepare($sql_perfil);
-        $stmt_perfil->bindParam(':id_perfil', $id_perfil);
-        $stmt_perfil->execute();
-        $perfil = $stmt_perfil->fetch(PDO::FETCH_ASSOC);
-        $nome_perfil = $perfil['nome_perfil'];
-        
-        // Incluir informações na ação
-        $acao = "Cadastro de cliente: " . $nome_cliente . " (" . $email . ") pelo " . $nome_perfil;
-        
-        // Registrar o log
-        if (function_exists('registrarLog')) {
-            registrarLog($acao, "cliente", $id_novo_usuario);
-        } else {
-            error_log("Função registrarLog não encontrada!");
+    try {
+        // Verificar se CPF/CNPJ já existe
+        $verificaCPF = $pdo->prepare("SELECT COUNT(*) FROM cliente WHERE cpf_cnpj = :cpf_cnpj");
+        $verificaCPF->bindParam(':cpf_cnpj', $cpf_cnpj, PDO::PARAM_STR);
+        $verificaCPF->execute();
+
+        if ($verificaCPF->fetchColumn() > 0) {
+            echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
+            exit();
         }
+
+        $sql = "INSERT INTO cliente(id_funcionario, nome_cliente, cpf_cnpj, endereco, bairro, cep, cidade, estado, telefone, email) 
+                VALUES (:id_funcionario, :nome_cliente, :cpf_cnpj, :endereco, :bairro, :cep, :cidade, :estado, :telefone, :email)";
         
-        echo "<script>alert('Cliente cadastrado com sucesso!');</script>";
-    } else {
-        echo "<script>alert('Erro ao cadastrar cliente!');</script>";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id_funcionario', $id_funcionario, PDO::PARAM_INT);
+        $stmt->bindParam(':nome_cliente', $nome_cliente, PDO::PARAM_STR);
+        $stmt->bindParam(':cpf_cnpj', $cpf_cnpj, PDO::PARAM_STR);
+        $stmt->bindParam(':endereco', $endereco, PDO::PARAM_STR);
+        $stmt->bindParam(':bairro', $bairro, PDO::PARAM_STR);
+        $stmt->bindParam(':cep', $cep, PDO::PARAM_STR);
+        $stmt->bindParam(':cidade', $cidade, PDO::PARAM_STR);
+        $stmt->bindParam(':estado', $estado, PDO::PARAM_STR);
+        $stmt->bindParam(':telefone', $telefone, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+            $id_novo_cliente = $pdo->lastInsertId();
+            
+            // Incluir informações na ação
+            $acao = "Cadastro de cliente: " . $nome_cliente . " (" . $email . ")";
+            
+            // Registrar o log
+            if (function_exists('registrarLog')) {
+                registrarLog($_SESSION['id_usuario'], $acao, "cliente", $id_novo_cliente);
+            } else {
+                error_log("Função registrarLog não encontrada! Ação: " . $acao);
+            }
+            
+            echo "<script>
+                alert('Cliente cadastrado com sucesso!');
+                window.location.href = 'cadastro_cliente.php';
+            </script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar cliente!');</script>";
+        }
+    } catch (PDOException $e) {
+        if ($e->getCode() == 23000) {
+            echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar cliente: " . addslashes($e->getMessage()) . "');</script>";
+            error_log("Erro PDO: " . $e->getMessage());
+        }
     }
 }
 
-// Buscar perfis para o dropdown
-$sql_clientes = "SELECT * FROM cliente";
-$stmt_clientes = $pdo->query($sql_clientes);
-$clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
-
-
+    // Buscar clientes para exibição (se necessário)
+    $sql_clientes = "SELECT * FROM cliente";
+    $stmt_clientes = $pdo->query($sql_clientes);
+    $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -184,16 +215,16 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                     <form action="cadastro_cliente.php" method="POST">
                                         <!-- Nome -->
                                         <div class="mb-2">
-                                            <label for="nome" class="form-label">Nome Completo</label>
+                                            <label for="nome" class="form-label">Nome Completo *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                                                <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome completo" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')" required>
                                             </div>
                                         </div>
                             
                                         <!-- CPF/CNPJ -->
                                         <div class="mb-2">
-                                            <label for="cpf_cnpj" class="form-label">CPF ou CNPJ</label>
+                                            <label for="cpf_cnpj" class="form-label">CPF ou CNPJ *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-card-checklist"></i></span>
                                                 <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" placeholder="000.000.000-00 ou 00.000.000/0000-00" required>
@@ -205,7 +236,7 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                             <label for="endereco" class="form-label">Endereço:</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite seu endereço" required>
+                                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite seu endereço">
                                             </div>
                                         </div>
                             
@@ -214,14 +245,14 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                                 <label for="bairro" class="form-label">Bairro:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                                    <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Digite seu bairro" required>
+                                                    <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Digite seu bairro">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <label for="cep2" class="form-label">CEP:</label>
+                                                <label for="cep" class="form-label">CEP:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                                    <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000" required>
+                                                    <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000">
                                                     <button class="btn btn-outline-secondary" type="button" id="buscarCep" name="buscarCep">
                                                         <i class="bi bi-search"></i> Buscar
                                                     </button>
@@ -234,14 +265,14 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                                 <label for="cidade" class="form-label">Cidade:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-building"></i></span>
-                                                    <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite sua cidade" required>
+                                                    <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite sua cidade">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="estado" class="form-label">Estado:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                                    <select class="form-select" id="estado" name="estado" required>
+                                                    <select class="form-select" id="estado" name="estado">
                                                         <option value="" selected disabled>Selecione</option>
                                                         <option value="AC">AC</option>
                                                         <option value="AL">AL</option>
@@ -277,7 +308,7 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                             
                                         <!-- Telefone -->
                                         <div class="mb-2">
-                                            <label for="telefone" class="form-label">Telefone</label>
+                                            <label for="telefone" class="form-label">Telefone *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-telephone"></i></span>
                                                 <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
@@ -286,7 +317,7 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                             
                                         <!-- Email -->
                                         <div class="mb-3">
-                                            <label for="email" class="form-label">E-mail</label>
+                                            <label for="email" class="form-label">E-mail *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                                                 <input type="email" class="form-control" id="email" name="email" placeholder="seu@email.com" required>
@@ -299,13 +330,13 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
                                                 <i class="bi bi-x-circle"></i> Limpar
                                             </button>
                                             <button type="submit" class="btn btn-primary btn-sm">
-                                                <i class="bi bi-check-circle"></i> Enviar
+                                                <i class="bi bi-check-circle"></i> Cadastrar
                                             </button>
                                         </div>
                                     </form>
                                 </div>
                                 <div class="card-footer text-muted text-center py-2">
-                                    <small>Todos os campos são obrigatórios</small>
+                                    <small>Campos marcados com * são obrigatórios</small>
                                 </div>
                             </div>
                         </div>
@@ -315,7 +346,7 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <script>
+<script>
         // Alternar exibição do menu
         document.getElementById("menu-toggle").addEventListener("click", function () {
             document.getElementById("sidebar").classList.toggle("d-none");
@@ -328,7 +359,101 @@ $clientes = $stmt_clientes->fetchAll(PDO::FETCH_ASSOC);
         }
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
-    </script>
 
+        // Formatação do campo de CPF/CNPJ
+        document.getElementById('cpf_cnpj').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            // Verifica se é CPF (até 11 dígitos) ou CNPJ (mais de 11 dígitos)
+            if (value.length <= 11) {
+                // Formatação para CPF
+                if (value.length > 9) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                } else if (value.length > 6) {
+                    value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+                } else if (value.length > 3) {
+                    value = value.replace(/(\d{3})(\d+)/, '$1.$2');
+                }
+            } else {
+                // Formatação para CNPJ (limita a 14 dígitos)
+                if (value.length > 14) value = value.slice(0, 14);
+                
+                if (value.length > 12) {
+                    value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+                } else if (value.length > 8) {
+                    value = value.replace(/(\d{2})(\d{3})(\d{3})(\d+)/, '$1.$2.$3/$4');
+                } else if (value.length > 5) {
+                    value = value.replace(/(\d{2})(\d{3})(\d+)/, '$1.$2.$3');
+                }
+            }
+            e.target.value = value;
+        });
+
+        // Formatação do campo de telefone
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 11) value = value.slice(0, 11);
+            
+            if (value.length > 10) {
+                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/(\d{2})(\d+)/, '($1) $2');
+            }
+            e.target.value = value;
+        });
+
+        // Buscar CEP via API
+        document.getElementById('buscarCep').addEventListener('click', function() {
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            
+            if (cep.length !== 8) {
+                alert('CEP inválido! Digite um CEP com 8 dígitos.');
+                return;
+            }
+        
+            // Mostrar loading
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Buscando...';
+            this.disabled = true;
+            
+            // Fazer requisição para a API ViaCEP
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        alert('CEP não encontrado!');
+                        return;
+                    }
+                    
+                    // Preencher os campos com os dados retornados
+                    document.getElementById('endereco').value = data.logradouro || '';
+                    document.getElementById('bairro').value = data.bairro || '';
+                    document.getElementById('cidade').value = data.localidade || '';
+                    document.getElementById('estado').value = data.uf || '';
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar CEP:', error);
+                    alert('Erro ao buscar CEP. Tente novamente.');
+                })
+                .finally(() => {
+                    // Restaurar botão
+                    this.innerHTML = '<i class="bi bi-search"></i> Buscar';
+                    this.disabled = false;
+                });
+        });
+
+        // Formatação do campo de CEP
+        document.getElementById('cep').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            
+            if (value.length > 5) {
+                value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+</script>
 </body>
 </html>
