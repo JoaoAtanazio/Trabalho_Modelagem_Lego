@@ -14,7 +14,7 @@
 
         if($usuario && password_verify($senha, $usuario['senha'])) {
             // Login bem sucedido define variáveis de sessão
-            $_SESSION['usuario'] = $usuario['nome'];  // corrigido
+            $_SESSION['usuario'] = $usuario['nome_usuario'];  // corrigido
             $_SESSION['perfil'] = $usuario['id_perfil'];
             $_SESSION['id_usuario'] = $usuario['id_usuario'];
 
