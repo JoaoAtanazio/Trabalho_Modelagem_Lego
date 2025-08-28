@@ -1,3 +1,80 @@
+<?php
+session_start();
+require_once 'conexao.php';
+
+// VERIFICA SE O USUARIO ESTÁ LOGADO
+if (!isset($_SESSION['id_usuario'])) {
+    echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    // Recebe e sanitiza os dados do formulário
+    $id_funcionario = $_SESSION['id_usuario']; 
+    $nome_client_ordem = $_POST['cliente'];
+    $tecnico = $_POST['tecnico'];
+    $marca_aparelho = $_POST['marca_aparelho'];
+    $tempo_uso = $_POST['tempo_uso'];
+    $problema = $_POST['problema'];
+    $prioridade = $_POST['prioridade'];
+    $observacao = $_POST['observacao'];
+    $dt_recebimento = $_POST['dt_recebimento'];
+    $valor_total = $_POST['valor_total'];
+    $metodo_pag = $_POST['metodo_pag'];
+
+    try {
+        $sql = "INSERT INTO nova_ordem(id_funcionario,nome_client_ordem,tecnico,marca_aparelho,tempo_uso,problema,prioridade,observacao,dt_recebimento,valor_total,metodo_pag) 
+                VALUES (:id_funcionario,:nome_client_ordem,:tecnico,:marca_aparelho,:tempo_uso,:problema,:prioridade,:observacao,:dt_recebimento,:valor_total,:metodo_pag)";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id_funcionario', $id_funcionario, PDO::PARAM_INT);
+        $stmt->bindParam(':nome_client_ordem', $nome_client_ordem, PDO::PARAM_STR);
+        $stmt->bindParam(':tecnico', $tecnico, PDO::PARAM_STR);
+        $stmt->bindParam(':marca_aparelho', $marca_aparelho, PDO::PARAM_STR);
+        $stmt->bindParam(':tempo_uso', $tempo_uso, PDO::PARAM_STR);
+        $stmt->bindParam(':problema', $ceproblemap, PDO::PARAM_STR);
+        $stmt->bindParam(':prioridade', $prioridade);
+        $stmt->bindParam(':observacao', $observacao, PDO::PARAM_STR);
+        $stmt->bindParam(':dt_recebimento', $dt_recebimento);
+        $stmt->bindParam(':valor_total', $valor_total);
+        $stmt->bindParam(':metodo_pag', $metodo_pag);
+
+        if ($stmt->execute()) {
+            // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+            $id_nova_ordem = $pdo->lastInsertId();
+            
+            // Incluir informações na ação
+            $acao = "Abertura de Ordem de serviço: " . $nome_cliente . " (" . $tecnico . ")";
+            
+            // Registrar o log
+            if (function_exists('registrarLog')) {
+                registrarLog($_SESSION['id_usuario'], $acao, "ordem", $id_nova_ordem);
+            } else {
+                error_log("Função registrarLog não encontrada! Ação: " . $acao);
+            }
+            
+            echo "<script>
+                alert('Ordem cadastrada com sucesso!');
+                window.location.href = 'cadastro_cliente.php';
+            </script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar ordem!');</script>";
+        }
+    } catch (PDOException $e) {
+        if ($e->getCode() == 23000) {
+            echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar ordem: " . addslashes($e->getMessage()) . "');</script>";
+            error_log("Erro PDO: " . $e->getMessage());
+        }
+    }
+}
+
+    // Buscar clientes para exibição (se necessário)
+    $sql_ordem = "SELECT * FROM nova_ordem";
+    $stmt_ordem = $pdo->query($sql_ordem);
+    $clientes = $stmt_ordem->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -108,7 +185,7 @@
                                     <h5 class="mb-0"><i class="bi bi-tools me-2"></i>Nova Ordem de Serviço</h5>
                                 </div>
                                 <div class="card-body p-3">
-                                    <form>
+                                    <form action="nova_ordem.php" method="POST">
                                         <!-- Técnico -->
                                         <div class="mb-2">
                                             <label for="tecnico" class="form-label">Técnico</label>
@@ -129,7 +206,7 @@
                                             <label for="cliente" class="form-label">Nome do Cliente</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                <input type="text" class="form-control" id="cliente" placeholder="Digite o nome do cliente" required>
+                                                <input type="text" class="form-control" name="cliente" id="cliente" placeholder="Digite o nome do cliente" required>
                                             </div>
                                         </div>
             
@@ -199,6 +276,14 @@
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
                                                 <input type="text" class="form-control" id="valor_total" placeholder="R$ 0,00" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label for="metodo_pag" class="form-label">Método de pagamento</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                                <input type="text" class="form-control" id="metodo_pag" placeholder="Pix / Cartão / Dinheiro" required>
                                             </div>
                                         </div>
             
