@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $stmt->bindParam(':tecnico', $tecnico, PDO::PARAM_STR);
         $stmt->bindParam(':marca_aparelho', $marca_aparelho, PDO::PARAM_STR);
         $stmt->bindParam(':tempo_uso', $tempo_uso, PDO::PARAM_STR);
-        $stmt->bindParam(':problema', $ceproblemap, PDO::PARAM_STR);
+        $stmt->bindParam(':problema', $problema, PDO::PARAM_STR);
         $stmt->bindParam(':prioridade', $prioridade);
         $stmt->bindParam(':observacao', $observacao, PDO::PARAM_STR);
         $stmt->bindParam(':dt_recebimento', $dt_recebimento);
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $id_nova_ordem = $pdo->lastInsertId();
             
             // Incluir informações na ação
-            $acao = "Abertura de Ordem de serviço: " . $nome_cliente . " (" . $tecnico . ")";
+            $acao = "Abertura de Ordem de serviço: " . $nome_client_ordem . " (" . $tecnico . ")";
             
             // Registrar o log
             if (function_exists('registrarLog')) {
@@ -74,6 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $sql_ordem = "SELECT * FROM nova_ordem";
     $stmt_ordem = $pdo->query($sql_ordem);
     $clientes = $stmt_ordem->fetchAll(PDO::FETCH_ASSOC);
+
+    // Buscar técnicos do banco
+    $sql_tecnicos = "SELECT id_usuario, nome_usuario FROM usuario WHERE id_perfil = 4 AND status = 'ativo' ORDER BY nome_usuario";
+    $stmt_tecnicos = $pdo->query($sql_tecnicos);
+    $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -86,6 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
@@ -191,12 +198,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="tecnico" class="form-label">Técnico</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person-gear"></i></span>
-                                                <select class="form-select" id="tecnico" required>
+                                                <select class="form-select" id="tecnico" name="tecnico" required>
                                                     <option value="" selected disabled>Selecione o técnico</option>
-                                                    <option value="tecnico1">João Silva</option>
-                                                    <option value="tecnico2">Maria Santos</option>
-                                                    <option value="tecnico3">Pedro Almeida</option>
-                                                    <option value="tecnico4">Ana Costa</option>
+                                                    <?php foreach ($tecnicos as $tecnico): ?>
+                                                        <option value="<?= $tecnico['id_usuario'] ?>">
+                                                            <?= htmlspecialchars($tecnico['nome_usuario']) ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -206,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="cliente" class="form-label">Nome do Cliente</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                <input type="text" class="form-control" name="cliente" id="cliente" placeholder="Digite o nome do cliente" required>
+                                                <input type="text" class="form-control" name="cliente" id="nome_client_ordem" placeholder="Digite o nome do cliente" required>
                                             </div>
                                         </div>
             
@@ -215,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="marca" class="form-label">Marca do Aparelho</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-device-ssd"></i></span>
-                                                <input type="text" class="form-control" id="marca" placeholder="Digite a marca do aparelho" required>
+                                                <input type="text" class="form-control" id="marca_aparelho" name="marca_aparelho" placeholder="Digite a marca do aparelho" required>
                                             </div>
                                         </div>
             
@@ -224,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="tempo_uso" class="form-label">Tempo de Uso</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
-                                                <input type="text" class="form-control" id="tempo_uso" placeholder="Ex: 2 anos, 6 meses" required>
+                                                <input type="text" class="form-control" id="tempo_uso" name="tempo_uso" placeholder="Ex: 2 anos, 6 meses" required>
                                             </div>
                                         </div>
             
@@ -233,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="problema" class="form-label">Problema</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-exclamation-triangle"></i></span>
-                                                <textarea class="form-control" id="problema" placeholder="Descreva o problema relatado" rows="2" required></textarea>
+                                                <textarea class="form-control" id="problema" name="problema" placeholder="Descreva o problema relatado" rows="2" required></textarea>
                                             </div>
                                         </div>
             
@@ -242,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="observacao" class="form-label">Observação</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-chat-left-text"></i></span>
-                                                <textarea class="form-control" id="observacao" placeholder="Observações adicionais" rows="2"></textarea>
+                                                <textarea class="form-control" id="observacao" name="observacao" placeholder="Observações adicionais" rows="2"></textarea>
                                             </div>
                                         </div>
             
@@ -251,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="data_recebimento" class="form-label">Data de Recebimento</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
-                                                <input type="date" class="form-control" id="data_recebimento" required>
+                                                <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento" required>
                                             </div>
                                         </div>
 
@@ -261,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="prioridade" class="form-label">Prioridade do Conserto</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-arrow-up-right-circle"></i></span>
-                                                <select class="form-select" id="prioridade" required>
+                                                <select class="form-select" id="prioridade" name="prioridade" required>
                                                     <option value="" selected disabled>Selecione a prioridade</option>
                                                     <option value="baixa">Baixa</option>
                                                     <option value="media">Média</option>
@@ -275,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="valor_total" class="form-label">Valor Total</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-                                                <input type="text" class="form-control" id="valor_total" placeholder="R$ 0,00" required>
+                                                <input type="text" class="form-control" id="valor_total" name="valor_total" placeholder="R$ 0,00" required>
                                             </div>
                                         </div>
 
@@ -283,7 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="metodo_pag" class="form-label">Método de pagamento</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-                                                <input type="text" class="form-control" id="metodo_pag" placeholder="Pix / Cartão / Dinheiro" required>
+                                                <input type="text" class="form-control" id="metodo_pag" name="metodo_pag" placeholder="Pix / Cartão / Dinheiro" required>
                                             </div>
                                         </div>
             
@@ -317,6 +325,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             const timeString = now.toLocaleTimeString('pt-BR');
             document.getElementById('liveClock').textContent = timeString;
         }
+
+        function selecionarTecnico() {
+            document.getElementById('id_perfil')
+        }
+
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
     </script>
