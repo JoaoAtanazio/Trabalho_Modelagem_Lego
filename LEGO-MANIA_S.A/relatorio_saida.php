@@ -1,3 +1,7 @@
+<?php
+session_start();
+require_once 'php/permissoes.php';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,77 +17,7 @@
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
         <!-- Sidebar -->
-        <nav id="sidebar" class="bg-dark text-white p-3" style="width: 250px;">
-            <h4 class="mb-4">Menu</h4>
-            <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                    <a href="principal.php" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="perfil.php" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-plus me-2"></i> Cadastro 
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
-                        <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
-                        <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
-                        <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
-                        <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
-                        <li><a class="dropdown-item" href="cadastro_pecas.php">Peças no estoque</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="gestaoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-people me-2"></i> Gestão de Pessoas
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="gestaoDropdown">
-                        <li><a class="dropdown-item" href="gestao_usuario.php">Usuarios</a></li>
-                        <li><a class="dropdown-item" href="gestao_cliente.php">Clientes</a></li>
-                        <li><a class="dropdown-item" href="gestao_funcionario.php">Funcionários</a></li>
-                        <li><a class="dropdown-item" href="gestao_fornecedor.php">Fornecedores</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="ordemDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-tools me-2"></i> Ordem de Serviços 
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ordemDropdown">
-                        <li><a class="dropdown-item" href="nova_ordem.php">Nova O.S</a></li>
-                        <li><a class="dropdown-item" href="consultar_ordem.php">Consultar</a></li>
-                        <li><a class="dropdown-item" href="pagamento.php">Pagamento</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="financiasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-graph-up me-2"></i> Relatório de Financias
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="financiasDropdown">
-                        <li><a class="dropdown-item" href="relatorio_despesas.php">Despesas</a></li>
-                        <li><a class="dropdown-item" href="relatorio_lucro.php">Ganho Bruto</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-boxes me-2"></i> Relatório de Estoque
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="estoqueDropdown">
-                        <li><a class="dropdown-item" href="relatorio_saida.php">Saída de Peças</a></li>
-                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
-                        <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="logs.php" class="nav-link text-white">
-                        <i class="bi bi-clock-history me-2"></i> Logs
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
-                </li>
-            </ul>
-        </nav>
+        <?php exibirMenu(); ?>
 
         <!-- Conteúdo principal -->
         <div class="flex-grow-1 d-flex flex-column">
