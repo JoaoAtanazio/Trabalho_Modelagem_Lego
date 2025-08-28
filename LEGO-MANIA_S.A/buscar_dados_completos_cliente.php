@@ -3,7 +3,7 @@ session_start();
 require_once 'conexao.php';
 
 // Verifica permissão (ADM ou SECRETARIA)
-if ($_SESSION['perfil'] != 1) {
+if ($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3) {
     echo json_encode(["erro" => "Acesso negado"]);
     exit();
 }
@@ -15,6 +15,11 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 c.id_cliente,
                 c.nome_cliente,
                 c.cpf_cnpj,
+                c.endereco,
+                c.bairro,
+                c.cep,
+                c.cidade,
+                c.estado,
                 c.telefone,
                 c.email,
                 c.status,
