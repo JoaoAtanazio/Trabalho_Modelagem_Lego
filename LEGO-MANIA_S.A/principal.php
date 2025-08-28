@@ -1,6 +1,22 @@
 <?php
 session_start();
+require_once 'conexao.php';
 require_once 'php/permissoes.php';
+
+if(!isset($_SESSION['id_usuario'])){
+  header("Location: index.php");
+  exit();
+}
+
+// Obtendo o nome do perfil do usuário logado
+$id_perfil = $_SESSION['perfil'];
+$sqlPerfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
+
+$stmtPerfil = $pdo -> prepare($sqlPerfil);
+$stmtPerfil -> bindParam(":id_perfil",$id_perfil);
+$stmtPerfil -> execute();
+$perfil = $stmtPerfil -> fetch(PDO::FETCH_ASSOC);
+$nome_perfil = $perfil['nome_perfil'];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -36,7 +52,9 @@ require_once 'php/permissoes.php';
 
     <!-- Conteúdo -->
     <div class="p-4">
-      <h3>Bem-vindo!</h3>
+      <h3>Bem-vindo, <?php echo $_SESSION["usuario"];?>! <br>
+          Perfil: <?php echo $nome_perfil;?>.
+    </h3>
     </div>
   </div>
 </div> 
