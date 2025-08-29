@@ -217,28 +217,26 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
                                                     <td><?= htmlspecialchars($ordem['dt_recebimento']) ?></td>
                                                     <td>R$ <?= number_format($ordem['valor_total'], 2, ',', '.') ?></td>
                                                     <td class="text-center">
-                                                        <button class="btn btn-sm btn-outline-primary me-1" title="Alterar" onclick="carregarDadosOrdem(<?= htmlspecialchars($ordem['id_ordem']) ?>)">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </button>
-                                                        <a href="consultar_ordem.php?acao=excluir&id=<?= htmlspecialchars($ordem['id_ordem']) ?>" 
-                                                            class="btn btn-sm btn-outline-danger me-1" title="Excluir" 
-                                                            onclick="return confirm('Tem certeza que deseja excluir esta ordem?')">
-                                                                <i class="bi bi-trash"></i>
-                                                        </a>
+                                                    <a href="#" class="btn btn-sm btn-primary me-1" title="Alterar" onclick="carregarDadosOrdem(<?= htmlspecialchars($ordem['id_ordem']) ?>)">Alterar
+                                                    </a>
+                                
 
                                                         <?php if ($filtro_oculto == '0'): ?>
                                                             <a href="consultar_ordem.php?acao=ocultar&id=<?= htmlspecialchars($ordem['id_ordem']) ?>" 
-                                                                class="btn btn-sm btn-outline-secondary" title="Ocultar" 
+                                                                class="btn btn-sm btn-danger me-1" title="Ocultar" 
                                                                 onclick="return confirm('Deseja ocultar esta ordem?')">
-                                                                    <i class="bi bi-eye-slash"></i>
+                                                                Inativar
                                                             </a>
                                                         <?php else: ?>
                                                             <a href="consultar_ordem.php?acao=mostrar&id=<?= htmlspecialchars($ordem['id_ordem']) ?>" 
-                                                                class="btn btn-sm btn-outline-success" title="Reativar" 
+                                                                class="btn btn-sm btn-success me-1" title="Reativar" 
                                                                 onclick="return confirm('Deseja tornar esta ordem visível novamente?')">
-                                                                    <i class="bi bi-eye"></i>
+                                                                Reativar
                                                             </a>
                                                         <?php endif; ?>
+                                                    <button class="btn btn-sm btn-info" onclick="mostrarDetalhesOrdem(<?=htmlspecialchars($usuario['id_usuario'])?>)">
+                                                        <i class="bi bi-info-circle"></i> Detalhes
+                                                    </button>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>

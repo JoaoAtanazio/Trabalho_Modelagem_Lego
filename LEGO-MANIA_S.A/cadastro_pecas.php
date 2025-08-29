@@ -28,11 +28,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $tipo = trim($_POST['tipo']);
     $id_fornecedor = (int)$_POST['id_fornecedor'];
     
+    // Processar o preço - converter de formato brasileiro para decimal
+    $preco = trim($_POST['preco']);
+    $preco = str_replace(['R$', '.', ','], ['', '', '.'], $preco);
+    $preco = floatval($preco);
+    
     // ID do usuário que está cadastrando (para log)
     $id_usuario_cadastrante = $_SESSION['id_usuario'];
 
     // Validações básicas
-    if (empty($nome_peca) || empty($quantidade) || empty($id_fornecedor)) {
+    if (empty($nome_peca) || empty($quantidade) || empty($id_fornecedor) || empty($preco)) {
         echo "<script>alert('Preencha todos os campos obrigatórios!');</script>";
         exit();
     }
@@ -49,8 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
 
         // Prepara a query SQL para inserir na tabela peca_estoque
-        $sql = "INSERT INTO peca_estoque (id_funcionario, id_fornecedor, nome_peca, descricao_peca, qtde, tipo, dt_cadastro) 
-                VALUES (:id_funcionario, :id_fornecedor, :nome_peca, :descricao_peca, :qtde, :tipo, :dt_cadastro)";
+        $sql = "INSERT INTO peca_estoque (id_funcionario, id_fornecedor, nome_peca, descricao_peca, qtde, tipo, preco, dt_cadastro) 
+                VALUES (:id_funcionario, :id_fornecedor, :nome_peca, :descricao_peca, :qtde, :tipo, :preco, :dt_cadastro)";
         
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id_funcionario', $id_usuario_cadastrante, PDO::PARAM_INT);
@@ -59,14 +64,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $stmt->bindParam(':descricao_peca', $descricao_peca, PDO::PARAM_STR);
         $stmt->bindParam(':qtde', $quantidade, PDO::PARAM_INT);
         $stmt->bindParam(':tipo', $tipo, PDO::PARAM_STR);
+        $stmt->bindParam(':preco', $preco, PDO::PARAM_STR);
         $stmt->bindParam(':dt_cadastro', $data_cadastro, PDO::PARAM_STR);
 
         if ($stmt->execute()) {
             // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
             $id_nova_peca = $pdo->lastInsertId();
             
+            // Formatar preço para exibição
+            $preco_formatado = 'R$ ' . number_format($preco, 2, ',', '.');
+            
             // Incluir informações na ação
-            $acao = "Cadastro de peça: " . $nome_peca . " (Quantidade: " . $quantidade . ")";
+            $acao = "Cadastro de peça: " . $nome_peca . " (Quantidade: " . $quantidade . ", Preço: " . $preco_formatado . ")";
             
             // Registrar o log
             if (function_exists('registrarLog')) {
@@ -88,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -180,6 +188,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                                     <option value="metal">Metal</option>
                                                     <option value="outro">Outro</option>
                                                 </select>
+                                            </div>
+                                        </div>
+
+                                           <!-- Preço total -->
+                                           <div class="mb-2">
+                                            <label for="preco" class="form-label">Preço *</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                                <input type="text" class="form-control" id="preco" name="preco" placeholder="R$ 49,99" min="0" required>
                                             </div>
                                         </div>
 

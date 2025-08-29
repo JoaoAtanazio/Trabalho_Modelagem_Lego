@@ -2,6 +2,7 @@
 session_start();
 require_once 'php/permissoes.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -16,13 +17,12 @@ require_once 'php/permissoes.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-    <div class="d-flex vh-100 bg-light">
+    <div class="d-flex vh-100 bg-light;">
          <!-- Sidebar -->
        <?php exibirMenu(); ?>
 
-
         <!-- Conteúdo principal -->
-        <div class="flex-grow-1 d-flex flex-column">
+        <div class="flex-grow-1 d-flex flex-column" style="margin-left:250px; padding:20px;">
             <!-- Header -->
             <nav class="navbar navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
@@ -67,6 +67,15 @@ require_once 'php/permissoes.php';
             border-top: none;
             font-weight: 600;
         }
+
+        #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh; /* altura total da tela */
+    width: 250px;  /* ajuste para o tamanho da sua sidebar */
+    background-color: #f8f9fa; /* cor de fundo */
+}
     </style>
 </head>
 <body>
