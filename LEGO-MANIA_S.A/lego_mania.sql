@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 29/08/2025 às 19:32
+-- Tempo de geração: 29/08/2025 às 20:43
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -49,7 +49,7 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`id_cliente`, `id_funcionario`, `nome_cliente`, `cpf_cnpj`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `telefone`, `email`, `status`, `data_inatividade`, `observacao_inatividade`) VALUES
-(1, 12, 'DALTON MARCELINO', '55555555588', 'bom retiro', 'Bom retiro', '89223200', 'Joinville', 'SC', '57575757575', 'dalton@empresa.com', 'Inativo', '2025-08-27', '231231'),
+(1, 12, 'DALTON MARCELINO', '55555555588', 'bom retiro', 'Bom retiro', '89223200', 'Joinville', 'SC', '57575757575', 'dalton@empresa.com', 'Ativo', NULL, NULL),
 (2, 12, 'DALTONuuuu', '64774754578', 'São Paulo - 337', 'Bom retiro', '89223200', 'Joinville', 'SC', '47756568667', 'daltonuuu@daltonuuuu', 'Ativo', NULL, NULL),
 (3, 12, 'Atanázio espedições ultraaéres', '12345254612', 'Rua Newton Puerta Lentz', 'Jardim Sofia', '89223450', 'Joinville', 'SC', '4234939234', 'Daltongaypkrl@gmail.com', 'Inativo', '2025-08-27', 'Pediu para ser inativo por questões de querer se mudar');
 
@@ -151,12 +151,8 @@ INSERT INTO `log_acao` (`id_log`, `id_usuario`, `id_perfil`, `acao`, `tabela_afe
 (12, 12, 1, '12', 'Cadastro de fornecedor: dasda (22222222222222)', 0, '2025-08-27 03:03:38'),
 (13, 12, 1, 'Cadastro de usuário: Dalton espedições ultraaéreas (Daltongaypkrl@gmail.com) como Secretaria', 'usuario', 32, '2025-08-27 16:41:19'),
 (14, 12, 1, '12', 'Cadastro de cliente: Atanázio espedições ultraaéres (Daltongaypkrl@gmail.com)', 0, '2025-08-27 16:43:32'),
-(15, 12, 1, 'Cadastro de usuário: Dalton espedições ultramontanhosas (daltonma@gmail.com) como Tecnico', 'usuario', 34, '2025-08-28 17:34:18'),
-(16, 12, 1, 'Cadastro de usuário: Gui (gui@gmail.com) como Tecnico', 'usuario', 35, '2025-08-28 17:34:36'),
-(17, 12, 1, 'Cadastro de usuário: HL (HL@gmail.com) como Funcionario', 'usuario', 36, '2025-08-28 20:02:51'),
-(18, 12, 1, 'Cadastro de usuário: marcos (marcos@gmail.com) como Secretaria', 'usuario', 37, '2025-08-28 20:05:12'),
-(19, 12, 1, '12', 'Abertura de Ordem de serviço: Augusto (35)', 0, '2025-08-29 16:39:29'),
-(20, 12, 1, '12', 'Abertura de Ordem de serviço: heitor (34)', 0, '2025-08-29 16:47:37');
+(15, 12, 1, 'Cadastro de usuário: LEAO (LEAO@TECNICO) como Tecnico', 'usuario', 33, '2025-08-27 19:23:34'),
+(16, 12, 1, '12', 'Abertura de Ordem de serviço: dalton (33)', 0, '2025-08-29 17:37:21');
 
 -- --------------------------------------------------------
 
@@ -204,16 +200,9 @@ CREATE TABLE `nova_ordem` (
   `valor_total` decimal(10,2) NOT NULL,
   `metodo_pag` varchar(50) DEFAULT NULL,
   `id_peca_est` int(11) DEFAULT NULL,
-  `id_cliente` int(11) DEFAULT NULL
+  `id_cliente` int(11) DEFAULT NULL,
+  `status_ordem` enum('Aberta','Em Andamento','Aguardando Peças','Concluído','Cancelada') DEFAULT 'Aberta'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `nova_ordem`
---
-
-INSERT INTO `nova_ordem` (`id_ordem`, `id_funcionario`, `nome_client_ordem`, `tecnico`, `marca_aparelho`, `tempo_uso`, `problema`, `prioridade`, `observacao`, `dt_recebimento`, `valor_total`, `metodo_pag`, `id_peca_est`, `id_cliente`) VALUES
-(1, 12, 'Augusto', '35', 'Sansung', '2 anos', 'Caiu na água', 'alta', 'já tinha um trincado na tela antes ', '2025-08-29', 47.00, 'Pix', NULL, NULL),
-(2, 12, 'heitor', '34', 'iphone', '1 mes', 'caiu na terra', 'baixa', '', '2025-08-06', 0.00, 'dinheiro', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -229,8 +218,7 @@ CREATE TABLE `peca_estoque` (
   `descricao_peca` text DEFAULT NULL,
   `qtde` int(11) NOT NULL,
   `tipo` varchar(50) DEFAULT NULL,
-  `dt_cadastro` date DEFAULT NULL,
-  `preco` int(11) DEFAULT NULL
+  `dt_cadastro` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -281,16 +269,13 @@ INSERT INTO `usuario` (`id_usuario`, `nome_usuario`, `senha`, `email`, `senha_te
 (12, 'Admin', '$2y$10$RjRfXwZANRJomQAL3Aao6e74U4CHBopq0OcPJBJ8mi1H4UdAJorkG', 'admin@admin', 0, 1, 'Ativo', NULL, NULL, NULL),
 (16, 'adm', '$2y$10$zj8t1ATAceJaMDwlk.6D4.3AfuRo7edaZL5YORJYYqKBPY.wNjAkq', 'adm@adm', 0, 1, 'Ativo', NULL, NULL, NULL),
 (19, 'Dalton Marcelino', '$2y$10$sGEf6OMfgrUAoi7o4r3/1eUCGxIUf9PqD4Hc5QQjyHEGH8jtv1VMu', 'Dalton@Dalton', 0, 1, 'Inativo', 1, '2025-08-26', '2 meses'),
-(22, 'Dalton', '$2y$10$R3QcQUV8AoBk23W2pJ3Xiuo2I9ee.Uzkcxn7CP6XDDbTgDDYOkLYC', 'Dalton12@Dalton', 0, 2, 'Inativo', 1, '2025-08-26', '12 meses'),
+(22, 'Dalton', '$2y$10$R3QcQUV8AoBk23W2pJ3Xiuo2I9ee.Uzkcxn7CP6XDDbTgDDYOkLYC', 'Dalton12@Dalton', 0, 2, 'Ativo', NULL, NULL, NULL),
 (23, 'joaozinho', '$2y$10$SCi19TOitx2U1ZFiAa.Bju.tzQG1JhgX8wMheK5ivt.BFyXlrp5U6', 'joaozinho@joaozinho', 0, 1, 'Ativo', NULL, NULL, NULL),
 (28, 'logs', '$2y$10$mhhzHehNFHKgp6TuIPeuCueRYzT4QnWs0INQvHODSZsHMc3.L4yKW', 'logs@logs', 0, 1, 'Ativo', NULL, NULL, NULL),
 (29, 'COBRA', '$2y$10$6R5zhbs09a1i4LQMD3UIXeU.qRa7S/VmV5OQBOMAkKJYJGUUwEyC2', 'cobra@cobra', 0, 1, 'Ativo', NULL, NULL, NULL),
 (31, 'Gustavo', '$2y$10$kLdUxZtMScvUoEARMPdb9e3QJ3nNyDgnvxdHJd1Q5nc8nLeEL4J2i', 'admin@teste123', 0, 1, 'Ativo', NULL, NULL, NULL),
-(32, 'Dalton espedições ultraaéreas', '$2y$10$xntfhMLPQmWvUT6h29X3Uu9BMApBOHN3H60UcjuU4cA4sSug7yF5K', 'Daltongaypkrl@gmail.com', 0, 3, 'Ativo', NULL, NULL, NULL),
-(34, 'Dalton espedições ultramontanhosas', '$2y$10$mnIcr.wE1yUgYDIONmnMn.YGEsx1X37H/GeFls1wk7O86PKIrFUIK', 'daltonma@gmail.com', 0, 4, 'Ativo', NULL, NULL, NULL),
-(35, 'Gui', '$2y$10$MZ2JKyBBO5SEmcEJSpRY3.BbObndIaqH0cV/zHwfE7YSo0JeZXS/K', 'gui@gmail.com', 0, 4, 'Ativo', NULL, NULL, NULL),
-(36, 'HL', '$2y$10$NZe6CrRy50a7uE.2t7n0nObd01STWniwbzkHd5tsGabBTarBCviyK', 'HL@gmail.com', 0, 2, 'Ativo', NULL, NULL, NULL),
-(37, 'marcos', '$2y$10$UBJZSuMIIK/eR4hnYaKoWOI6Re5FDUbdl7E8WhKOv2DsV1nD7nN42', 'marcos@gmail.com', 0, 3, 'Ativo', NULL, NULL, NULL);
+(32, 'Dalton espedições ultraaéreas', '$2y$10$xntfhMLPQmWvUT6h29X3Uu9BMApBOHN3H60UcjuU4cA4sSug7yF5K', 'Daltongaypkrl@gmail.com', 0, 3, 'Inativo', 7, '2025-08-29', 'qwe'),
+(33, 'LEAO', '$2y$10$vNM5byDVNIPskKPXIF2b3eRW.H.eWsyc.XQe7FE0QjmRvvMtjVipK', 'LEAO@TECNICO', 0, 4, 'Ativo', NULL, NULL, NULL);
 
 --
 -- Índices para tabelas despejadas
@@ -392,7 +377,7 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `log_acao`
 --
 ALTER TABLE `log_acao`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de tabela `motivo_inatividade`
@@ -404,7 +389,7 @@ ALTER TABLE `motivo_inatividade`
 -- AUTO_INCREMENT de tabela `nova_ordem`
 --
 ALTER TABLE `nova_ordem`
-  MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `peca_estoque`
@@ -422,7 +407,7 @@ ALTER TABLE `perfil`
 -- AUTO_INCREMENT de tabela `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- Restrições para tabelas despejadas
