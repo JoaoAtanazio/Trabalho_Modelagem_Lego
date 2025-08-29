@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $data_cadastro = $_POST['data_cadastro'];
     $quantidade = (int)$_POST['quantidade'];
     $tipo = trim($_POST['tipo']);
+    $preco = ($_POST['preco']);
     $id_fornecedor = (int)$_POST['id_fornecedor'];
     
     // ID do usuário que está cadastrando (para log)
@@ -180,6 +181,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                                     <option value="metal">Metal</option>
                                                     <option value="outro">Outro</option>
                                                 </select>
+                                            </div>
+                                        </div>
+
+                                           <!-- Preço total -->
+                                           <div class="mb-2">
+                                            <label for="preco" class="form-label">Preço *</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                                <input type="text" class="form-control" id="preco" name="preco" placeholder="R$ 49,99" min="0" required>
                                             </div>
                                         </div>
 
