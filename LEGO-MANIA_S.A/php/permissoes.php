@@ -96,6 +96,24 @@ function formatarNomeExibicao($nomeArquivo) {
     return $nome;
 }
 
+// Função para gerar ID único para os links
+function gerarIdLink($categoria, $arquivo = null) {
+    $id = 'menu-';
+    
+    // Normalizar categoria (remover acentos e espaços)
+    $idCategoria = preg_replace('/[^a-zA-Z0-9]/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', $categoria));
+    $id .= strtolower($idCategoria);
+    
+    if ($arquivo) {
+        // Normalizar nome do arquivo (remover extensão e caracteres especiais)
+        $nomeArquivo = basename($arquivo, ".php");
+        $idArquivo = preg_replace('/[^a-zA-Z0-9]/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', $nomeArquivo));
+        $id .= '-' . strtolower($idArquivo);
+    }
+    
+    return $id;
+}
+
 // Função para gerar o menu
 function gerarMenu($opcoes_menu, $icones_menu) {
     $html = '';
@@ -106,14 +124,14 @@ function gerarMenu($opcoes_menu, $icones_menu) {
         if (count($arquivos) > 1) {
             // Menu dropdown
             $html .= '<li class="nav-item mb-2 dropdown">';
-            $html .= '<a class="nav-link text-white dropdown-toggle" href="#" id="' . $categoria . 'Dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">';
+            $html .= '<a class="nav-link text-white dropdown-toggle" href="#" id="' . gerarIdLink($categoria) . '-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">';
             $html .= '<i class="bi ' . $icone . ' me-2"></i> ' . $categoria;
             $html .= '</a>';
-            $html .= '<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="' . $categoria . 'Dropdown">';
+            $html .= '<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="' . gerarIdLink($categoria) . '-dropdown">';
             
             foreach ($arquivos as $arquivo) {
                 $nomeExibicao = formatarNomeExibicao($arquivo);
-                $html .= '<li><a class="dropdown-item" href="' . $arquivo . '">' . $nomeExibicao . '</a></li>';
+                $html .= '<li><a class="dropdown-item" id="' . gerarIdLink($categoria, $arquivo) . '" href="' . $arquivo . '">' . $nomeExibicao . '</a></li>';
             }
             
             $html .= '</ul>';
@@ -121,12 +139,17 @@ function gerarMenu($opcoes_menu, $icones_menu) {
         } else {
             // Item simples (sem dropdown)
             $html .= '<li class="nav-item mb-2">';
-            $html .= '<a href="' . $arquivos[0] . '" class="nav-link text-white">';
+            $html .= '<a id="' . gerarIdLink($categoria, $arquivos[0]) . '" href="' . $arquivos[0] . '" class="nav-link text-white">';
             $html .= '<i class="bi ' . $icone . ' me-2"></i> ' . $categoria;
             $html .= '</a>';
             $html .= '</li>';
         }
     }
+    
+    // Adicionar link de sair com ID
+    $html .= '<li class="nav-item">';
+    $html .= '<a id="menu-sair" href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>';
+    $html .= '</li>';
     
     return $html;
 }
@@ -138,9 +161,6 @@ $menu_html = '
     <h4 class="mb-4">Menu</h4>
     <ul class="nav flex-column">
         ' . gerarMenu($opcoes_menu, $icones_menu) . '
-        <li class="nav-item">
-            <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
-        </li>
     </ul>
 </nav>
 
