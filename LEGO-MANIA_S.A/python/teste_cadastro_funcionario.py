@@ -1,6 +1,6 @@
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
 import time
 
 # Configuração do WebDriver (nesse exemplo, estamos usando o Chrome)
@@ -10,7 +10,9 @@ driver = webdriver.Chrome ()
 # Ceritifuqe-se de que o caminho está apontando par aum arquivo HTML específico
 
 driver.get('http://localhost:8080/trabalho_modelagem_lego/LEGO-MANIA_S.A/index.php')
+time.sleep(2)
 #Preenche o campo Nome
+
 email_input_login = driver.find_element(By.ID, "email")
 email_texto_login = "admin@admin"
 
@@ -33,36 +35,50 @@ cadastro_button = driver.find_element(By. ID, "cadastroDropdown")
 cadastro_button.click()
 time.sleep(1)
 
-usuario_button = driver.find_element(By. ID, "cadastro_usuario")
+usuario_button = driver.find_element(By. ID, "cadastro_funcionario")
 usuario_button.click()
 time.sleep(1)
 
+
 campos = [
-    driver.find_element(By. ID, "nome_usuario"),
+    driver.find_element(By. ID, "nome"),
+    driver.find_element(By.ID, "salario"),
+    driver.find_element(By.ID, "cpf_cnpj"),
+    driver.find_element(By.ID, "endereco"),
+    driver.find_element(By. ID, "bairro"),
+    driver.find_element(By. ID, "cidade"),
+    driver.find_element(By. ID, "cep"),
+    driver.find_element(By. ID, "nascimento"),
     driver.find_element(By.ID, "email"),
-    driver.find_element(By. ID, "senha"),
-    
 ]
 
 inputs = [
-    "João Vitor Atanazio",
-    "atanazio@atanazio",
-    "123"
+    "Atanazio",
+    "300000",
+    "12345678903",
+    "Rua dos cabras 456",
+    "Bairro cabreros",
+    "Cabrovilles",
+    "89227650",
+    "03102003",
+    "Atanazio@Atanazio",
 ]
 
 for campo,texto in zip(campos, inputs):
     for letra in texto:
      campo.send_keys(letra)
-     time.sleep(0.2)
+     time.sleep(0.1)
 
+time.sleep(1)
 
-perfil_input = driver.find_element(By.ID, "id_perfil")
-perfil_input.click()
-time.sleep(2)
+estado_input = driver.find_element(By. ID, "estado")
+time.sleep(0.5)
 
-select = driver.find_element(By. ID, "tecoption")
-select.click()
-time.sleep(2)
+select = Select(estado_input)
+time.sleep(0.5)
+
+select.select_by_value("SC")
+time.sleep(0.5)
 
 submit_button = driver.find_element(By. ID, "botaocadastro")
 submit_button.click()
