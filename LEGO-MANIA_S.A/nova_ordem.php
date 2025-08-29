@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="cliente" class="form-label">Nome do Cliente</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                <input type="text" class="form-control" name="cliente" id="nome_client_ordem" placeholder="Digite o nome do cliente" required>
+                                                <input type="text" class="form-control" name="cliente" id="nome_cliente_ordem" placeholder="Digite o nome do cliente" required>
                                             </div>
                                         </div>
             
@@ -190,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="data_recebimento" class="form-label">Data de Recebimento</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
-                                                <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento" required>
+                                                <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento"  maxlength="11" required>
                                             </div>
                                         </div>
 
@@ -218,11 +218,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             </div>
                                         </div>
 
-                                        <div class="mb-2">
-                                            <label for="metodo_pag" class="form-label">Método de pagamento</label>
+                                        <div class="mb-3">
+                                            <label for="prioridade" class="form-label">Forma de Pagamento</label>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-                                                <input type="text" class="form-control" id="metodo_pag" name="metodo_pag" placeholder="Pix / Cartão / Dinheiro" required>
+                                                <span class="input-group-text"><i class="bi bi-arrow-up-right-circle"></i></span>
+                                                <select class="form-select" id="forma_pagamento" name="forma_pagamento" required>
+                                                    <option value="" selected disabled>Selecione o método de pagamento</option>
+                                                    <option value="pix">Pix</option>
+                                                    <option value="dinheiro">Dinheiro</option>
+                                                    <option value="credito">Cartão de Crédito</option>
+                                                    <option value="debito">Cartão de Débito</option>
+                                                </select>
                                             </div>
                                         </div>
             
@@ -231,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <button type="reset" class="btn btn-outline-secondary btn-sm me-md-2">
                                                 <i class="bi bi-x-circle"></i> Limpar
                                             </button>
-                                            <button type="submit" class="btn btn-primary btn-sm">
+                                            <button type="submit" class="btn btn-primary btn-sm" id="botaocadastro">
                                                 <i class="bi bi-check-circle"></i> Criar O.S.
                                             </button>
                                         </div>
