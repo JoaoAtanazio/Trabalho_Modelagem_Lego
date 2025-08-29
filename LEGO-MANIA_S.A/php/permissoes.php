@@ -96,22 +96,46 @@ function formatarNomeExibicao($nomeArquivo) {
     return $nome;
 }
 
-// Função para gerar ID único para os links
-function gerarIdLink($categoria, $arquivo = null) {
-    $id = 'menu-';
+// Mapeamento manual de IDs para cada item do menu
+$ids = [
+    "principal.php" => "menu-inicio",
+    "perfil.php" => "menu-perfil",
     
-    // Normalizar categoria (remover acentos e espaços)
-    $idCategoria = preg_replace('/[^a-zA-Z0-9]/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', $categoria));
-    $id .= strtolower($idCategoria);
+    // Cadastro
+    "cadastro_usuario.php" => "menu-cadastro-usuario",
+    "cadastro_cliente.php" => "menu-cadastro-cliente",
+    "cadastro_funcionario.php" => "menu-cadastro-funcionario",
+    "cadastro_fornecedor.php" => "menu-cadastro-fornecedor",
+    "cadastro_pecas.php" => "menu-cadastro-pecas",
     
-    if ($arquivo) {
-        // Normalizar nome do arquivo (remover extensão e caracteres especiais)
-        $nomeArquivo = basename($arquivo, ".php");
-        $idArquivo = preg_replace('/[^a-zA-Z0-9]/', '-', iconv('UTF-8', 'ASCII//TRANSLIT', $nomeArquivo));
-        $id .= '-' . strtolower($idArquivo);
-    }
+    // Gestão
+    "gestao_usuario.php" => "menu-gestao-usuario",
+    "gestao_cliente.php" => "menu-gestao-cliente",
+    "gestao_funcionario.php" => "menu-gestao-funcionario",
+    "gestao_fornecedor.php" => "menu-gestao-fornecedor",
     
-    return $id;
+    // Ordem de Serviços
+    "nova_ordem.php" => "menu-nova-ordem",
+    "consultar_ordem.php" => "menu-consultar-ordem",
+    "pagamento.php" => "menu-pagamento",
+    
+    // Relatório de Finanças
+    "relatorio_despesas.php" => "menu-relatorio-despesas",
+    "relatorio_lucro.php" => "menu-relatorio-lucro",
+    
+    // Relatório de Estoque
+    "relatorio_saida.php" => "menu-relatorio-saida",
+    "relatorio_pecas_estoque.php" => "menu-relatorio-pecas",
+    "relatorio_uso.php" => "menu-relatorio-uso",
+    
+    // Logs
+    "logs.php" => "menu-logs"
+];
+
+// Função para obter ID manual baseado no arquivo
+function obterIdManual($arquivo) {
+    global $ids;
+    return isset($ids[$arquivo]) ? $ids[$arquivo] : 'menu-' . basename($arquivo, '.php');
 }
 
 // Função para gerar o menu
@@ -124,14 +148,14 @@ function gerarMenu($opcoes_menu, $icones_menu) {
         if (count($arquivos) > 1) {
             // Menu dropdown
             $html .= '<li class="nav-item mb-2 dropdown">';
-            $html .= '<a class="nav-link text-white dropdown-toggle" href="#" id="' . gerarIdLink($categoria) . '-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">';
+            $html .= '<a class="nav-link text-white dropdown-toggle" href="#" id="menu-' . strtolower(str_replace(' ', '-', $categoria)) . '" role="button" data-bs-toggle="dropdown" aria-expanded="false">';
             $html .= '<i class="bi ' . $icone . ' me-2"></i> ' . $categoria;
             $html .= '</a>';
-            $html .= '<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="' . gerarIdLink($categoria) . '-dropdown">';
+            $html .= '<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="menu-' . strtolower(str_replace(' ', '-', $categoria)) . '">';
             
             foreach ($arquivos as $arquivo) {
                 $nomeExibicao = formatarNomeExibicao($arquivo);
-                $html .= '<li><a class="dropdown-item" id="' . gerarIdLink($categoria, $arquivo) . '" href="' . $arquivo . '">' . $nomeExibicao . '</a></li>';
+                $html .= '<li><a class="dropdown-item" id="' . obterIdManual($arquivo) . '" href="' . $arquivo . '">' . $nomeExibicao . '</a></li>';
             }
             
             $html .= '</ul>';
@@ -139,17 +163,12 @@ function gerarMenu($opcoes_menu, $icones_menu) {
         } else {
             // Item simples (sem dropdown)
             $html .= '<li class="nav-item mb-2">';
-            $html .= '<a id="' . gerarIdLink($categoria, $arquivos[0]) . '" href="' . $arquivos[0] . '" class="nav-link text-white">';
+            $html .= '<a id="' . obterIdManual($arquivos[0]) . '" href="' . $arquivos[0] . '" class="nav-link text-white">';
             $html .= '<i class="bi ' . $icone . ' me-2"></i> ' . $categoria;
             $html .= '</a>';
             $html .= '</li>';
         }
     }
-    
-    // Adicionar link de sair com ID
-    $html .= '<li class="nav-item">';
-    $html .= '<a id="menu-sair" href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>';
-    $html .= '</li>';
     
     return $html;
 }
@@ -161,6 +180,9 @@ $menu_html = '
     <h4 class="mb-4">Menu</h4>
     <ul class="nav flex-column">
         ' . gerarMenu($opcoes_menu, $icones_menu) . '
+        <li class="nav-item">
+            <a id="menu-sair" href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+        </li>
     </ul>
 </nav>
 
