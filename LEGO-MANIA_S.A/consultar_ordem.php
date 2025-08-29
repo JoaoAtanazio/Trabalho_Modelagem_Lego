@@ -32,7 +32,9 @@ $sql = "SELECT no.id_ordem,
                no.marca_aparelho,
                no.prioridade,
                no.observacao,
-               c.nome_cliente 
+               c.nome_cliente,
+               no.id_cliente,
+               f.nome_funcionario
         FROM nova_ordem no
         LEFT JOIN cliente c ON no.id_cliente = c.id_cliente
         LEFT JOIN funcionario f ON no.id_funcionario = f.id_funcionario";
@@ -113,6 +115,32 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
         echo "<script>alert('Ordem reativada!'); window.location.href='consultar_ordem.php?filtro_oculto=1';</script>";
     }
 }
+
+// Buscar dados de uma ordem específica para o modal (se solicitado via AJAX)
+if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
+    $id_ordem = $_GET['id_ordem'];
+    
+    $sql_ordem = "SELECT no.*, c.nome_cliente 
+                  FROM nova_ordem no 
+                  LEFT JOIN cliente c ON no.id_cliente = c.id_cliente 
+                  WHERE no.id_ordem = :id_ordem";
+    
+    $stmt_ordem = $pdo->prepare($sql_ordem);
+    $stmt_ordem->bindParam(':id_ordem', $id_ordem, PDO::PARAM_INT);
+    $stmt_ordem->execute();
+    
+    $ordem = $stmt_ordem->fetch(PDO::FETCH_ASSOC);
+    
+    if ($ordem) {
+        header('Content-Type: application/json');
+        echo json_encode($ordem);
+        exit();
+    } else {
+        header('HTTP/1.1 404 Not Found');
+        echo json_encode(['error' => 'Ordem não encontrada']);
+        exit();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -171,19 +199,15 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <select class="form-select form-select-sm">
-                                            <option selected>Ordenar por data</option>
-                                            <option>Mais recentes</option>
-                                            <option>Mais antigos</option>
-                                            <option>Menor valor</option>
-                                            <option>Maior valor</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
                                         <select name="filtro_oculto" id="filtro_oculto" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit();">
                                             <option value="0" <?= (isset($_GET['filtro_oculto']) && $_GET['filtro_oculto'] == '0') ? 'selected' : '' ?>>Ordens visíveis</option>
                                             <option value="1" <?= (isset($_GET['filtro_oculto']) && $_GET['filtro_oculto'] == '1') ? 'selected' : '' ?>>Ordens ocultas</option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <?php if(isset($_GET['busca']) || isset($_GET['filtro_oculto'])): ?>
+                                            <a href="consultar_ordem.php" class="btn btn-outline-danger btn-sm">Limpar Filtros</a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </form>
@@ -195,31 +219,29 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <?php if(!empty($ordens)): ?>
-                                    <table class="table table-hover table-striped mb-0">
+                                    <table class="table table-striped table-hover table-bordered mb-0">
                                         <thead class="table-dark">
                                             <tr>
-                                                <th scope="col">ID</th>
-                                                <th scope="col">Cliente</th>
-                                                <th scope="col">Técnico</th>
-                                                <th scope="col">Problema</th>
-                                                <th scope="col">Data</th>
-                                                <th scope="col">Valor (R$)</th>
-                                                <th scope="col" class="text-center">Ações</th>
+                                                <th><center>ID</center></th>
+                                                <th><center>Cliente</center></th>
+                                                <th><center>Técnico</center></th>
+                                                <th><center>Problema</center></th>
+                                                <th><center>Data</center></th>
+                                                <th><center>Valor (R$)</center></th>
+                                                <th class="text-center">Ações</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach($ordens as $ordem): ?>
                                                 <tr>
-                                                    <th scope="row"><?= htmlspecialchars($ordem['id_ordem']) ?></th>
-                                                    <td><?= htmlspecialchars($ordem['nome_cliente'] ? $ordem['nome_cliente'] : $ordem['nome_client_ordem']) ?></td>
-                                                    <td><?= htmlspecialchars($ordem['tecnico']) ?></td>
-                                                    <td><?= htmlspecialchars(substr($ordem['problema'], 0, 30)) ?>...</td>
-                                                    <td><?= htmlspecialchars($ordem['dt_recebimento']) ?></td>
-                                                    <td>R$ <?= number_format($ordem['valor_total'], 2, ',', '.') ?></td>
+                                                    <td><center><?= htmlspecialchars($ordem['id_ordem']) ?></center></td>
+                                                    <td><center><?= htmlspecialchars($ordem['nome_cliente'] ? $ordem['nome_cliente'] : $ordem['nome_client_ordem']) ?></center></td>
+                                                    <td><center><?= htmlspecialchars($ordem['nome_funcionario']) ?></center></td>
+                                                    <td><center><?= htmlspecialchars(substr($ordem['problema'], 0, 30)) ?>...</center></td>
+                                                    <td><center><?= htmlspecialchars($ordem['dt_recebimento']) ?></center></td>
+                                                    <td><center>R$ <?= number_format($ordem['valor_total'], 2, ',', '.') ?></center></td>
                                                     <td class="text-center">
-                                                    <a href="#" class="btn btn-sm btn-primary me-1" title="Alterar" onclick="carregarDadosOrdem(<?= htmlspecialchars($ordem['id_ordem']) ?>)">Alterar
-                                                    </a>
-                                
+                                                        <a href="#" class="btn btn-sm btn-primary me-1" title="Alterar" onclick="carregarDadosOrdem(<?= htmlspecialchars($ordem['id_ordem']) ?>)">Alterar</a>
 
                                                         <?php if ($filtro_oculto == '0'): ?>
                                                             <a href="consultar_ordem.php?acao=ocultar&id=<?= htmlspecialchars($ordem['id_ordem']) ?>" 
@@ -234,9 +256,9 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
                                                                 Reativar
                                                             </a>
                                                         <?php endif; ?>
-                                                    <button class="btn btn-sm btn-info" onclick="mostrarDetalhesOrdem(<?=htmlspecialchars($usuario['id_usuario'])?>)">
-                                                        <i class="bi bi-info-circle"></i> Detalhes
-                                                    </button>
+                                                        <button class="btn btn-sm btn-info" onclick="mostrarDetalhesOrdem(<?=htmlspecialchars($ordem['id_ordem'])?>)">
+                                                            <i class="bi bi-info-circle"></i> Detalhes
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -281,7 +303,7 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
 
             <!-- Modal para Alterar Ordem -->
             <div class="modal fade" id="modalOrdem" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Alterar Ordem de Serviço</h5>
@@ -291,39 +313,28 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
                             <div class="modal-body">
                                 <input type="hidden" id="id_ordem" name="id_ordem">
                                 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="nome_cliente" class="form-label">Nome do Cliente</label>
-                                            <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="tecnico" class="form-label">Técnico</label>
-                                            <input type="text" class="form-control" id="tecnico" name="tecnico">
-                                        </div>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="nome_cliente" class="form-label">Nome do Cliente</label>
+                                    <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
                                 </div>
                                 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="marca_aparelho" class="form-label">Marca do Aparelho</label>
-                                            <input type="text" class="form-control" id="marca_aparelho" name="marca_aparelho">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="prioridade" class="form-label">Prioridade</label>
-                                            <select class="form-select" id="prioridade" name="prioridade">
-                                                <option value="Baixa">Baixa</option>
-                                                <option value="Média">Média</option>
-                                                <option value="Alta">Alta</option>
-                                                <option value="Urgente">Urgente</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="tecnico" class="form-label">Técnico</label>
+                                    <input type="text" class="form-control" id="tecnico" name="tecnico">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="marca_aparelho" class="form-label">Marca do Aparelho</label>
+                                    <input type="text" class="form-control" id="marca_aparelho" name="marca_aparelho">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="prioridade" class="form-label">Prioridade</label>
+                                    <select class="form-select" id="prioridade" name="prioridade">
+                                        <option value="Baixa">Baixa</option>
+                                        <option value="Média">Média</option>
+                                        <option value="Alta">Alta</option>
+                                    </select>
                                 </div>
                                 
                                 <div class="mb-3">
@@ -331,19 +342,14 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
                                     <textarea class="form-control" id="problema" name="problema" rows="3"></textarea>
                                 </div>
                                 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="dt_recebimento" class="form-label">Data de Recebimento</label>
-                                            <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="valor_total" class="form-label">Valor Total (R$)</label>
-                                            <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total">
-                                        </div>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="dt_recebimento" class="form-label">Data de Recebimento</label>
+                                    <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="valor_total" class="form-label">Valor Total (R$)</label>
+                                    <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total">
                                 </div>
                                 
                                 <div class="mb-3">
@@ -362,7 +368,7 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
 
             <!-- Modal para Detalhes da Ordem -->
             <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Detalhes da Ordem de Serviço</h5>
@@ -392,74 +398,106 @@ if (isset($_GET['acao']) && isset($_GET['id'])) {
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
 
-        // Função para carregar dados da ordem no modal
+        // Função para carregar dados da ordem no modal via AJAX
         function carregarDadosOrdem(id) {
-            // Em uma implementação real, você faria uma requisição AJAX para buscar os dados
-            // Aqui estou simulando com dados estáticos para demonstração
-            const ordem = {
-                id_ordem: id,
-                nome_cliente: "Cliente " + id,
-                tecnico: "Técnico " + id,
-                marca_aparelho: "Marca " + id,
-                prioridade: "Média",
-                problema: "Problema descritivo da ordem " + id,
-                dt_recebimento: "2023-03-15",
-                valor_total: "120.00",
-                observacao: "Observações sobre a ordem " + id
-            };
+            // Mostrar loading no modal
+            document.getElementById('id_ordem').value = id;
+            document.getElementById('nome_cliente').value = 'Carregando...';
+            document.getElementById('tecnico').value = 'Carregando...';
+            document.getElementById('marca_aparelho').value = 'Carregando...';
+            document.getElementById('problema').value = 'Carregando...';
+            document.getElementById('dt_recebimento').value = '';
+            document.getElementById('valor_total').value = '';
+            document.getElementById('observacao').value = 'Carregando...';
             
-            document.getElementById('id_ordem').value = ordem.id_ordem;
-            document.getElementById('nome_cliente').value = ordem.nome_cliente;
-            document.getElementById('tecnico').value = ordem.tecnico;
-            document.getElementById('marca_aparelho').value = ordem.marca_aparelho;
-            document.getElementById('prioridade').value = ordem.prioridade;
-            document.getElementById('problema').value = ordem.problema;
-            document.getElementById('dt_recebimento').value = ordem.dt_recebimento;
-            document.getElementById('valor_total').value = ordem.valor_total;
-            document.getElementById('observacao').value = ordem.observacao;
-            
-            // Abre o modal
+            // Abre o modal primeiro
             var modal = new bootstrap.Modal(document.getElementById('modalOrdem'));
             modal.show();
-        }
-
-        // Função para alternar visibilidade da ordem
-        function alternarVisibilidadeOrdem(id) {
-            if (confirm('Deseja alternar a visibilidade desta ordem?')) {
-                // Em uma implementação real, você faria uma requisição AJAX
-                alert('Visibilidade da ordem ' + id + ' alterada com sucesso!');
-            }
+            
+            // Fazer requisição AJAX para buscar os dados reais
+            fetch('consultar_ordem.php?carregar_ordem=true&id_ordem=' + id)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar dados da ordem');
+                    }
+                    return response.json();
+                })
+                .then(ordem => {
+                    // Preencher o formulário com os dados reais
+                    document.getElementById('id_ordem').value = ordem.id_ordem;
+                    document.getElementById('nome_cliente').value = ordem.nome_cliente || ordem.nome_client_ordem || '';
+                    document.getElementById('tecnico').value = ordem.tecnico || '';
+                    document.getElementById('marca_aparelho').value = ordem.marca_aparelho || '';
+                    document.getElementById('prioridade').value = ordem.prioridade || 'Média';
+                    document.getElementById('problema').value = ordem.problema || '';
+                    
+                    // Formatar data para o input type="date"
+                    if (ordem.dt_recebimento) {
+                        const data = new Date(ordem.dt_recebimento);
+                        const dataFormatada = data.toISOString().split('T')[0];
+                        document.getElementById('dt_recebimento').value = dataFormatada;
+                    }
+                    
+                    document.getElementById('valor_total').value = ordem.valor_total || '';
+                    document.getElementById('observacao').value = ordem.observacao || '';
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao carregar dados da ordem: ' + error.message);
+                });
         }
 
         // Função para mostrar detalhes da ordem
         function mostrarDetalhesOrdem(id) {
-            // Em uma implementação real, você faria uma requisição AJAX
-            const detalhesHTML = `
-                <div class="mb-3">
-                    <strong>ID:</strong> ${id}
-                </div>
-                <div class="mb-3">
-                    <strong>Cliente:</strong> Cliente ${id}
-                </div>
-                <div class="mb-3">
-                    <strong>Técnico:</strong> Técnico ${id}
-                </div>
-                <div class="mb-3">
-                    <strong>Problema:</strong> Descrição detalhada do problema da ordem ${id}
-                </div>
-                <div class="mb-3">
-                    <strong>Data de Recebimento:</strong> 15/03/2023
-                </div>
-                <div class="mb-3">
-                    <strong>Valor:</strong> R$ 120,00
-                </div>
-            `;
-            
-            document.getElementById('detalhesOrdem').innerHTML = detalhesHTML;
-            
-            // Abre o modal
-            var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
-            modal.show();
+            // Fazer requisição AJAX para buscar os dados reais
+            fetch('consultar_ordem.php?carregar_ordem=true&id_ordem=' + id)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar dados da ordem');
+                    }
+                    return response.json();
+                })
+                .then(ordem => {
+                    const detalhesHTML = `
+                        <div class="mb-3">
+                            <strong>ID:</strong> ${ordem.id_ordem}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Cliente:</strong> ${ordem.nome_cliente || ordem.nome_client_ordem || 'Não informado'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Técnico:</strong> ${ordem.tecnico || 'Não informado'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Marca do Aparelho:</strong> ${ordem.marca_aparelho || 'Não informada'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Prioridade:</strong> ${ordem.prioridade || 'Média'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Problema:</strong> ${ordem.problema || 'Não informado'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Data de Recebimento:</strong> ${ordem.dt_recebimento || 'Não informada'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Valor Total:</strong> R$ ${ordem.valor_total ? parseFloat(ordem.valor_total).toFixed(2).replace('.', ',') : '0,00'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Observações:</strong> ${ordem.observacao || 'Nenhuma observação'}
+                        </div>
+                    `;
+                    
+                    document.getElementById('detalhesOrdem').innerHTML = detalhesHTML;
+                    
+                    // Abre o modal
+                    var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao carregar detalhes da ordem: ' + error.message);
+                });
         }
     </script>
 </body>
