@@ -31,7 +31,7 @@ login_button = driver.find_element(By. ID, "entrar_button")
 login_button.click()
 time.sleep(1)
 
-cadastro_button = driver.find_element(By. ID, "cadastroDropdown")
+cadastro_button = driver.find_element(By. ID, "menu-cadastro")
 cadastro_button.click()
 time.sleep(1)
 
@@ -44,12 +44,14 @@ campos = [
     driver.find_element(By. ID, "nome_peca"),
     driver.find_element(By.ID, "descricao_peca"),
     driver.find_element(By.ID, "quantidade"),
+    driver.find_element(By.ID, "preco"),
 ]
 
 inputs = [
     "Bateria Lg Bl-41a1h 3,8v 2020mah",
     "Uma bateria potente de 2020mah que é compatível apenas com smartphones Samsung, bateria possui coloração cinza",
     "8" 
+    "R$149,99"
 ]
 
 for campo,texto in zip(campos, inputs):

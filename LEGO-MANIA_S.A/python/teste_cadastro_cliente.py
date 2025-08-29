@@ -10,7 +10,7 @@ driver = webdriver.Chrome ()
 # Ceritifuqe-se de que o caminho está apontando par aum arquivo HTML específico
 
 driver.get('http://localhost:8080/trabalho_modelagem_lego/LEGO-MANIA_S.A/index.php')
-time.sleep(2)
+time.sleep(1)
 #Preenche o campo Nome
 
 email_input_login = driver.find_element(By.ID, "email")
@@ -33,7 +33,7 @@ login_button = driver.find_element(By. ID, "entrar_button")
 login_button.click()
 time.sleep(1)
 
-cadastro_button = driver.find_element(By. ID, "cadastroDropdown")
+cadastro_button = driver.find_element(By. ID, "menu-cadastro")
 cadastro_button.click()
 time.sleep(1)
 

@@ -31,7 +31,7 @@ login_button = driver.find_element(By. ID, "entrar_button")
 login_button.click()
 time.sleep(1)
 
-cadastro_button = driver.find_element(By. ID, "cadastroDropdown")
+cadastro_button = driver.find_element(By. ID, "menu-cadastro")
 cadastro_button.click()
 time.sleep(1)
 
