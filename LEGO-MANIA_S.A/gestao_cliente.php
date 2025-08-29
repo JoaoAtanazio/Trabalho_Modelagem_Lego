@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once 'conexao.php';
+    require_once 'php/permissoes.php';
 
     // VERIFICA SE O USUARIO TEM PERMISSÃO DE ADM OU SECRETARIA
     if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=3){
@@ -24,9 +25,22 @@
     }
 
     // CONSTRUIR A QUERY BASE
-    $sql = "SELECT c.*, f.nome_funcionario 
-            FROM cliente c 
-            LEFT JOIN funcionario f ON c.id_funcionario = f.id_funcionario";
+        $sql = "SELECT 
+        c.id_cliente,
+        c.nome_cliente,
+        c.cpf_cnpj,
+        c.endereco,
+        c.bairro,
+        c.cidade,
+        c.estado,
+        c.telefone,
+        c.email,
+        c.status,
+        c.data_inatividade,
+        c.observacao_inatividade,
+        f.nome_funcionario 
+        FROM cliente c 
+        LEFT JOIN funcionario f ON c.id_funcionario = f.id_funcionario";
     $where_conditions = [];
     $params = [];
 
@@ -108,77 +122,7 @@
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
         <!-- Sidebar -->
-        <nav id="sidebar" class="bg-dark text-white p-3" style="width: 250px;">
-            <h4 class="mb-4">Menu</h4>
-            <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                    <a href="principal.php" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="perfil.php" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-plus me-2"></i> Cadastro 
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
-                        <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
-                        <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
-                        <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
-                        <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
-                        <li><a class="dropdown-item" href="cadastro_pecas.php">Peças no estoque</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="gestaoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-people me-2"></i> Gestão de Pessoas
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="gestaoDropdown">
-                        <li><a class="dropdown-item" href="gestao_usuario.php">Usuarios</a></li>
-                        <li><a class="dropdown-item" href="gestao_cliente.php">Clientes</a></li>
-                        <li><a class="dropdown-item" href="gestao_funcionario.php">Funcionários</a></li>
-                        <li><a class="dropdown-item" href="gestao_fornecedor.php">Fornecedores</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="ordemDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-tools me-2"></i> Ordem de Serviços 
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ordemDropdown">
-                        <li><a class="dropdown-item" href="nova_ordem.php">Nova O.S</a></li>
-                        <li><a class="dropdown-item" href="consultar_ordem.php">Consultar</a></li>
-                        <li><a class="dropdown-item" href="pagamento.php">Pagamento</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="financiasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-graph-up me-2"></i> Relatório de Financias
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="financiasDropdown">
-                        <li><a class="dropdown-item" href="relatorio_despesas.php">Despesas</a></li>
-                        <li><a class="dropdown-item" href="relatorio_lucro.php">Ganho Bruto</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-boxes me-2"></i> Relatório de Estoque
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="estoqueDropdown">
-                        <li><a class="dropdown-item" href="relatorio_saida.php">Saída de Peças</a></li>
-                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
-                        <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="logs.php" class="nav-link text-white">
-                        <i class="bi bi-clock-history me-2"></i> Logs
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
-                </li>
-            </ul>
-        </nav>
+        <?php exibirMenu(); ?>
 
         <!-- Conteúdo principal -->
         <div class="flex-grow-1 d-flex flex-column">
@@ -199,9 +143,15 @@
                     <!-- Cabeçalho com título e botão de novo cliente -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><i class="bi bi-people me-2"></i>Gestão de Clientes</h5>
-                        <a href="cadastro_cliente.php" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle me-1"></i> Novo Cliente
-                        </a>
+                        <div>
+                            <!-- Botão de Estatísticas -->
+                            <button class="btn btn-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalEstatisticas">
+                                <i class="bi bi-graph-up me-1"></i> Estatísticas
+                            </button>
+                            <a href="cadastro_cliente.php" class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i> Novo Cliente
+                            </a>
+                        </div>
                     </div>
                     
                     <!-- Barra de pesquisa e filtros -->
@@ -365,19 +315,172 @@
                 </div>
             </div>
 
-            <!-- Modal para Detalhes do Cliente -->
-            <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog">
+            <!-- Modal para Alterar Cliente -->
+            <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Detalhes do Cliente</h5>
+                            <h5 class="modal-title">Alterar Cliente</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body" id="detalhesCliente">
-                            <!-- Conteúdo será preenchido via JavaScript -->
+                        <form method="POST" action="alterar_cliente.php">
+                            <div class="modal-body">
+                                <input type="hidden" id="id_cliente" name="id_cliente">
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="nome_cliente" class="form-label">Nome do Cliente *</label>
+                                            <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="cpf_cnpj" class="form-label">CPF/CNPJ *</label>
+                                            <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="telefone" class="form-label">Telefone</label>
+                                            <input type="text" class="form-control" id="telefone" name="telefone">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">E-mail</label>
+                                            <input type="email" class="form-control" id="email" name="email">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="endereco" class="form-label">Endereço</label>
+                                    <input type="text" class="form-control" id="endereco" name="endereco">
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="bairro" class="form-label">Bairro</label>
+                                            <input type="text" class="form-control" id="bairro" name="bairro">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="cep" class="form-label">CEP</label>
+                                            <input type="text" class="form-control" id="cep" name="cep">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="cidade" class="form-label">Cidade</label>
+                                            <input type="text" class="form-control" id="cidade" name="cidade">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="estado" class="form-label">Estado</label>
+                                    <input type="text" class="form-control" id="estado" name="estado">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" name="alterar_cliente" class="btn btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para Estatísticas -->
+            <div class="modal fade" id="modalEstatisticas" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Estatísticas de Clientes</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Distribuição por Cidade</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm" id="tabelaCidades">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Cidade</th>
+                                                            <th class="text-end">Quantidade</th>
+                                                            <th class="text-end">Percentual</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        // Calcular estatísticas por cidade
+                                                        $cidades = [];
+                                                        
+                                                        foreach($clientes as $cliente) {
+                                                            $cidade = $cliente['cidade'] ?: 'Não informada';
+                                                            if(!isset($cidades[$cidade])) {
+                                                                $cidades[$cidade] = 0;
+                                                            }
+                                                            $cidades[$cidade]++;
+                                                        }
+                                                        
+                                                        arsort($cidades); // Ordenar por quantidade decrescente
+                                                        $totalClientes = count($clientes);
+                                                        foreach($cidades as $cidade => $quantidade):
+                                                            $percentual = $totalClientes > 0 ? round(($quantidade / $totalClientes) * 100, 1) : 0;
+                                                        ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($cidade) ?></td>
+                                                            <td class="text-end"><?= $quantidade ?></td>
+                                                            <td class="text-end"><?= $percentual ?>%</td>
+                                                        </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Status dos Clientes</h6>
+                                            <div class="d-flex justify-content-around text-center">
+                                                <div>
+                                                    <div class="fs-2 text-success"><?= count(array_filter($clientes, fn($c) => $c['status'] === 'Ativo')) ?></div>
+                                                    <div class="text-muted">Ativos</div>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-2 text-danger"><?= count(array_filter($clientes, fn($c) => $c['status'] === 'Inativo')) ?></div>
+                                                    <div class="text-muted">Inativos</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Resumo Geral</h6>
+                                            <div class="mb-2">Total de Clientes: <strong><?= count($clientes) ?></strong></div>
+                                            <div class="mb-2">Clientes Ativos: <strong><?= count(array_filter($clientes, fn($c) => $c['status'] === 'Ativo')) ?></strong></div>
+                                            <div class="mb-2">Clientes Inativos: <strong><?= count(array_filter($clientes, fn($c) => $c['status'] === 'Inativo')) ?></strong></div>
+                                            <div>Total de Cidades: <strong><?= count($cidades) ?></strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-primary" onclick="exportarEstatisticas('pdf')">Exportar PDF</button>
                         </div>
                     </div>
                 </div>
@@ -404,118 +507,25 @@
             fetch('buscar_cliente.php?id=' + id)
                 .then(response => response.json())
                 .then(cliente => {
+                    if (cliente.erro) {
+                        alert(cliente.erro);
+                        return;
+                    }
+
                     document.getElementById('id_cliente').value = cliente.id_cliente;
                     document.getElementById('nome_cliente').value = cliente.nome_cliente;
                     document.getElementById('cpf_cnpj').value = cliente.cpf_cnpj;
-                    document.getElementById('telefone').value = cliente.telefone;
-                    document.getElementById('email').value = cliente.email;
+                    document.getElementById('telefone').value = cliente.telefone || '';
+                    document.getElementById('email').value = cliente.email || '';
+                    document.getElementById('endereco').value = cliente.endereco || '';
+                    document.getElementById('bairro').value = cliente.bairro || '';
+                    document.getElementById('cep').value = cliente.cep || '';
+                    document.getElementById('cidade').value = cliente.cidade || '';
+                    document.getElementById('estado').value = cliente.estado || '';
                     
                     // Abre o modal
                     var modal = new bootstrap.Modal(document.getElementById('modalCliente'));
                     modal.show();
-                })
-                .catch(error => console.error('Erro:', error));
-        }
-
-        // Função para mostrar detalhes do cliente
-        function mostrarDetalhesCliente(id) {
-            // Busca os dados básicos do cliente
-            fetch('buscar_cliente.php?id=' + id)
-                .then(response => response.json())
-                .then(clienteBasico => {
-                    // Agora busca os dados completos com informações de inatividade
-                    fetch('buscar_dados_completos_cliente.php?id=' + id)
-                        .then(response => response.json())
-                        .then(clienteCompleto => {
-                            let detalhesHTML = `
-                                <div class="mb-3">
-                                    <strong>ID:</strong> ${clienteBasico.id_cliente}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>Nome:</strong> ${clienteBasico.nome_cliente}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>CPF/CNPJ:</strong> ${clienteBasico.cpf_cnpj}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>Telefone:</strong> ${clienteBasico.telefone}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>E-mail:</strong> ${clienteBasico.email}
-                                </div>
-                            `;
-
-                            // Adiciona informações de inatividade se disponíveis
-                            if (clienteCompleto.status === 'Inativo') {
-                                let tempoInativo = '';
-                                if (clienteCompleto.data_inatividade) {
-                                    const dataInatividade = new Date(clienteCompleto.data_inatividade);
-                                    const agora = new Date();
-                                    const diffTime = Math.abs(agora - dataInatividade);
-                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                    tempoInativo = `${diffDays} dia(s)`;
-                                }
-
-                                detalhesHTML += `
-                                    <div class="mb-3">
-                                        <strong>Status:</strong> 
-                                        <span class="badge bg-danger">Inativo</span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <strong>Data de Inativação:</strong> ${clienteCompleto.data_inatividade || 'Não informada'}
-                                    </div>
-                                    <div class="mb-3">
-                                        <strong>Tempo Inativo:</strong> ${tempoInativo || 'Não calculado'}
-                                    </div>
-                                    <div class="mb-3">
-                                        <strong>Motivo da Inativação:</strong> ${clienteCompleto.motivo_inatividade || 'Não informado'}
-                                    </div>
-                                    <div class="mb-3">
-                                        <strong>Observações:</strong> ${clienteCompleto.observacao_inatividade || 'Nenhuma observação'}
-                                    </div>
-                                `;
-                            } else {
-                                detalhesHTML += `
-                                    <div class="mb-3">
-                                        <strong>Status:</strong> 
-                                        <span class="badge bg-success">Ativo</span>
-                                    </div>
-                                `;
-                            }
-
-                            document.getElementById('detalhesCliente').innerHTML = detalhesHTML;
-                            
-                            // Abre o modal
-                            var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
-                            modal.show();
-                        })
-                        .catch(error => {
-                            // Se falhar a segunda requisição, mostra apenas os dados básicos
-                            let detalhesHTML = `
-                                <div class="mb-3">
-                                    <strong>ID:</strong> ${clienteBasico.id_cliente}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>Nome:</strong> ${clienteBasico.nome_cliente}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>CPF/CNPJ:</strong> ${clienteBasico.cpf_cnpj}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>Telefone:</strong> ${clienteBasico.telefone}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>E-mail:</strong> ${clienteBasico.email}
-                                </div>
-                                <div class="mb-3 text-warning">
-                                    <em>Informações de status não disponíveis</em>
-                                </div>
-                            `;
-                            document.getElementById('detalhesCliente').innerHTML = detalhesHTML;
-                            
-                            var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
-                            modal.show();
-                        });
                 })
                 .catch(error => {
                     alert('Erro ao carregar dados do cliente');
@@ -523,11 +533,185 @@
                 });
         }
 
+        // Função para mostrar detalhes do cliente
+function mostrarDetalhesCliente(id) {
+    // Busca os dados completos do cliente
+    fetch('buscar_dados_completos_cliente.php?id=' + id)
+        .then(response => response.json())
+        .then(cliente => {
+            if (cliente.erro) {
+                alert(cliente.erro);
+                return;
+            }
+
+            let detalhesHTML = `
+                <div class="mb-3">
+                    <strong>ID:</strong> ${cliente.id_cliente}
+                </div>
+                <div class="mb-3">
+                    <strong>Nome:</strong> ${cliente.nome_cliente}
+                </div>
+                <div class="mb-3">
+                    <strong>CPF/CNPJ:</strong> ${cliente.cpf_cnpj}
+                </div>
+                <div class="mb-3">
+                    <strong>Endereço:</strong> ${cliente.endereco || 'Não informado'}
+                </div>
+                <div class="mb-3">
+                    <strong>Bairro:</strong> ${cliente.bairro || 'Não informado'}
+                </div>
+                <div class="mb-3">
+                    <strong>CEP:</strong> ${cliente.cep || 'Não informado'}
+                </div>
+                <div class="mb-3">
+                    <strong>Cidade:</strong> ${cliente.cidade || 'Não informada'}
+                </div>
+                <div class="mb-3">
+                    <strong>Estado:</strong> ${cliente.estado || 'Não informado'}
+                </div>
+                <div class="mb-3">
+                    <strong>Telefone:</strong> ${cliente.telefone || 'Não informado'}
+                </div>
+                <div class="mb-3">
+                    <strong>E-mail:</strong> ${cliente.email || 'Não informado'}
+                </div>
+            `;
+
+            // Adiciona informações de inatividade se disponíveis
+            if (cliente.status === 'Inativo') {
+                let tempoInativo = '';
+                if (cliente.data_inatividade) {
+                    const dataInatividade = new Date(cliente.data_inatividade);
+                    const agora = new Date();
+                    const diffTime = Math.abs(agora - dataInatividade);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    tempoInativo = `${diffDays} dia(s)`;
+                }
+
+                detalhesHTML += `
+                    <div class="mb-3">
+                        <strong>Status:</strong> 
+                        <span class="badge bg-danger">Inativo</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Data de Inativação:</strong> ${cliente.data_inatividade || 'Não informada'}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Tempo Inativo:</strong> ${tempoInativo || 'Não calculado'}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Observações:</strong> ${cliente.observacao_inatividade || 'Nenhuma observação'}
+                    </div>
+                `;
+            } else {
+                detalhesHTML += `
+                    <div class="mb-3">
+                        <strong>Status:</strong> 
+                        <span class="badge bg-success">Ativo</span>
+                    </div>
+                `;
+            }
+
+            document.getElementById('detalhesCliente').innerHTML = detalhesHTML;
+            
+            // Abre o modal
+            var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+            modal.show();
+        })
+        .catch(error => {
+            alert('Erro ao carregar dados do cliente');
+            console.error('Erro:', error);
+        });
+}
+
         // Submeter formulário quando os filtros forem alterados
         document.getElementById('status').addEventListener('change', function() {
             document.getElementById('filterForm').submit();
         });
+
+        // Função para exportar estatísticas
+        function exportarEstatisticas(formato) {
+            const dados = {
+                titulo: 'Relatório de Estatísticas de Clientes - ' + new Date().toLocaleDateString('pt-BR'),
+                totalClientes: <?= count($clientes) ?>,
+                ativos: <?= count(array_filter($clientes, fn($c) => $c['status'] === 'Ativo')) ?>,
+                inativos: <?= count(array_filter($clientes, fn($c) => $c['status'] === 'Inativo')) ?>,
+                cidades: {
+                    <?php foreach($cidades as $cidade => $quantidade): ?>
+                        '<?= addslashes($cidade) ?>': <?= $quantidade ?>,
+                    <?php endforeach; ?>
+                }
+            };
+
+            if (formato === 'pdf') {
+                exportarPDF(dados);
+            }
+        }
+
+        // Função para exportar PDF
+        function exportarPDF(dados) {
+            const conteudo = `
+                <html>
+                <head>
+                    <title>${dados.titulo}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #333; }
+                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f8f9fa; }
+                        .total { font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${dados.titulo}</h1>
+                    
+                    <h2>Resumo Geral</h2>
+                    <table>
+                        <tr><th>Total de Clientes</th><td>${dados.totalClientes}</td></tr>
+                        <tr><th>Clientes Ativos</th><td>${dados.ativos}</td></tr>
+                        <tr><th>Clientes Inativos</th><td>${dados.inativos}</td></tr>
+                    </table>
+                    
+                    <h2>Distribuição por Cidade</h2>
+                    <table>
+                        <tr><th>Cidade</th><th>Quantidade</th><th>Percentual</th></tr>
+                        ${Object.entries(dados.cidades).map(([cidade, quantidade]) => `
+                            <tr>
+                                <td>${cidade}</td>
+                                <td>${quantidade}</td>
+                                <td>${dados.totalClientes > 0 ? ((quantidade / dados.totalClientes) * 100).toFixed(1) + '%' : '0%'}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    
+                    <p><small>Gerado em: ${new Date().toLocaleString('pt-BR')}</small></p>
+                </body>
+                </html>
+            `;
+            
+            const janela = window.open('', '_blank');
+            janela.document.write(conteudo);
+            janela.document.close();
+            janela.print();
+        }
+
+        // Máscaras para os campos
+        function aplicarMascaras() {
+            // Máscara para CPF/CNPJ
+            $('#cpf_cnpj').mask('000.000.000-00', {reverse: true});
+            
+            // Máscara para telefone
+            $('#telefone').mask('(00) 00000-0000');
+            
+            // Máscara para CEP
+            $('#cep').mask('00000-000');
+        }
+
+        // Aplicar máscaras quando o modal for aberto
+        document.getElementById('modalCliente').addEventListener('shown.bs.modal', aplicarMascaras);
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
 </body>
 </html>

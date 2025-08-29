@@ -14,7 +14,7 @@
 
         if($usuario && password_verify($senha, $usuario['senha'])) {
             // Login bem sucedido define variáveis de sessão
-            $_SESSION['usuario'] = $usuario['nome'];  // corrigido
+            $_SESSION['usuario'] = $usuario['nome_usuario'];  // corrigido
             $_SESSION['perfil'] = $usuario['id_perfil'];
             $_SESSION['id_usuario'] = $usuario['id_usuario'];
 
@@ -69,12 +69,6 @@
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="remember">
-                <label class="form-check-label" for="remember">
-                    Lembrar-me
-                </label>
-                </div>
                 <a href="esqueceu_senha.php" class="text-decoration-none">Esqueceu a senha?</a>
             </div>
 

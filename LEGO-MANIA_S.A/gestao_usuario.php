@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once 'conexao.php';
+    require_once 'php/permissoes.php';
 
     // VERIFICA SE O USUARIO TEM PERMISSÃO DE ADM OU SECRETARIA
     if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=3){
@@ -123,78 +124,8 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
 </head>
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="bg-dark text-white p-3" style="width: 250px;">
-            <h4 class="mb-4">Menu</h4>
-            <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                    <a href="principal.php" class="nav-link text-white"><i class="bi bi-house-door me-2"></i> Início</a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="perfil.php" class="nav-link text-white"><i class="bi bi-person me-2"></i> Perfil</a>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-plus me-2"></i> Cadastro 
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
-                        <li><a class="dropdown-item" href="cadastro_usuario.php">Usuario</a></li>
-                        <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
-                        <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
-                        <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
-                        <li><a class="dropdown-item" href="cadastro_pecas.php">Peças no estoque</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="gestaoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-people me-2"></i> Gestão de Pessoas
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="gestaoDropdown">
-                        <li><a class="dropdown-item" href="gestao_usuario.php">Usuarios</a></li>
-                        <li><a class="dropdown-item" href="gestao_cliente.php">Clientes</a></li>
-                        <li><a class="dropdown-item" href="gestao_funcionario.php">Funcionários</a></li>
-                        <li><a class="dropdown-item" href="gestao_fornecedor.php">Fornecedores</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="ordemDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-tools me-2"></i> Ordem de Serviços 
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="ordemDropdown">
-                        <li><a class="dropdown-item" href="nova_ordem.php">Nova O.S</a></li>
-                        <li><a class="dropdown-item" href="consultar_ordem.php">Consultar</a></li>
-                        <li><a class="dropdown-item" href="pagamento.php">Pagamento</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="financiasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-graph-up me-2"></i> Relatório de Financias
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="financiasDropdown">
-                        <li><a class="dropdown-item" href="relatorio_despesas.php">Despesas</a></li>
-                        <li><a class="dropdown-item" href="relatorio_lucro.php">Ganho Bruto</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2 dropdown">
-                    <a class="nav-link text-white dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-boxes me-2"></i> Relatório de Estoque
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="estoqueDropdown">
-                        <li><a class="dropdown-item" href="relatorio_saida.php">Saída de Peças</a></li>
-                        <li><a class="dropdown-item" href="relatorio_pecas_estoque.php">Peças no Estoque</a></li>
-                        <li><a class="dropdown-item" href="relatorio_uso.php">Relatório de Uso</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="logs.php" class="nav-link text-white">
-                        <i class="bi bi-clock-history me-2"></i> Logs
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
-                </li>
-            </ul>
-        </nav>
+      <!-- Sidebar -->
+      <?php exibirMenu(); ?>
 
         <!-- Conteúdo principal -->
         <div class="flex-grow-1 d-flex flex-column">
@@ -214,11 +145,18 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
                 <div class="container-fluid">
                     <!-- Cabeçalho com título e botão de novo funcionário -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Gestão de Usuários</h5>
-                        <a href="cadastro_usuario.php" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle me-1"></i> Novo Usuário
-                        </a>
-                    </div>
+                <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Gestão de Usuários</h5>
+                <div>
+                    <!-- Botão de Estatísticas -->
+                    <button class="btn btn-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalEstatisticas">
+                        <i class="bi bi-graph-up me-1"></i> Estatísticas
+                    </button>
+ 
+                    <a href="cadastro_usuario.php" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Novo Usuário
+                    </a>
+                </div>
+            </div>
                     
                     <!-- Barra de pesquisa e filtros -->
                     <div class="card shadow-sm mb-3">
@@ -406,6 +344,99 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
                 </div>
             </div>
 
+            <!-- Modal para Estatísticas -->
+            <div class="modal fade" id="modalEstatisticas" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Estatísticas de Usuários</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Distribuição por Perfil</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm" id="tabelaPerfis">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Perfil</th>
+                                                            <th class="text-end">Quantidade</th>
+                                                            <th class="text-end">Percentual</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        // Calcular estatísticas por perfil
+                                                        $perfis = [
+                                                            'Administrador' => 0,
+                                                            'Secretaria' => 0,
+                                                            'Funcionario' => 0,
+                                                            'Tecnico' => 0
+                                                        ];
+                                                        
+                                                        foreach($usuarios as $usuario) {
+                                                            if(isset($perfis[$usuario['nome_perfil']])) {
+                                                                $perfis[$usuario['nome_perfil']]++;
+                                                            }
+                                                        }
+                                                        
+                                                        $totalUsuarios = count($usuarios);
+                                                        foreach($perfis as $perfil => $quantidade):
+                                                            if($quantidade > 0):
+                                                                $percentual = $totalUsuarios > 0 ? round(($quantidade / $totalUsuarios) * 100, 1) : 0;
+                                                        ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($perfil) ?></td>
+                                                            <td class="text-end"><?= $quantidade ?></td>
+                                                            <td class="text-end"><?= $percentual ?>%</td>
+                                                        </tr>
+                                                        <?php endif; endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Status dos Usuários</h6>
+                                            <div class="d-flex justify-content-around text-center">
+                                                <div>
+                                                    <div class="fs-2 text-success"><?= count(array_filter($usuarios, fn($u) => $u['status'] === 'Ativo')) ?></div>
+                                                    <div class="text-muted">Ativos</div>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-2 text-danger"><?= count(array_filter($usuarios, fn($u) => $u['status'] === 'Inativo')) ?></div>
+                                                    <div class="text-muted">Inativos</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Resumo Geral</h6>
+                                            <div class="mb-2">Total de Usuários: <strong><?= count($usuarios) ?></strong></div>
+                                            <div class="mb-2">Administradores: <strong><?= count(array_filter($usuarios, fn($u) => $u['nome_perfil'] === 'Administrador')) ?></strong></div>
+                                            <div class="mb-2">Secretarias: <strong><?= count(array_filter($usuarios, fn($u) => $u['nome_perfil'] === 'Secretaria')) ?></strong></div>
+                                            <div class="mb-2">Funcionários: <strong><?= count(array_filter($usuarios, fn($u) => $u['nome_perfil'] === 'Funcionario')) ?></strong></div>
+                                            <div>Técnicos: <strong><?= count(array_filter($usuarios, fn($u) => $u['nome_perfil'] === 'Tecnico')) ?></strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-primary" onclick="exportarEstatisticas('pdf')">Exportar PDF</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
     <!-- SCRIPTS -->
                                     
     <script>
@@ -548,6 +579,79 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
         document.getElementById('status').addEventListener('change', function() {
             document.getElementById('filterForm').submit();
         });
+
+
+        // Função para exportar estatísticas
+        function exportarEstatisticas(formato) {
+            const dados = {
+                titulo: 'Relatório de Estatísticas de Usuários - ' + new Date().toLocaleDateString('pt-BR'),
+                totalUsuarios: <?= count($usuarios) ?>,
+                ativos: <?= count(array_filter($usuarios, fn($u) => $u['status'] === 'Ativo')) ?>,
+                inativos: <?= count(array_filter($usuarios, fn($u) => $u['status'] === 'Inativo')) ?>,
+                perfis: {
+                    'Administrador': <?= count(array_filter($usuarios, fn($u) => $u['nome_perfil'] === 'Administrador')) ?>,
+                    'Secretaria': <?= count(array_filter($usuarios, fn($u) => $u['nome_perfil'] === 'Secretaria')) ?>,
+                    'Funcionario': <?= count(array_filter($usuarios, fn($u) => $u['nome_perfil'] === 'Funcionario')) ?>,
+                    'Tecnico': <?= count(array_filter($usuarios, fn($u) => $u['nome_perfil'] === 'Tecnico')) ?>
+                }
+            };
+
+            if (formato === 'pdf') {
+                exportarPDF(dados);
+            } else if (formato === 'excel') {
+                exportarExcel(dados);
+            }
+        }
+
+        // Função para exportar PDF
+        function exportarPDF(dados) {
+            // Aqui você pode integrar com uma biblioteca como jsPDF
+            // Esta é uma implementação básica que abre uma nova janela para impressão
+            const conteudo = `
+                <html>
+                <head>
+                    <title>${dados.titulo}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #333; }
+                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f8f9fa; }
+                        .total { font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${dados.titulo}</h1>
+                    
+                    <h2>Resumo Geral</h2>
+                    <table>
+                        <tr><th>Total de Usuários</th><td>${dados.totalUsuarios}</td></tr>
+                        <tr><th>Usuários Ativos</th><td>${dados.ativos}</td></tr>
+                        <tr><th>Usuários Inativos</th><td>${dados.inativos}</td></tr>
+                    </table>
+                    
+                    <h2>Distribuição por Perfil</h2>
+                    <table>
+                        <tr><th>Perfil</th><th>Quantidade</th><th>Percentual</th></tr>
+                        ${Object.entries(dados.perfis).map(([perfil, quantidade]) => `
+                            <tr>
+                                <td>${perfil}</td>
+                                <td>${quantidade}</td>
+                                <td>${dados.totalUsuarios > 0 ? ((quantidade / dados.totalUsuarios) * 100).toFixed(1) + '%' : '0%'}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    
+                    <p><small>Gerado em: ${new Date().toLocaleString('pt-BR')}</small></p>
+                </body>
+                </html>
+            `;
+            
+            const janela = window.open('', '_blank');
+            janela.document.write(conteudo);
+            janela.document.close();
+            janela.print();
+        }
     </script>
 
 
