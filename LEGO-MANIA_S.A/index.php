@@ -1,4 +1,4 @@
- <?php 
+<?php 
     session_start();
     require_once 'conexao.php';
 
@@ -12,27 +12,34 @@
         $stmt->execute();
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if($usuario && password_verify($senha, $usuario['senha'])) {
-            // Login bem sucedido define variáveis de sessão
-            $_SESSION['usuario'] = $usuario['nome_usuario'];  // corrigido
-            $_SESSION['perfil'] = $usuario['id_perfil'];
-            $_SESSION['id_usuario'] = $usuario['id_usuario'];
+        if($usuario) {
+            // Verificar se o usuário está inativo
+            if($usuario['status'] == 'Inativo') {
+                $showInactiveModal = true;
+            } else if(password_verify($senha, $usuario['senha'])) {
+                // Login bem sucedido define variáveis de sessão
+                $_SESSION['usuario'] = $usuario['nome_usuario'];
+                $_SESSION['perfil'] = $usuario['id_perfil'];
+                $_SESSION['id_usuario'] = $usuario['id_usuario'];
 
-            // Verifica se a senha é temporária
-            if($usuario['senha_temporaria']) {
-                header("Location: alterar_senha.php");
-                exit();
+                // Verifica se a senha é temporária
+                if($usuario['senha_temporaria']) {
+                    header("Location: alterar_senha.php");
+                    exit();
+                } else {
+                    header("Location: principal.php");
+                    exit();
+                }
             } else {
-                header("Location: principal.php");
-                exit();
+                $showErrorModal = true;
+                $errorMessage = 'E-mail ou senha incorretos';
             }
         } else {
-            echo "<script>alert('E-mail ou senha incorretos');window.location.href='index.php';</script>";
+            $showErrorModal = true;
+            $errorMessage = 'E-mail ou senha incorretos';
         }
     }
 ?> 
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -77,7 +84,64 @@
     </div>
 </div>
 
+<!-- Modal para usuário inativo -->
+<div class="modal fade" id="inactiveUserModal" tabindex="-1" aria-labelledby="inactiveUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="inactiveUserModalLabel"><i class="bi bi-exclamation-triangle-fill"></i> Usuário Inativo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-person-x-fill text-warning" style="font-size: 3rem;"></i>
+                <h4 class="mt-3">Conta Desativada</h4>
+                <p class="mt-3">Sua conta está atualmente inativa. Entre em contato com os responsáveis para reativar seu acesso.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Entendi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para erro de login -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel"><i class="bi bi-exclamation-circle-fill"></i> Erro no Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-x-circle-fill text-danger" style="font-size: 3rem;"></i>
+                <h4 class="mt-3">Falha na Autenticação</h4>
+                <p class="mt-3" id="errorMessage"></p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Tentar Novamente</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<script>
+    <?php if(isset($showInactiveModal) && $showInactiveModal): ?>
+    document.addEventListener('DOMContentLoaded', function() {
+        var inactiveModal = new bootstrap.Modal(document.getElementById('inactiveUserModal'));
+        inactiveModal.show();
+    });
+    <?php endif; ?>
+
+    <?php if(isset($showErrorModal) && $showErrorModal): ?>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('errorMessage').textContent = '<?php echo $errorMessage; ?>';
+        var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+    });
+    <?php endif; ?>
+</script>
 </body>
 </html>
