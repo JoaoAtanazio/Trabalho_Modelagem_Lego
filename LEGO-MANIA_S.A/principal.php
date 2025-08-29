@@ -33,10 +33,10 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="cadastroDropdown">
                 <li><a class="dropdown-item" href="cadastro_usuario.php" id="cadastro_usuario">Usuario</a></li>
-                <li><a class="dropdown-item" href="cadastro_cliente.php">Cliente</a></li>
-                <li><a class="dropdown-item" href="cadastro_funcionario.php">Funcionário</a></li>
-                <li><a class="dropdown-item" href="cadastro_fornecedor.php">Fornecedor</a></li>
-                <li><a class="dropdown-item" href="cadastro_pecas.php">Peças no estoque</a></li>
+                <li><a class="dropdown-item" href="cadastro_cliente.php" id="cadastro_cliente">Cliente</a></li>
+                <li><a class="dropdown-item" href="cadastro_funcionario.php" id="cadastro_funcionario">Funcionário</a></li>
+                <li><a class="dropdown-item" href="cadastro_fornecedor.php" id="cadastro_fornecedor">Fornecedor</a></li>
+                <li><a class="dropdown-item" href="cadastro_pecas.php" id="cadastro_pecas">Peças no estoque</a></li>
             </ul>
         </li>
         <li class="nav-item mb-2 dropdown">

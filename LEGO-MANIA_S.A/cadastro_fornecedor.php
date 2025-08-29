@@ -333,7 +333,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <button type="reset" class="btn btn-outline-secondary btn-sm me-md-2">
                                                 <i class="bi bi-x-circle"></i> Limpar
                                             </button>
-                                            <button type="submit" class="btn btn-primary btn-sm">
+                                            <button type="submit" class="btn btn-primary btn-sm" id="botaocadastro">
                                                 <i class="bi bi-check-circle"></i> Cadastrar
                                             </button>
                                         </div>
