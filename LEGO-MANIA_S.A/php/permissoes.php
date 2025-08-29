@@ -102,11 +102,11 @@ $ids = [
     "perfil.php" => "menu-perfil",
     
     // Cadastro
-    "cadastro_usuario.php" => "menu-cadastro-usuario",
-    "cadastro_cliente.php" => "menu-cadastro-cliente",
-    "cadastro_funcionario.php" => "menu-cadastro-funcionario",
-    "cadastro_fornecedor.php" => "menu-cadastro-fornecedor",
-    "cadastro_pecas.php" => "menu-cadastro-pecas",
+    "cadastro_usuario.php" => "cadastro_usuario",
+    "cadastro_cliente.php" => "cadastro_cliente",
+    "cadastro_funcionario.php" => "cadastro_funcionario",
+    "cadastro_fornecedor.php" => "cadastro_fornecedor",
+    "cadastro_pecas.php" => "cadastro_pecas",
     
     // Gestão
     "gestao_usuario.php" => "menu-gestao-usuario",
@@ -115,7 +115,7 @@ $ids = [
     "gestao_fornecedor.php" => "menu-gestao-fornecedor",
     
     // Ordem de Serviços
-    "nova_ordem.php" => "menu-nova-ordem",
+    "nova_ordem.php" => "nova_ordem",
     "consultar_ordem.php" => "menu-consultar-ordem",
     "pagamento.php" => "menu-pagamento",
     
