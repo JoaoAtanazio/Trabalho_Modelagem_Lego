@@ -1,146 +1,173 @@
 <?php
-session_start();
-require_once 'conexao.php';
-require_once 'php/permissoes.php';
+    session_start();
+    require_once 'conexao.php';
+    require_once 'php/permissoes.php';
 
-// VERIFICA SE O USUARIO ESTÁ LOGADO
-if (!isset($_SESSION['id_usuario'])) {
-    echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
-    exit();
-}
-
-if (!isset($_SESSION['ordens_ocultas'])) {
-    $_SESSION['ordens_ocultas'] = [];
-}
-
-// INICIALIZA VARIÁVEIS
-$busca = '';
-$ordens = [];
-
-// VERIFICA SE HÁ BUSCA POR TEXTO (GET)
-if (isset($_GET['busca']) && !empty($_GET['busca'])) {
-    $busca = trim($_GET['busca']);
-}
-
-// CONSTRUIR A QUERY BASE
-$sql = "SELECT no.id_ordem, 
-               no.nome_client_ordem, 
-               no.tecnico, 
-               no.problema, 
-               no.dt_recebimento, 
-               no.valor_total,
-               no.marca_aparelho,
-               no.prioridade,
-               no.observacao,
-               c.nome_cliente,
-               no.id_cliente,
-               f.nome_funcionario
-        FROM nova_ordem no
-        LEFT JOIN cliente c ON no.id_cliente = c.id_cliente
-        LEFT JOIN funcionario f ON no.id_funcionario = f.id_funcionario";
-
-$where_conditions = [];
-$params = [];
-
-// ADICIONAR FILTRO POR BUSCA SE EXISTIR
-if (!empty($busca)) {
-    if (is_numeric($busca)) {
-        $where_conditions[] = "no.id_ordem = :busca";
-        $params[':busca'] = $busca;
-    } else {
-        $where_conditions[] = "(c.nome_cliente LIKE :busca_nome OR no.nome_client_ordem LIKE :busca_nome)";
-        $params[':busca_nome'] = "%$busca%";
+    // VERIFICA SE O USUARIO ESTÁ LOGADO
+    if (!isset($_SESSION['id_usuario'])) {
+        echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
+        exit();
     }
-}
 
-// COMBINAR CONDITIONS SE HOUVER
-if (!empty($where_conditions)) {
-    $sql .= " WHERE " . implode(" AND ", $where_conditions);
-}
+    if (!isset($_SESSION['ordens_ocultas'])) {
+        $_SESSION['ordens_ocultas'] = [];
+    }
 
-$sql .= " ORDER BY no.id_ordem DESC";
+    // INICIALIZA VARIÁVEIS
+    $busca = '';
+    $ordens = [];
 
-// PREPARAR E EXECUTAR A QUERY
-$stmt = $pdo->prepare($sql);
+    // VERIFICA SE HÁ BUSCA POR TEXTO (GET)
+    if (isset($_GET['busca']) && !empty($_GET['busca'])) {
+        $busca = trim($_GET['busca']);
+    }
 
-foreach ($params as $key => $value) {
-    $stmt->bindValue($key, $value);
-}
+    // CONSTRUIR A QUERY BASE - CORRIGIDA PARA MOSTRAR NOME DO TÉCNICO
+    $sql = "SELECT no.id_ordem, 
+                   no.nome_client_ordem,
+                   u.nome_usuario AS nome_tecnico,  
+                   no.problema, 
+                   no.dt_recebimento, 
+                   no.valor_total,
+                   no.marca_aparelho,
+                   no.prioridade,
+                   no.observacao,
+                   no.status_ordem AS statuss,
+                   c.nome_cliente,
+                   no.id_cliente,
+                   f.nome_funcionario
+            FROM nova_ordem no
+            LEFT JOIN cliente c ON no.id_cliente = c.id_cliente
+            LEFT JOIN funcionario f ON no.id_funcionario = f.id_funcionario
+            LEFT JOIN usuario u ON no.tecnico = u.id_usuario";
 
-$stmt->execute();
-$ordens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $where_conditions = [];
+    $params = [];
 
-$filtro_oculto = isset($_GET['filtro_oculto']) ? $_GET['filtro_oculto'] : '0';
-
-if ($filtro_oculto == '0') {
-    // Mostrar apenas não ocultas
-    $ordens = array_filter($ordens, function($ordem) {
-        return !in_array($ordem['id_ordem'], $_SESSION['ordens_ocultas']);
-    });
-} else {
-    // Mostrar apenas ocultas
-    $ordens = array_filter($ordens, function($ordem) {
-        return in_array($ordem['id_ordem'], $_SESSION['ordens_ocultas']);
-    });
-}
-
-// Processar ações (excluir, ocultar)
-if (isset($_GET['acao']) && isset($_GET['id'])) {
-    $id_ordem = $_GET['id'];
-    
-    if ($_GET['acao'] == 'excluir') {
-        // Excluir ordem
-        $sql_excluir = "DELETE FROM nova_ordem WHERE id_ordem = :id";
-        $stmt_excluir = $pdo->prepare($sql_excluir);
-        $stmt_excluir->bindParam(':id', $id_ordem, PDO::PARAM_INT);
-        
-        if ($stmt_excluir->execute()) {
-            echo "<script>alert('Ordem excluída com sucesso!'); window.location.href='consultar_ordem.php';</script>";
+    // ADICIONAR FILTRO POR BUSCA SE EXISTIR
+    if (!empty($busca)) {
+        if (is_numeric($busca)) {
+            $where_conditions[] = "no.id_ordem = :busca";
+            $params[':busca'] = $busca;
         } else {
-            echo "<script>alert('Erro ao excluir ordem!');</script>";
+            $where_conditions[] = "(c.nome_cliente LIKE :busca_nome OR no.nome_client_ordem LIKE :busca_nome)";
+            $params[':busca_nome'] = "%$busca%";
         }
     }
 
-    if ($_GET['acao'] == 'ocultar') {
-        if (!in_array($id_ordem, $_SESSION['ordens_ocultas'])) {
-            $_SESSION['ordens_ocultas'][] = $id_ordem;
-        }
-        echo "<script>alert('Ordem ocultada!'); window.location.href='consultar_ordem.php';</script>";
+    // COMBINAR CONDITIONS SE HOUVER
+    if (!empty($where_conditions)) {
+        $sql .= " WHERE " . implode(" AND ", $where_conditions);
     }
-    
-    if ($_GET['acao'] == 'mostrar') {
-        if (($key = array_search($id_ordem, $_SESSION['ordens_ocultas'])) !== false) {
-            unset($_SESSION['ordens_ocultas'][$key]);
-        }
-        echo "<script>alert('Ordem reativada!'); window.location.href='consultar_ordem.php?filtro_oculto=1';</script>";
-    }
-}
 
-// Buscar dados de uma ordem específica para o modal (se solicitado via AJAX)
-if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
-    $id_ordem = $_GET['id_ordem'];
-    
-    $sql_ordem = "SELECT no.*, c.nome_cliente 
-                  FROM nova_ordem no 
-                  LEFT JOIN cliente c ON no.id_cliente = c.id_cliente 
-                  WHERE no.id_ordem = :id_ordem";
-    
-    $stmt_ordem = $pdo->prepare($sql_ordem);
-    $stmt_ordem->bindParam(':id_ordem', $id_ordem, PDO::PARAM_INT);
-    $stmt_ordem->execute();
-    
-    $ordem = $stmt_ordem->fetch(PDO::FETCH_ASSOC);
-    
-    if ($ordem) {
-        header('Content-Type: application/json');
-        echo json_encode($ordem);
-        exit();
+    $sql .= " ORDER BY no.id_ordem DESC";
+
+    // PREPARAR E EXECUTAR A QUERY
+    $stmt = $pdo->prepare($sql);
+
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
+
+    $stmt->execute();
+    $ordens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $filtro_oculto = isset($_GET['filtro_oculto']) ? $_GET['filtro_oculto'] : '0';
+
+    if ($filtro_oculto == '0') {
+        $ordens = array_filter($ordens, function($ordem) {
+            return !in_array($ordem['id_ordem'], $_SESSION['ordens_ocultas']);
+        });
     } else {
-        header('HTTP/1.1 404 Not Found');
-        echo json_encode(['error' => 'Ordem não encontrada']);
-        exit();
+        $ordens = array_filter($ordens, function($ordem) {
+            return in_array($ordem['id_ordem'], $_SESSION['ordens_ocultas']);
+        });
     }
-}
+
+    // ALTERAR STATUS ORDEM //
+    if(isset($_GET['id']) && is_numeric($_GET['id'])){
+        $id_ordem = $_GET['id'];
+        
+        if(isset($_GET['statuss'])) {
+            $novo_status = $_GET['statuss'];
+            
+            $sql = "UPDATE nova_ordem SET status_ordem = :statuss WHERE id_ordem = :id";
+            $mensagem = 'Status da ordem alterado com sucesso!';
+        
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':statuss', $novo_status);
+            $stmt->bindParam(':id', $id_ordem, PDO::PARAM_INT);
+
+            if($stmt->execute()){
+                echo "<script>alert('$mensagem');window.location.href='consultar_ordem.php';</script>";
+            } else{
+                echo "<script>alert('Erro ao alterar status da ordem!');</script>";
+            }
+        }
+    }
+
+    // Processar ações (excluir, ocultar, mostrar)
+    if (isset($_GET['acao']) && isset($_GET['id'])) {
+        $id_ordem = $_GET['id'];
+        
+        if ($_GET['acao'] == 'excluir') {
+            $sql_excluir = "DELETE FROM nova_ordem WHERE id_ordem = :id";
+            $stmt_excluir = $pdo->prepare($sql_excluir);
+            $stmt_excluir->bindParam(':id', $id_ordem, PDO::PARAM_INT);
+            
+            if ($stmt_excluir->execute()) {
+                echo "<script>alert('Ordem excluída com sucesso!'); window.location.href='consultar_ordem.php';</script>";
+            } else {
+                echo "<script>alert('Erro ao excluir ordem!');</script>";
+            }
+        }
+
+        if ($_GET['acao'] == 'ocultar') {
+            if (!in_array($id_ordem, $_SESSION['ordens_ocultas'])) {
+                $_SESSION['ordens_ocultas'][] = $id_ordem;
+            }
+            echo "<script>alert('Ordem ocultada!'); window.location.href='consultar_ordem.php';</script>";
+        }
+        
+        if ($_GET['acao'] == 'mostrar') {
+            if (($key = array_search($id_ordem, $_SESSION['ordens_ocultas'])) !== false) {
+                unset($_SESSION['ordens_ocultas'][$key]);
+            }
+            echo "<script>alert('Ordem reativada!'); window.location.href='consultar_ordem.php?filtro_oculto=1';</script>";
+        }
+    }
+
+    // Buscar dados de uma ordem específica (AJAX)
+    if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
+        $id_ordem = $_GET['id_ordem'];
+        
+        $sql_ordem = "SELECT no.*, c.nome_cliente, u.nome_usuario as nome_tecnico 
+                      FROM nova_ordem no 
+                      LEFT JOIN cliente c ON no.id_cliente = c.id_cliente 
+                      LEFT JOIN usuario u ON no.tecnico = u.id_usuario
+                      WHERE no.id_ordem = :id_ordem";
+        
+        $stmt_ordem = $pdo->prepare($sql_ordem);
+        $stmt_ordem->bindParam(':id_ordem', $id_ordem, PDO::PARAM_INT);
+        $stmt_ordem->execute();
+        
+        $ordem = $stmt_ordem->fetch(PDO::FETCH_ASSOC);
+        
+        if ($ordem) {
+            header('Content-Type: application/json');
+            echo json_encode($ordem);
+            exit();
+        } else {
+            header('HTTP/1.1 404 Not Found');
+            echo json_encode(['error' => 'Ordem não encontrada']);
+            exit();
+        }
+    }
+
+    // Buscar técnicos
+    $sql_tecnicos = "SELECT id_usuario, nome_usuario FROM usuario WHERE id_perfil = 4 AND status = 'ativo' ORDER BY nome_usuario";
+    $stmt_tecnicos = $pdo->query($sql_tecnicos);
+    $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -189,7 +216,7 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                         <div class="card-body py-2">
                             <form method="GET" action="consultar_ordem.php" id="filterForm">
                                 <div class="row g-2">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text"><i class="bi bi-search"></i></span>
                                             <input type="text" id="busca" name="busca" class="form-control" 
@@ -199,13 +226,23 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <select name="filtro_oculto" id="filtro_oculto" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit();">
+                                        <select name="filtro_oculto" id="filtro_oculto" class="form-select form-select-sm">
                                             <option value="0" <?= (isset($_GET['filtro_oculto']) && $_GET['filtro_oculto'] == '0') ? 'selected' : '' ?>>Ordens visíveis</option>
                                             <option value="1" <?= (isset($_GET['filtro_oculto']) && $_GET['filtro_oculto'] == '1') ? 'selected' : '' ?>>Ordens ocultas</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <?php if(isset($_GET['busca']) || isset($_GET['filtro_oculto'])): ?>
+                                        <select name="statuss" id="statuss" class="form-select form-select-sm">
+                                            <option value="">Todos os status</option>
+                                            <option value="Aberta" <?= (isset($_GET['statuss']) && $_GET['statuss'] == 'Aberta') ? 'selected' : '' ?>>Aberta</option>
+                                            <option value="Em Andamento" <?= (isset($_GET['statuss']) && $_GET['statuss'] == 'Em Andamento') ? 'selected' : '' ?>>Em Andamento</option>
+                                            <option value="Aguardando Peças" <?= (isset($_GET['statuss']) && $_GET['statuss'] == 'Aguardando Peças') ? 'selected' : '' ?>>Aguardando Peças</option>
+                                            <option value="Concluído" <?= (isset($_GET['statuss']) && $_GET['statuss'] == 'Concluído') ? 'selected' : '' ?>>Concluído</option>
+                                            <option value="Cancelada" <?= (isset($_GET['statuss']) && $_GET['statuss'] == 'Cancelada') ? 'selected' : '' ?>>Cancelada</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <?php if(isset($_GET['busca']) || isset($_GET['filtro_oculto']) || isset($_GET['statuss'])): ?>
                                             <a href="consultar_ordem.php" class="btn btn-outline-danger btn-sm">Limpar Filtros</a>
                                         <?php endif; ?>
                                     </div>
@@ -228,6 +265,7 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                                                 <th><center>Problema</center></th>
                                                 <th><center>Data</center></th>
                                                 <th><center>Valor (R$)</center></th>
+                                                <th><center>Status</center></th>
                                                 <th class="text-center">Ações</th>
                                             </tr>
                                         </thead>
@@ -236,10 +274,26 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                                                 <tr>
                                                     <td><center><?= htmlspecialchars($ordem['id_ordem']) ?></center></td>
                                                     <td><center><?= htmlspecialchars($ordem['nome_cliente'] ? $ordem['nome_cliente'] : $ordem['nome_client_ordem']) ?></center></td>
-                                                    <td><center><?= htmlspecialchars($ordem['nome_funcionario']) ?></center></td>
+                                                    <td><center><?= htmlspecialchars($ordem['nome_tecnico'] ? $ordem['nome_tecnico'] : 'Não atribuído') ?></center></td>
                                                     <td><center><?= htmlspecialchars(substr($ordem['problema'], 0, 30)) ?>...</center></td>
                                                     <td><center><?= htmlspecialchars($ordem['dt_recebimento']) ?></center></td>
                                                     <td><center>R$ <?= number_format($ordem['valor_total'], 2, ',', '.') ?></center></td>
+                                                    <td>
+                                                        <center>
+                                                            <?php 
+                                                            $badge_class = '';
+                                                            switch($ordem['statuss']) {
+                                                                case 'Aberta': $badge_class = 'bg-primary'; break;
+                                                                case 'Em Andamento': $badge_class = 'bg-warning text-dark'; break;
+                                                                case 'Aguardando Peças': $badge_class = 'bg-info'; break;
+                                                                case 'Concluído': $badge_class = 'bg-success'; break;
+                                                                case 'Cancelada': $badge_class = 'bg-danger'; break;
+                                                                default: $badge_class = 'bg-secondary';
+                                                            }
+                                                            ?>
+                                                            <span class="badge <?=$badge_class?>"><?=$ordem['statuss']?></span>
+                                                        </center> 
+                                                    </td>
                                                     <td class="text-center">
                                                         <a href="#" class="btn btn-sm btn-primary me-1" title="Alterar" onclick="carregarDadosOrdem(<?= htmlspecialchars($ordem['id_ordem']) ?>)">Alterar</a>
 
@@ -256,6 +310,11 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                                                                 Reativar
                                                             </a>
                                                         <?php endif; ?>
+                                                        
+                                                        <button type="button" class="btn btn-sm <?= $badge_class ?> me-1" onclick="abrirModalStatus(<?=htmlspecialchars($ordem['id_ordem'])?>, '<?=$ordem['statuss']?>', '<?=htmlspecialchars($ordem['id_ordem'])?>')">
+                                                            <i class="bi bi-gear-fill me-1"></i> Status
+                                                        </button>
+                                                        
                                                         <button class="btn btn-sm btn-info" onclick="mostrarDetalhesOrdem(<?=htmlspecialchars($ordem['id_ordem'])?>)">
                                                             <i class="bi bi-info-circle"></i> Detalhes
                                                         </button>
@@ -318,10 +377,21 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                                     <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
                                 </div>
                                 
-                                <div class="mb-3">
+                                <!-- Técnico -->
+                                <div class="mb-2">
                                     <label for="tecnico" class="form-label">Técnico</label>
-                                    <input type="text" class="form-control" id="tecnico" name="tecnico">
-                                </div>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="bi bi-person-gear"></i></span>
+                                            <select class="form-select" id="tecnico" name="tecnico" required>
+                                                <option value="" selected disabled>Selecione o técnico</option>
+                                                <?php foreach ($tecnicos as $tecnico): ?>
+                                                    <option value="<?= $tecnico['id_usuario'] ?>">
+                                                        <?= htmlspecialchars($tecnico['nome_usuario']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
                                 
                                 <div class="mb-3">
                                     <label for="marca_aparelho" class="form-label">Marca do Aparelho</label>
@@ -384,6 +454,64 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                 </div>
             </div>
 
+            <!-- Modal para Alterar Status -->
+            <div class="modal fade" id="modalStatus" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Alterar Status da Ordem</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Alterar status da ordem: <strong id="idOrdemStatus"></strong></p>
+                            <p>Status atual: <span id="statusAtual" class="badge"></span></p>
+                            
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="selecionarStatus('Aberta')">
+                                    <div>
+                                        <span class="badge bg-primary me-2"><i class="bi bi-folder-plus"></i></span>
+                                        Aberta
+                                    </div>
+                                    <small class="text-muted">Ordem recém-criada</small>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="selecionarStatus('Em Andamento')">
+                                    <div>
+                                        <span class="badge bg-warning me-2"><i class="bi bi-tools"></i></span>
+                                        Em Andamento
+                                    </div>
+                                    <small class="text-muted">Ordem em execução</small>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="selecionarStatus('Aguardando Peças')">
+                                    <div>
+                                        <span class="badge bg-info me-2"><i class="bi bi-clock-history"></i></span>
+                                        Aguardando Peças
+                                    </div>
+                                    <small class="text-muted">Aguardando peças para continuar</small>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="selecionarStatus('Concluído')">
+                                    <div>
+                                        <span class="badge bg-success me-2"><i class="bi bi-check-circle"></i></span>
+                                        Concluído
+                                    </div>
+                                    <small class="text-muted">Ordem finalizada com sucesso</small>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="selecionarStatus('Cancelada')">
+                                    <div>
+                                        <span class="badge bg-danger me-2"><i class="bi bi-x-circle"></i></span>
+                                        Cancelada
+                                    </div>
+                                    <small class="text-muted">Ordem cancelada</small>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="confirmarStatus">Confirmar Alteração</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
     <script>
         // Alternar exibição do menu
         document.getElementById("menu-toggle").addEventListener("click", function () {
@@ -397,6 +525,15 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
         }
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
+
+        // Submeter formulário quando os filtros forem alterados
+        document.getElementById('filtro_oculto').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+        
+        document.getElementById('statuss').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
 
         // Função para carregar dados da ordem no modal via AJAX
         function carregarDadosOrdem(id) {
@@ -466,7 +603,7 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                             <strong>Cliente:</strong> ${ordem.nome_cliente || ordem.nome_client_ordem || 'Não informado'}
                         </div>
                         <div class="mb-3">
-                            <strong>Técnico:</strong> ${ordem.tecnico || 'Não informado'}
+                            <strong>Técnico:</strong> ${ordem.nome_tecnico || ordem.tecnico || 'Não informado'}
                         </div>
                         <div class="mb-3">
                             <strong>Marca do Aparelho:</strong> ${ordem.marca_aparelho || 'Não informada'}
@@ -474,6 +611,22 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                         <div class="mb-3">
                             <strong>Prioridade:</strong> ${ordem.prioridade || 'Média'}
                         </div>
+                        <div class="mb-3">
+                            <strong>Status:</strong> 
+                    `;
+                    
+                    // Adiciona badge de status
+                    let badge_class = '';
+                    switch(ordem.status) {
+                        case 'Aberta': badge_class = 'bg-primary'; break;
+                        case 'Em Andamento': badge_class = 'bg-warning text-dark'; break;
+                        case 'Aguardando Peças': badge_class = 'bg-info'; break;
+                        case 'Concluído': badge_class = 'bg-success'; break;
+                        case 'Cancelada': badge_class = 'bg-danger'; break;
+                        default: badge_class = 'bg-secondary';
+                    }
+                    
+                    detalhesHTML += `<span class="badge ${badge_class}">${ordem.status || 'Não definido'}</span></div>
                         <div class="mb-3">
                             <strong>Problema:</strong> ${ordem.problema || 'Não informado'}
                         </div>
@@ -499,6 +652,66 @@ if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
                     alert('Erro ao carregar detalhes da ordem: ' + error.message);
                 });
         }
+        
+        // Variáveis globais para controle do status
+        let ordemIdStatus = null;
+        let novoStatusSelecionado = null;
+
+        // Função para abrir o modal de status
+        function abrirModalStatus(id, statusAtual, idOrdem) {
+            ordemIdStatus = id;
+            novoStatusSelecionado = statusAtual;
+            
+            // Atualizar informações no modal
+            document.getElementById('idOrdemStatus').textContent = idOrdem;
+            
+            // Atualizar badge do status atual
+            const statusAtualEl = document.getElementById('statusAtual');
+            let badgeClass = '';
+            switch(statusAtual) {
+                case 'Aberta': badgeClass = 'bg-primary'; break;
+                case 'Em Andamento': badgeClass = 'bg-warning text-dark'; break;
+                case 'Aguardando Peças': badgeClass = 'bg-info'; break;
+                case 'Concluído': badgeClass = 'bg-success'; break;
+                case 'Cancelada': badgeClass = 'bg-danger'; break;
+                default: badgeClass = 'bg-secondary';
+            }
+            statusAtualEl.className = `badge ${badgeClass}`;
+            statusAtualEl.textContent = statusAtual;
+            
+            // Destacar o status atual na lista
+            document.querySelectorAll('.list-group-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(statusAtual)) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Abrir o modal
+            var modal = new bootstrap.Modal(document.getElementById('modalStatus'));
+            modal.show();
+        }
+
+        // Função para selecionar um status
+        function selecionarStatus(status) {
+            novoStatusSelecionado = status;
+            
+            // Destacar o item selecionado
+            document.querySelectorAll('.list-group-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(status)) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Configurar botão de confirmação
+        document.getElementById('confirmarStatus').addEventListener('click', function() {
+            if (novoStatusSelecionado && ordemIdStatus) {
+                // Redirecionar para alterar o status
+                window.location.href = `consultar_ordem.php?id=${ordemIdStatus}&statuss=${encodeURIComponent(novoStatusSelecionado)}`;
+            }
+        });
     </script>
 </body>
 </html>
