@@ -138,7 +138,7 @@ $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
                                             <label for="senha" class="form-label">Senha</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                                <input type="password" class="form-control" id="senha" name="senha" placeholder="Crie uma senha" required>
+                                                <input type="password" class="form-control" id="senha" name="senha" minlength="8" placeholder="Crie uma senha" required>
                                             </div>
                                         </div>
             
