@@ -276,47 +276,6 @@
 
             <!-- Modal para Alterar Cliente -->
             <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Alterar Cliente</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form method="POST" action="alterar_cliente.php">
-                            <div class="modal-body">
-                                <input type="hidden" id="id_cliente" name="id_cliente">
-                                
-                                <div class="mb-3">
-                                    <label for="nome_cliente" class="form-label">Nome do Cliente</label>
-                                    <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="cpf_cnpj" class="form-label">CPF/CNPJ</label>
-                                    <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" required>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="telefone" class="form-label">Telefone</label>
-                                    <input type="text" class="form-control" id="telefone" name="telefone">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">E-mail</label>
-                                    <input type="email" class="form-control" id="email" name="email">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="alterar_cliente" class="btn btn-primary">Salvar Alterações</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal para Alterar Cliente -->
-            <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -394,6 +353,24 @@
                             </div>
                         </form>
                     </div>
+                </div>
+            </div>
+
+            <!-- Modal para Detalhes do Cliente -->
+            <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Detalhes do Cliente</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="detalhesCliente">
+                            <!-- Conteúdo será preenchido via JavaScript -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+                        </div>
                 </div>
             </div>
 
@@ -534,95 +511,95 @@
         }
 
         // Função para mostrar detalhes do cliente
-function mostrarDetalhesCliente(id) {
-    // Busca os dados completos do cliente
-    fetch('buscar_dados_completos_cliente.php?id=' + id)
-        .then(response => response.json())
-        .then(cliente => {
-            if (cliente.erro) {
-                alert(cliente.erro);
-                return;
-            }
+        function mostrarDetalhesCliente(id) {
+            // Busca os dados completos do cliente
+            fetch('buscar_dados_completos_cliente.php?id=' + id)
+                .then(response => response.json())
+                .then(cliente => {
+                    if (cliente.erro) {
+                        alert(cliente.erro);
+                        return;
+                    }
 
-            let detalhesHTML = `
-                <div class="mb-3">
-                    <strong>ID:</strong> ${cliente.id_cliente}
-                </div>
-                <div class="mb-3">
-                    <strong>Nome:</strong> ${cliente.nome_cliente}
-                </div>
-                <div class="mb-3">
-                    <strong>CPF/CNPJ:</strong> ${cliente.cpf_cnpj}
-                </div>
-                <div class="mb-3">
-                    <strong>Endereço:</strong> ${cliente.endereco || 'Não informado'}
-                </div>
-                <div class="mb-3">
-                    <strong>Bairro:</strong> ${cliente.bairro || 'Não informado'}
-                </div>
-                <div class="mb-3">
-                    <strong>CEP:</strong> ${cliente.cep || 'Não informado'}
-                </div>
-                <div class="mb-3">
-                    <strong>Cidade:</strong> ${cliente.cidade || 'Não informada'}
-                </div>
-                <div class="mb-3">
-                    <strong>Estado:</strong> ${cliente.estado || 'Não informado'}
-                </div>
-                <div class="mb-3">
-                    <strong>Telefone:</strong> ${cliente.telefone || 'Não informado'}
-                </div>
-                <div class="mb-3">
-                    <strong>E-mail:</strong> ${cliente.email || 'Não informado'}
-                </div>
-            `;
+                    let detalhesHTML = `
+                        <div class="mb-3">
+                            <strong>ID:</strong> ${cliente.id_cliente}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Nome:</strong> ${cliente.nome_cliente}
+                        </div>
+                        <div class="mb-3">
+                            <strong>CPF/CNPJ:</strong> ${cliente.cpf_cnpj}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Endereço:</strong> ${cliente.endereco || 'Não informado'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Bairro:</strong> ${cliente.bairro || 'Não informado'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>CEP:</strong> ${cliente.cep || 'Não informado'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Cidade:</strong> ${cliente.cidade || 'Não informada'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Estado:</strong> ${cliente.estado || 'Não informado'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Telefone:</strong> ${cliente.telefone || 'Não informado'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>E-mail:</strong> ${cliente.email || 'Não informado'}
+                        </div>
+                    `;
 
-            // Adiciona informações de inatividade se disponíveis
-            if (cliente.status === 'Inativo') {
-                let tempoInativo = '';
-                if (cliente.data_inatividade) {
-                    const dataInatividade = new Date(cliente.data_inatividade);
-                    const agora = new Date();
-                    const diffTime = Math.abs(agora - dataInatividade);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    tempoInativo = `${diffDays} dia(s)`;
-                }
+                    // Adiciona informações de inatividade se disponíveis
+                    if (cliente.status === 'Inativo') {
+                        let tempoInativo = '';
+                        if (cliente.data_inatividade) {
+                            const dataInatividade = new Date(cliente.data_inatividade);
+                            const agora = new Date();
+                            const diffTime = Math.abs(agora - dataInatividade);
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            tempoInativo = `${diffDays} dia(s)`;
+                        }
 
-                detalhesHTML += `
-                    <div class="mb-3">
-                        <strong>Status:</strong> 
-                        <span class="badge bg-danger">Inativo</span>
-                    </div>
-                    <div class="mb-3">
-                        <strong>Data de Inativação:</strong> ${cliente.data_inatividade || 'Não informada'}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Tempo Inativo:</strong> ${tempoInativo || 'Não calculado'}
-                    </div>
-                    <div class="mb-3">
-                        <strong>Observações:</strong> ${cliente.observacao_inatividade || 'Nenhuma observação'}
-                    </div>
-                `;
-            } else {
-                detalhesHTML += `
-                    <div class="mb-3">
-                        <strong>Status:</strong> 
-                        <span class="badge bg-success">Ativo</span>
-                    </div>
-                `;
-            }
+                        detalhesHTML += `
+                            <div class="mb-3">
+                                <strong>Status:</strong> 
+                                <span class="badge bg-danger">Inativo</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Data de Inativação:</strong> ${cliente.data_inatividade || 'Não informada'}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Tempo Inativo:</strong> ${tempoInativo || 'Não calculado'}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Observações:</strong> ${cliente.observacao_inatividade || 'Nenhuma observação'}
+                            </div>
+                        `;
+                    } else {
+                        detalhesHTML += `
+                            <div class="mb-3">
+                                <strong>Status:</strong> 
+                                <span class="badge bg-success">Ativo</span>
+                            </div>
+                        `;
+                    }
 
-            document.getElementById('detalhesCliente').innerHTML = detalhesHTML;
-            
-            // Abre o modal
-            var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
-            modal.show();
-        })
-        .catch(error => {
-            alert('Erro ao carregar dados do cliente');
-            console.error('Erro:', error);
-        });
-}
+                    document.getElementById('detalhesCliente').innerHTML = detalhesHTML;
+                    
+                    // Abre o modal
+                    var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+                    modal.show();
+                })
+                .catch(error => {
+                    alert('Erro ao carregar dados do cliente');
+                    console.error('Erro:', error);
+                });
+        }
 
         // Submeter formulário quando os filtros forem alterados
         document.getElementById('status').addEventListener('change', function() {
