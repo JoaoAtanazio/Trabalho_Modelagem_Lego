@@ -23,63 +23,73 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $valor_total = $_POST['valor_total'];
     $metodo_pag = $_POST['metodo_pag'];
 
-    try {
-        $sql = "INSERT INTO nova_ordem(id_funcionario,nome_client_ordem,tecnico,marca_aparelho,tempo_uso,problema,prioridade,observacao,dt_recebimento,valor_total,metodo_pag) 
-                VALUES (:id_funcionario,:nome_client_ordem,:tecnico,:marca_aparelho,:tempo_uso,:problema,:prioridade,:observacao,:dt_recebimento,:valor_total,:metodo_pag)";
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id_funcionario', $id_funcionario, PDO::PARAM_INT);
-        $stmt->bindParam(':nome_client_ordem', $nome_client_ordem, PDO::PARAM_STR);
-        $stmt->bindParam(':tecnico', $tecnico, PDO::PARAM_STR);
-        $stmt->bindParam(':marca_aparelho', $marca_aparelho, PDO::PARAM_STR);
-        $stmt->bindParam(':tempo_uso', $tempo_uso, PDO::PARAM_STR);
-        $stmt->bindParam(':problema', $problema, PDO::PARAM_STR);
-        $stmt->bindParam(':prioridade', $prioridade);
-        $stmt->bindParam(':observacao', $observacao, PDO::PARAM_STR);
-        $stmt->bindParam(':dt_recebimento', $dt_recebimento);
-        $stmt->bindParam(':valor_total', $valor_total);
-        $stmt->bindParam(':metodo_pag', $metodo_pag);
+    // Verificar se o cliente existe no banco de dados
+    $sql_verificar_cliente = "SELECT id_cliente FROM cliente WHERE nome_cliente = :nome_cliente AND status = 'Ativo'";
+    $stmt_verificar = $pdo->prepare($sql_verificar_cliente);
+    $stmt_verificar->bindParam(':nome_cliente', $nome_client_ordem, PDO::PARAM_STR);
+    $stmt_verificar->execute();
+    
+    if ($stmt_verificar->rowCount() == 0) {
+        echo "<script>alert('Erro: Cliente não encontrado no sistema! Selecione um cliente válido da lista.');</script>";
+    } else {
+        try {
+            $sql = "INSERT INTO nova_ordem(id_funcionario,nome_client_ordem,tecnico,marca_aparelho,tempo_uso,problema,prioridade,observacao,dt_recebimento,valor_total,metodo_pag) 
+                    VALUES (:id_funcionario,:nome_client_ordem,:tecnico,:marca_aparelho,:tempo_uso,:problema,:prioridade,:observacao,:dt_recebimento,:valor_total,:metodo_pag)";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':id_funcionario', $id_funcionario, PDO::PARAM_INT);
+            $stmt->bindParam(':nome_client_ordem', $nome_client_ordem, PDO::PARAM_STR);
+            $stmt->bindParam(':tecnico', $tecnico, PDO::PARAM_STR);
+            $stmt->bindParam(':marca_aparelho', $marca_aparelho, PDO::PARAM_STR);
+            $stmt->bindParam(':tempo_uso', $tempo_uso, PDO::PARAM_STR);
+            $stmt->bindParam(':problema', $problema, PDO::PARAM_STR);
+            $stmt->bindParam(':prioridade', $prioridade);
+            $stmt->bindParam(':observacao', $observacao, PDO::PARAM_STR);
+            $stmt->bindParam(':dt_recebimento', $dt_recebimento);
+            $stmt->bindParam(':valor_total', $valor_total);
+            $stmt->bindParam(':metodo_pag', $metodo_pag);
 
-        if ($stmt->execute()) {
-            // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
-            $id_nova_ordem = $pdo->lastInsertId();
-            
-            // Incluir informações na ação
-            $acao = "Abertura de Ordem de serviço: " . $nome_client_ordem . " (" . $tecnico . ")";
-            
-            // Registrar o log
-            if (function_exists('registrarLog')) {
-                registrarLog($_SESSION['id_usuario'], $acao, "ordem", $id_nova_ordem);
+            if ($stmt->execute()) {
+                // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+                $id_nova_ordem = $pdo->lastInsertId();
+                
+                // Incluir informações na ação
+                $acao = "Abertura de Ordem de serviço: " . $nome_client_ordem . " (" . $tecnico . ")";
+                
+                // Registrar o log
+                if (function_exists('registrarLog')) {
+                    registrarLog($_SESSION['id_usuario'], $acao, "ordem", $id_nova_ordem);
+                } else {
+                    error_log("Função registrarLog não encontrada! Ação: " . $acao);
+                }
+                
+                echo "<script>
+                    alert('Ordem cadastrada com sucesso!');
+                    window.location.href = 'cadastro_cliente.php';
+                </script>";
             } else {
-                error_log("Função registrarLog não encontrada! Ação: " . $acao);
+                echo "<script>alert('Erro ao cadastrar ordem!');</script>";
             }
-            
-            echo "<script>
-                alert('Ordem cadastrada com sucesso!');
-                window.location.href = 'cadastro_cliente.php';
-            </script>";
-        } else {
-            echo "<script>alert('Erro ao cadastrar ordem!');</script>";
-        }
-    } catch (PDOException $e) {
-        if ($e->getCode() == 23000) {
-            echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
-        } else {
-            echo "<script>alert('Erro ao cadastrar ordem: " . addslashes($e->getMessage()) . "');</script>";
-            error_log("Erro PDO: " . $e->getMessage());
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000) {
+                echo "<script>alert('Erro: CPF/CNPJ já cadastrado no sistema!');</script>";
+            } else {
+                echo "<script>alert('Erro ao cadastrar ordem: " . addslashes($e->getMessage()) . "');</script>";
+                error_log("Erro PDO: " . $e->getMessage());
+            }
         }
     }
 }
 
-    // Buscar clientes para exibição (se necessário)
-    $sql_ordem = "SELECT * FROM nova_ordem";
-    $stmt_ordem = $pdo->query($sql_ordem);
-    $clientes = $stmt_ordem->fetchAll(PDO::FETCH_ASSOC);
+// Buscar clientes ativos para o autocomplete
+$sql_clientes = "SELECT nome_cliente FROM cliente WHERE status = 'Ativo' ORDER BY nome_cliente";
+$stmt_clientes = $pdo->query($sql_clientes);
+$nomes_clientes = $stmt_clientes->fetchAll(PDO::FETCH_COLUMN);
 
-    // Buscar técnicos do banco
-    $sql_tecnicos = "SELECT id_usuario, nome_usuario FROM usuario WHERE id_perfil = 4 AND status = 'ativo' ORDER BY nome_usuario";
-    $stmt_tecnicos = $pdo->query($sql_tecnicos);
-    $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
+// Buscar técnicos do banco
+$sql_tecnicos = "SELECT id_usuario, nome_usuario FROM usuario WHERE id_perfil = 4 AND status = 'ativo' ORDER BY nome_usuario";
+$stmt_tecnicos = $pdo->query($sql_tecnicos);
+$tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -94,6 +104,23 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .ui-menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .ui-menu-item:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
@@ -123,10 +150,25 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                     <h5 class="mb-0"><i class="bi bi-tools me-2"></i>Nova Ordem de Serviço</h5>
                                 </div>
                                 <div class="card-body p-3">
-                                    <form action="nova_ordem.php" method="POST">
+                                    <form action="nova_ordem.php" method="POST" id="formOrdem">
+                                        <!-- Nome do Cliente com Autocomplete -->
+                                        <div class="mb-3">
+                                            <label for="cliente" class="form-label">Nome do Cliente *</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                                <input type="text" class="form-control" name="cliente" id="nome_cliente_ordem" 
+                                                       placeholder="Digite o nome do cliente (use seta ↓ para selecionar)" required
+                                                       autocomplete="off">
+                                            </div>
+                                            <small class="text-muted">Selecione um cliente já cadastrado no sistema</small>
+                                            <div id="clienteError" class="text-danger small mt-1" style="display: none;">
+                                                Cliente não encontrado. Selecione um cliente da lista.
+                                            </div>
+                                        </div>
+            
                                         <!-- Técnico -->
-                                        <div class="mb-2">
-                                            <label for="tecnico" class="form-label">Técnico</label>
+                                        <div class="mb-3">
+                                            <label for="tecnico" class="form-label">Técnico *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person-gear"></i></span>
                                                 <select class="form-select" id="tecnico" name="tecnico" required>
@@ -140,18 +182,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             </div>
                                         </div>
             
-                                        <!-- Nome do Cliente -->
-                                        <div class="mb-2">
-                                            <label for="cliente" class="form-label">Nome do Cliente</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                <input type="text" class="form-control" name="cliente" id="nome_cliente_ordem" placeholder="Digite o nome do cliente" required>
-                                            </div>
-                                        </div>
-            
                                         <!-- Marca do Aparelho -->
-                                        <div class="mb-2">
-                                            <label for="marca" class="form-label">Marca do Aparelho</label>
+                                        <div class="mb-3">
+                                            <label for="marca" class="form-label">Marca do Aparelho *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-device-ssd"></i></span>
                                                 <input type="text" class="form-control" id="marca_aparelho" name="marca_aparelho" placeholder="Digite a marca do aparelho" required>
@@ -159,8 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                         </div>
             
                                         <!-- Tempo de Uso -->
-                                        <div class="mb-2">
-                                            <label for="tempo_uso" class="form-label">Tempo de Uso</label>
+                                        <div class="mb-3">
+                                            <label for="tempo_uso" class="form-label">Tempo de Uso *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
                                                 <input type="text" class="form-control" id="tempo_uso" name="tempo_uso" placeholder="Ex: 2 anos, 6 meses" required>
@@ -168,8 +201,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                         </div>
             
                                         <!-- Problema -->
-                                        <div class="mb-2">
-                                            <label for="problema" class="form-label">Problema</label>
+                                        <div class="mb-3">
+                                            <label for="problema" class="form-label">Problema *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-exclamation-triangle"></i></span>
                                                 <textarea class="form-control" id="problema" name="problema" placeholder="Descreva o problema relatado" rows="2" required></textarea>
@@ -177,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                         </div>
             
                                         <!-- Observação -->
-                                        <div class="mb-2">
+                                        <div class="mb-3">
                                             <label for="observacao" class="form-label">Observação</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-chat-left-text"></i></span>
@@ -186,18 +219,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                         </div>
             
                                         <!-- Data de Recebimento -->
-                                        <div class="mb-2">
-                                            <label for="data_recebimento" class="form-label">Data de Recebimento</label>
+                                        <div class="mb-3">
+                                            <label for="data_recebimento" class="form-label">Data de Recebimento *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
-                                                <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento"  maxlength="11" required>
+                                                <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento" maxlength="11" required>
                                             </div>
                                         </div>
-
             
                                         <!-- Prioridade do Conserto -->
                                         <div class="mb-3">
-                                            <label for="prioridade" class="form-label">Prioridade do Conserto</label>
+                                            <label for="prioridade" class="form-label">Prioridade do Conserto *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-arrow-up-right-circle"></i></span>
                                                 <select class="form-select" id="prioridade" name="prioridade" required>
@@ -210,8 +242,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                         </div>
 
                                         <!-- Valor da Ordem -->
-                                        <div class="mb-2">
-                                            <label for="valor_total" class="form-label">Valor Total</label>
+                                        <div class="mb-3">
+                                            <label for="valor_total" class="form-label">Valor Total *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
                                                 <input type="text" class="form-control" id="valor_total" name="valor_total" placeholder="R$ 0,00" required>
@@ -219,9 +251,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="prioridade" class="form-label">Forma de Pagamento</label>
+                                            <label for="forma_pagamento" class="form-label">Forma de Pagamento *</label>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-arrow-up-right-circle"></i></span>
+                                                <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
                                                 <select class="form-select" id="forma_pagamento" name="forma_pagamento" required>
                                                     <option value="" selected disabled>Selecione o método de pagamento</option>
                                                     <option value="pix">Pix</option>
@@ -251,6 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     </div>
                 </div>
             </div>
+
     <script>
         // Alternar exibição do menu
         document.getElementById("menu-toggle").addEventListener("click", function () {
@@ -263,12 +296,54 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             document.getElementById('liveClock').textContent = timeString;
         }
 
-        function selecionarTecnico() {
-            document.getElementById('id_perfil')
-        }
-
         setInterval(updateClock, 1000);
         updateClock(); // Inicializa imediatamente
+
+        // Dados dos clientes para autocomplete
+        const clientes = <?php echo json_encode($nomes_clientes); ?>;
+
+        // Configurar autocomplete
+        $(function() {
+            $("#nome_cliente_ordem").autocomplete({
+                source: function(request, response) {
+                    // Filtrar clientes que começam com o texto digitado
+                    var results = $.ui.autocomplete.filter(clientes, request.term);
+                    response(results.slice(0, 10)); // Limitar a 10 resultados
+                },
+                minLength: 1,
+                delay: 100,
+                select: function(event, ui) {
+                    // Quando um cliente é selecionado, esconder mensagem de erro
+                    $("#clienteError").hide();
+                }
+            });
+        });
+
+        // Validar se o cliente existe antes de enviar o formulário
+        document.getElementById('formOrdem').addEventListener('submit', function(e) {
+            const clienteInput = document.getElementById('nome_cliente_ordem');
+            const clienteValue = clienteInput.value.trim();
+            
+            // Verificar se o valor digitado está na lista de clientes
+            if (clienteValue && !clientes.includes(clienteValue)) {
+                e.preventDefault();
+                $("#clienteError").show();
+                clienteInput.focus();
+                
+                // Rolando até o campo com erro
+                clienteInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+
+        // Esconder mensagem de erro quando o usuário começar a digitar
+        document.getElementById('nome_cliente_ordem').addEventListener('input', function() {
+            $("#clienteError").hide();
+        });
+
+        // Máscara para o campo de valor
+        $(document).ready(function(){
+            $('#valor_total').mask('000.000.000.000.000,00', {reverse: true});
+        });
     </script>
 
 </body>
