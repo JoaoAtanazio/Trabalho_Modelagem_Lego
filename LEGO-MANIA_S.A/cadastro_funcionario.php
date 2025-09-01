@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     // Validar CPF (11 dígitos) ou CNPJ (14 dígitos)
     if (strlen($cpf_funcionario) != 11 && strlen($cpf_funcionario) != 14) {
-        echo "<script>alert('CPF/CNPJ inválido! Deve ter 11 ou 14 dígitos.');</script>";
+        echo "<script>alert('CPF/CNPJ inválido! Deve ter 11 ou 14 dígitos.');window.history.back();</script>";
         exit();
     }
 
@@ -245,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                         <div class="mb-2">
                                             <label for="nascimento" class="form-label">Data de Nascimento</label>
                                             <div class="input-group input-group-sm">
-                                                <input type="number" placeholder="dd/mm/yyyy" class="form-control" id="nascimento" name="nascimento" maxlength = "8" required>
+                                                <input type="date" placeholder="dd/mm/yyyy" class="form-control" id="nascimento" name="nascimento" maxlength = "8" required>
                                             </div>
                                         </div>
             

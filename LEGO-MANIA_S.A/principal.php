@@ -235,7 +235,7 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
           <div class="card h-100">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
               <h5 class="card-title mb-0">Últimas Ordens de Serviço</h5>
-              <a href="nova_ordem_servico.php" class="btn btn-sm btn-primary">Nova OS</a>
+              <a href="nova_ordem.php" class="btn btn-sm btn-primary">Nova OS</a>
             </div>
             <div class="card-body p-0">
               <?php if(!empty($ultimas_ordens)): ?>
@@ -296,19 +296,19 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
             <div class="card-body">
               <div class="row">
                 <div class="col-md-3 col-6 mb-3">
-                  <a href="nova_ordem_servico.php" class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3">
+                  <a href="nova_ordem.php" class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3">
                     <i class="bi bi-plus-circle display-6 mb-2"></i>
                     <span>Nova OS</span>
                   </a>
                 </div>
                 <div class="col-md-3 col-6 mb-3">
-                  <a href="gestao_clientes.php" class="btn btn-outline-success w-100 d-flex flex-column align-items-center py-3">
+                  <a href="gestao_cliente.php" class="btn btn-outline-success w-100 d-flex flex-column align-items-center py-3">
                     <i class="bi bi-people display-6 mb-2"></i>
                     <span>Clientes</span>
                   </a>
                 </div>
                 <div class="col-md-3 col-6 mb-3">
-                  <a href="gestao_ordens.php" class="btn btn-outline-info w-100 d-flex flex-column align-items-center py-3">
+                  <a href="consultar_ordem.php" class="btn btn-outline-info w-100 d-flex flex-column align-items-center py-3">
                     <i class="bi bi-clipboard-data display-6 mb-2"></i>
                     <span>Ordens</span>
                   </a>
