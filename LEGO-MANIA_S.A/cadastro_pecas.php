@@ -36,6 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // ID do usuário que está cadastrando (para log)
     $id_usuario_cadastrante = $_SESSION['id_usuario'];
 
+    // Validar CPF (11 dígitos) ou CNPJ (14 dígitos)
+    if ($preco <= 0) {
+        echo "<script>alert('Preço deve ser maior ou igual a zero.');window.history.back();</script>";
+        exit();
+    }
+
     // Validações básicas
     if (empty($nome_peca) || empty($quantidade) || empty($id_fornecedor) || empty($preco)) {
         echo "<script>alert('Preencha todos os campos obrigatórios!');</script>";

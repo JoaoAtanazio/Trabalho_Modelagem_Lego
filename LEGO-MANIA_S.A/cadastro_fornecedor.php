@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     // Validar CPF (11 dígitos) ou CNPJ (14 dígitos)
     if (strlen($cpf_cnpj) != 11 && strlen($cpf_cnpj) != 14) {
-        echo "<script>alert('CPF/CNPJ inválido! Deve ter 11 ou 14 dígitos.');</script>";
+        echo "<script>alert('CPF/CNPJ inválido! Deve ter 11 ou 14 dígitos.');window.history.back();</script>";
         exit();
     }
 
@@ -180,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="endereco" class="form-label">Endereço:</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite seu endereço">
+                                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite seu endereço" required>
                                             </div>
                                         </div>
                             
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                                 <label for="bairro" class="form-label">Bairro:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                                                    <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Digite seu bairro">
+                                                    <input type="text" class="form-control" id="bairro" name="bairro" placeholder="Digite seu bairro" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
                                                     <input type="text" class="form-control" id="cep" name="cep" placeholder="00000-000">
-                                                    <button class="btn btn-outline-secondary" type="button" id="buscarCep" name="buscarCep">
+                                                    <button class="btn btn-outline-secondary" type="button" id="buscarCep" name="buscarCep" required>
                                                         <i class="bi bi-search"></i> Buscar
                                                     </button>
                                                 </div>
@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                                 <label for="cidade" class="form-label">Cidade:</label>
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-text"><i class="bi bi-building"></i></span>
-                                                    <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite sua cidade">
+                                                    <input type="text" class="form-control" id="cidade" name="cidade" placeholder="Digite sua cidade" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
