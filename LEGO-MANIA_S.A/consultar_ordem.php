@@ -265,6 +265,7 @@
                                                 <th><center>Problema</center></th>
                                                 <th><center>Data</center></th>
                                                 <th><center>Valor (R$)</center></th>
+                                                <th><center>Prioridade</center></th>
                                                 <th><center>Status</center></th>
                                                 <th class="text-center">Ações</th>
                                             </tr>
@@ -278,6 +279,7 @@
                                                     <td><center><?= htmlspecialchars(substr($ordem['problema'], 0, 30)) ?>...</center></td>
                                                     <td><center><?= htmlspecialchars($ordem['dt_recebimento']) ?></center></td>
                                                     <td><center>R$ <?= number_format($ordem['valor_total'], 2, ',', '.') ?></center></td>
+                                                    <td><center><?= htmlspecialchars($ordem['prioridade']) ?></center></td>
                                                     <td>
                                                         <center>
                                                             <?php 
