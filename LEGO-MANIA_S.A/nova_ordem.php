@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $prioridade = $_POST['prioridade'];
     $observacao = $_POST['observacao'];
     $dt_recebimento = $_POST['dt_recebimento'];
-    $valor_total = $_POST['valor_total'];
+    $valor_total = str_replace(['.', ','], ['', '.'], $_POST['valor_total']);
+    $valor_total = floatval($valor_total);
     $metodo_pag = $_POST['metodo_pag'];
 
     // Verificar se o cliente existe no banco de dados
@@ -133,6 +134,8 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
             <nav class="navbar navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
                     <button class="btn btn-dark" id="menu-toggle"><i class="bi bi-list"></i></button>
+                    <!-- Botão voltar -->
+                    <button class="btn btn-outline-dark" style="position: absolute; margin-left: 60px;" onclick="history.back()">Voltar</button>
                     <span class="navbar-brand mb-0 h1">
                         <small class="text-muted">Horário atual:</small>
                         <span id="liveClock" class="badge bg-secondary"></span>
@@ -234,9 +237,9 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
                                                 <span class="input-group-text"><i class="bi bi-arrow-up-right-circle"></i></span>
                                                 <select class="form-select" id="prioridade" name="prioridade" required>
                                                     <option value="" selected disabled>Selecione a prioridade</option>
-                                                    <option value="baixa">Baixa</option>
-                                                    <option value="media">Média</option>
-                                                    <option value="alta">Alta</option>
+                                                    <option value="Baixa">Baixa</option>
+                                                    <option value="Média">Média</option>
+                                                    <option value="Alta">Alta</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -342,7 +345,7 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
 
         // Máscara para o campo de valor
         $(document).ready(function(){
-            $('#valor_total').mask('000.000.000.000.000,00', {reverse: true});
+            $('#valor_total').mask('#.##0,00', {reverse: true});
         });
     </script>
 

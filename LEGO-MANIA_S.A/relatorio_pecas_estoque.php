@@ -76,9 +76,10 @@ function estoqueStatus($rawQtde): array {
     <script src="js/ExportaRelatorios.js"></script>
 </head>
 <body class="bg-light">
-    <div class="d-flex vh-100 bg-light;">
+    <div class="d-flex vh-100 bg-light">
          <!-- Sidebar -->
        <?php exibirMenu(); ?>
+
 
         <!-- Conteúdo principal -->
         <div class="flex-grow-1 d-flex flex-column" style="margin-left:250px; padding:20px;">
@@ -86,6 +87,8 @@ function estoqueStatus($rawQtde): array {
             <nav class="navbar navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
                     <button class="btn btn-dark" id="menu-toggle"><i class="bi bi-list"></i></button>
+                    <!-- Botão voltar -->
+                    <button class="btn btn-outline-dark" style="position: absolute; margin-left: 60px;" onclick="history.back()">Voltar</button>
                     <span class="navbar-brand mb-0 h1">
                         <small class="text-muted">Horário atual:</small>
                         <span id="liveClock" class="badge bg-secondary"></span>
@@ -128,13 +131,13 @@ function estoqueStatus($rawQtde): array {
         }
 
         #sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh; /* altura total da tela */
-    width: 250px;  /* ajuste para o tamanho da sua sidebar */
-    background-color: #f8f9fa; /* cor de fundo */
-}
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh; /* altura total da tela */
+            width: 250px;  /* ajuste para o tamanho da sua sidebar */
+            background-color: #f8f9fa; /* cor de fundo */
+        }
     </style>
 </head>
 <body>

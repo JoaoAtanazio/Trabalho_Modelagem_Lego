@@ -16,13 +16,18 @@ if (!isset($pdo) || $pdo === null) {
 
 // Buscar ordens em aberto ao carregar a página
 try {
-    $sql_abertas = "SELECT no.*, c.nome_cliente, c.cpf_cnpj, c.telefone, c.email,
-                    f.nome_funcionario as tecnico_nome
-                    FROM nova_ordem no 
-                    LEFT JOIN cliente c ON no.id_cliente = c.id_cliente 
-                    LEFT JOIN funcionario f ON no.tecnico = f.id_funcionario
-                    WHERE no.status_ordem IN ('Aberta', 'Em Andamento', 'Aguardando Peças')
-                    ORDER BY no.id_ordem DESC";
+    // Modificar a consulta SQL para usar nome_client_ordem quando id_cliente for NULL
+    $sql_abertas = "SELECT no.*, 
+        COALESCE(c.nome_cliente, no.nome_client_ordem) as nome_cliente,
+        COALESCE(c.cpf_cnpj, 'Não informado') as cpf_cnpj,
+        COALESCE(c.telefone, 'Não informado') as telefone,
+        COALESCE(c.email, 'Não informado') as email,
+        f.nome_funcionario as tecnico_nome
+        FROM nova_ordem no 
+        LEFT JOIN cliente c ON no.id_cliente = c.id_cliente 
+        LEFT JOIN funcionario f ON no.tecnico = f.id_funcionario
+        WHERE no.status_ordem IN ('Aberta', 'Em Andamento', 'Aguardando Peças')
+        ORDER BY no.id_ordem DESC";
     $stmt_abertas = $pdo->query($sql_abertas);
     
     if ($stmt_abertas && $stmt_abertas->rowCount() > 0) {
@@ -168,6 +173,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
             background-color: #e7f1ff;
             color: #0c63e4;
         }
+        .scrollable-list {
+        max-height: 400px;
+        overflow-y: auto;
+        }
+
+        #filtro-ordens {
+            border-radius: 0.25rem;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -180,7 +193,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
             <!-- Header -->
             <nav class="navbar navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
-                    <button class="btn btn-dark" id="menu-toggle"><i class="bi bi-list"></i></button>
+                    <!-- Botão voltar -->
+                    <button class="btn btn-outline-dark" style="position: absolute; margin-left: 60px;" onclick="history.back()">Voltar</button>
                     <span class="navbar-brand mb-0 h1">
                         <small class="text-muted">Horário atual:</small>
                         <span id="liveClock" class="badge bg-secondary"></span>
@@ -212,14 +226,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
                             <div class="card shadow-sm">
                                 <div class="card-header bg-info text-white py-2 d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0"><i class="bi bi-list-check me-2"></i>Ordens em Aberto</h6>
-                                    <span class="badge bg-light text-dark"><?php echo count($ordens_abertas); ?></span>
+                                    <span class="badge bg-light text-dark" id="contador-ordens"><?php echo count($ordens_abertas); ?></span>
                                 </div>
                                 <div class="card-body p-0">
-                                    <?php if (!empty($ordens_abertas)): ?>
-                                        <div class="scrollable-list">
+                                    <!-- Campo de pesquisa em tempo real -->
+                                    <div class="p-2 border-bottom">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <input type="text" class="form-control" id="filtro-ordens" placeholder="Filtrar por nome do cliente...">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="scrollable-list">
+                                        <?php if (!empty($ordens_abertas)): ?>
                                             <?php foreach ($ordens_abertas as $ordem): ?>
-                                                <div class="ordem-item p-3 border-bottom" 
-                                                     onclick="document.getElementById('numero_ordem').value = '<?php echo $ordem['id_ordem']; ?>'; document.forms[0].submit();">
+                                                <div class="ordem-item p-3 border-bottom" data-nome="<?php echo htmlspecialchars(strtolower($ordem['nome_cliente'])); ?>">
                                                     <div class="d-flex justify-content-between align-items-start">
                                                         <div class="flex-grow-1">
                                                             <div class="d-flex justify-content-between align-items-center">
@@ -254,17 +275,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
                                                     </div>
                                                 </div>
                                             <?php endforeach; ?>
-                                        </div>
-                                    <?php else: ?>
-                                        <div class="p-3 text-center text-muted">
-                                            <i class="bi bi-inbox display-4"></i>
-                                            <p class="mt-2">Nenhuma ordem em aberto</p>
-                                        </div>
-                                    <?php endif; ?>
+                                        <?php else: ?>
+                                            <div class="p-3 text-center text-muted">
+                                                <i class="bi bi-inbox display-4"></i>
+                                                <p class="mt-2">Nenhuma ordem em aberto</p>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
                         <!-- Formulário de Pagamento -->
                         <div class="col-md-7">
                             <div class="card shadow-sm">
@@ -503,6 +523,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
         // Focar no campo de busca ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('numero_ordem').focus();
+        });
+
+        // Filtro em tempo real para ordens em aberto
+        document.getElementById('filtro-ordens').addEventListener('input', function() {
+            const filtro = this.value.toLowerCase();
+            const ordens = document.querySelectorAll('.ordem-item');
+            let contador = 0;
+            
+            ordens.forEach(ordem => {
+                const nomeCliente = ordem.getAttribute('data-nome');
+                if (nomeCliente.includes(filtro)) {
+                    ordem.style.display = 'block';
+                    contador++;
+                } else {
+                    ordem.style.display = 'none';
+                }
+            });
+            
+            // Atualizar contador
+            document.getElementById('contador-ordens').textContent = contador;
         });
     </script>
 </body>

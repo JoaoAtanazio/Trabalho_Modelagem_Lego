@@ -24,7 +24,8 @@ require_once 'php/permissoes.php';
             <!-- Header -->
             <nav class="navbar navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
-                    <button class="btn btn-dark" id="menu-toggle"><i class="bi bi-list"></i></button>
+                    <!-- Botão voltar -->
+                    <button class="btn btn-outline-dark" style="position: absolute; margin-left: 60px;" onclick="history.back()">Voltar</button>
                     <span class="navbar-brand mb-0 h1">
                         <small class="text-muted">Horário atual:</small>
                         <span id="liveClock" class="badge bg-secondary"></span>
@@ -37,7 +38,7 @@ require_once 'php/permissoes.php';
                 <div class="container-fluid">
                     <!-- Cabeçalho -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Relatório de Despesas e Lucros - Ordens de Serviço</h5>
+                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Relatório de Lucros - Ordens de Serviço</h5>
                         <div>
                             <button class="btn btn-outline-secondary btn-sm me-2">
                                 <i class="bi bi-download me-1"></i> Exportar
