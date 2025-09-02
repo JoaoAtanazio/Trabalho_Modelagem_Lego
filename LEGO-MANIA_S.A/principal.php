@@ -54,9 +54,11 @@ $stats['receita_30dias'] = $stmtReceita->fetch(PDO::FETCH_ASSOC)['receita'];
 // Buscar últimas ordens de serviço 
 $sqlUltimasOrdens = "SELECT no.id_ordem, no.nome_client_ordem, no.marca_aparelho, 
                     no.problema, no.prioridade, no.dt_recebimento, 
-                    f.nome_funcionario as tecnico, no.status_ordem as status
+                 -- f.nome_funcionario,
+                    u.nome_usuario as tecnico, no.status_ordem as status
                     FROM nova_ordem no
-                    LEFT JOIN funcionario f ON no.tecnico = f.id_funcionario
+                 -- LEFT JOIN funcionario f ON no.tecnico = f.id_funcionario
+                    LEFT JOIN usuario u ON no.tecnico = u.id_usuario
                     ORDER BY no.dt_recebimento DESC LIMIT 5";
 $stmtUltimasOrdens = $pdo->query($sqlUltimasOrdens);
 $ultimas_ordens = $stmtUltimasOrdens->fetchAll(PDO::FETCH_ASSOC);
