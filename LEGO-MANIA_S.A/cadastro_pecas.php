@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $descricao_peca = trim($_POST['descricao_peca']);
     $data_cadastro = $_POST['data_cadastro'];
     $quantidade = (int)$_POST['quantidade'];
+    $quantidade_minima = isset($_POST['quantidade_minima']) ? (int)$_POST['quantidade_minima'] : 0;
     $tipo = trim($_POST['tipo']);
     $id_fornecedor = (int)$_POST['id_fornecedor'];
     
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 
     // Validações básicas
-    if (empty($nome_peca) || empty($quantidade) || empty($id_fornecedor) || empty($preco)) {
+    if (empty($nome_peca) || empty($quantidade) || empty($quantidade_minima) || empty($id_fornecedor) || empty($preco)) {
         echo "<script>alert('Preencha todos os campos obrigatórios!');</script>";
         exit();
     }
@@ -60,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
 
         // Prepara a query SQL para inserir na tabela peca_estoque
-        $sql = "INSERT INTO peca_estoque (id_funcionario, id_fornecedor, nome_peca, descricao_peca, qtde, tipo, preco, dt_cadastro) 
-                VALUES (:id_funcionario, :id_fornecedor, :nome_peca, :descricao_peca, :qtde, :tipo, :preco, :dt_cadastro)";
+        $sql = "INSERT INTO peca_estoque (id_funcionario, id_fornecedor, nome_peca, descricao_peca, qtde, qtde_minima, tipo, preco, dt_cadastro) 
+                VALUES (:id_funcionario, :id_fornecedor, :nome_peca, :descricao_peca, :qtde, :qtde_minima, :tipo, :preco, :dt_cadastro)";
         
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id_funcionario', $id_usuario_cadastrante, PDO::PARAM_INT);
@@ -69,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $stmt->bindParam(':nome_peca', $nome_peca, PDO::PARAM_STR);
         $stmt->bindParam(':descricao_peca', $descricao_peca, PDO::PARAM_STR);
         $stmt->bindParam(':qtde', $quantidade, PDO::PARAM_INT);
+        $stmt->bindParam(':qtde_minima', $quantidade_minima, PDO::PARAM_INT);
         $stmt->bindParam(':tipo', $tipo, PDO::PARAM_STR);
         $stmt->bindParam(':preco', $preco, PDO::PARAM_STR);
         $stmt->bindParam(':dt_cadastro', $data_cadastro, PDO::PARAM_STR);
@@ -178,6 +180,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-123"></i></span>
                                                 <input type="number" class="form-control" id="quantidade" name="quantidade" placeholder="0" min="0" required>
+                                            </div>
+                                        </div>
+
+                                        <!-- Quantidade Mínima -->
+                                        <div class="mb-2">
+                                            <label for="quantidade_minima" class="form-label">Quantidade Mínima *</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                                <input type="number" class="form-control" id="quantidade_minima" name="quantidade_minima" placeholder="0" min="0" required>
                                             </div>
                                         </div>
             

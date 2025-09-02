@@ -1,7 +1,62 @@
 <?php
 session_start();
 require_once 'php/permissoes.php';
+require_once 'conexao.php';
+
+if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=2 && $_SESSION['perfil']!=4){
+    echo "<script> alert ('Acesso negado!');window.location.href='principal.php';</script>";
+    exit();
+}
+
+$peca_estoque = [];
+
+if($_SERVER["REQUEST_METHOD"]== "POST" && !empty($_POST['busca'])){
+    $busca = trim($_POST['busca']);
+
+    // VERIFICA SE A BUSCA É UM numero OU UM nome
+    if(is_numeric($busca)){
+        $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,qtde_minima,tipo,dt_cadastro,preco,nome_funcionario,nome_fornecedor
+                from peca_estoque
+                join funcionario on peca_estoque.id_funcionario = funcionario.id_funcionario
+                join fornecedor on peca_estoque.id_fornecedor = fornecedor.id_fornecedor
+                where id_peca_est = :busca";
+        $stmt=$pdo->prepare($sql);
+        $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
+    }else{
+        $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,qtde_minima,tipo,dt_cadastro,preco,nome_funcionario,nome_fornecedor
+                from peca_estoque
+                join funcionario on peca_estoque.id_funcionario = funcionario.id_funcionario
+                join fornecedor on peca_estoque.id_fornecedor = fornecedor.id_fornecedor
+                where nome_peca = :busca_nome";
+
+        $stmt=$pdo->prepare($sql);
+        $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
+    }
+} else{
+    $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,qtde_minima,tipo,dt_cadastro,preco, nome_funcionario,nome_fornecedor
+          from peca_estoque
+          join funcionario on peca_estoque.id_funcionario = funcionario.id_funcionario
+          join fornecedor on peca_estoque.id_fornecedor = fornecedor.id_fornecedor";
+
+    $stmt=$pdo->prepare($sql);
+}
+$stmt->execute();
+$pecas_estoque = $stmt->fetchALL(PDO::FETCH_ASSOC);
+
+function estoqueStatus($rawQtde): array {
+    // normaliza: garante número inteiro (remove qualquer coisa que não seja dígito ou sinal)
+    $qtde = (int)preg_replace('/[^\d\-]/', '', (string)$rawQtde);
+
+    if ($qtde < 5) {
+        return ['Baixo', 'bg-danger'];
+    } elseif ($qtde <= 10) { // 5..10
+        return ['Médio', 'bg-warning text-dark'];
+    } else { // > 10
+        return ['Alto', 'bg-success'];
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -271,6 +326,7 @@ require_once 'php/permissoes.php';
             <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
+                    <?php if(!empty($pecas_estoque)):?>
                         <table class="table table-hover table-striped mb-0" id="report-table">
                             <thead class="table-dark">
                                 <tr>
@@ -283,84 +339,20 @@ require_once 'php/permissoes.php';
                                     <th scope="col">Status</th>
                                     <th scope="col" class="text-center">Ações</th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">PÇ-001</th>
-                                    <td>Placa de Vídeo RTX 3060</td>
-                                    <td>Hardware</td>
-                                    <td>TecnoParts</td>
-                                    <td>8</td>
-                                    <td>5</td>
-                                    <td><span class="badge bg-success">Disponível</span></td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary btn-action" title="Alterar" onclick="editarPeca('PÇ-001')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger btn-action" title="Excluir" onclick="excluirPeca('PÇ-001')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">PÇ-002</th>
-                                    <td>Processador Intel i7-10700K</td>
-                                    <td>Hardware</td>
-                                    <td>Chipset Brasil</td>
-                                    <td>3</td>
-                                    <td>4</td>
-                                    <td><span class="badge bg-warning text-dark">Estoque Baixo</span></td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary btn-action" title="Alterar" onclick="editarPeca('PÇ-002')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger btn-action" title="Excluir" onclick="excluirPeca('PÇ-002')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">PÇ-003</th>
-                                    <td>Fonte 600W 80 Plus</td>
-                                    <td>Hardware</td>
-                                    <td>EnergPower</td>
-                                    <td>0</td>
-                                    <td>3</td>
-                                    <td><span class="badge bg-danger">Esgotado</span></td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary btn-action" title="Alterar" onclick="editarPeca('PÇ-003')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger btn-action" title="Excluir" onclick="excluirPeca('PÇ-003')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">PÇ-004</th>
-                                    <td>Cabo HDMI 2.0</td>
-                                    <td>Cabos</td>
-                                    <td>ConectaMais</td>
-                                    <td>25</td>
-                                    <td>10</td>
-                                    <td><span class="badge bg-success">Disponível</span></td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary btn-action" title="Alterar" onclick="editarPeca('PÇ-004')">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger btn-action" title="Excluir" onclick="excluirPeca('PÇ-004')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">PÇ-005</th>
-                                    <td>Teclado Mecânico</td>
-                                    <td>Periféricos</td>
-                                    <td>TypeTech</td>
-                                    <td>2</td>
-                                    <td>5</td>
-                                    <td><span class="badge bg-warning text-dark">Estoque Baixo</span></td>
+                                </thead>
+                                <tbody>
+                                <?php foreach($pecas_estoque as $peca_estoque): ?>
+                                 <tr data-id="<?= $peca_estoque['id_peca_est'] ?>">>
+                                 <td><?= htmlspecialchars($peca_estoque['id_peca_est']) ?></td>
+                                 <td><?= htmlspecialchars($peca_estoque['nome_peca']) ?></td>
+                                 <td><?= htmlspecialchars($peca_estoque['tipo']) ?></td>
+                                 <td><?= htmlspecialchars($peca_estoque['nome_fornecedor']) ?></td>
+                                 <td><?= htmlspecialchars($peca_estoque['qtde']) ?></td>
+                                 <td><?= htmlspecialchars($peca_estoque['qtde_minima']) ?></td>
+                                 <td><?php
+                                         [$txt, $cls] = estoqueStatus($peca_estoque['qtde'] ?? 0);
+                                         echo "<span class='badge $cls'>$txt</span>";?>
+                                 </td>
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-outline-primary btn-action" title="Alterar" onclick="editarPeca('PÇ-005')">
                                             <i class="bi bi-pencil"></i>
@@ -369,9 +361,12 @@ require_once 'php/permissoes.php';
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
-                                </tr>
                             </tbody>
+                            <?php endforeach;?>  
                         </table>
+                        <?php else:?>
+                        <p> Nenhuma peça encontrada.</p>
+                        <?php endif;?>
                     </div>
                 </div>
                 <div class="card-footer py-2">
@@ -409,44 +404,45 @@ require_once 'php/permissoes.php';
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Adicionar Nova Peça</h5>
+                    <h5 class="modal-title">Editar peça</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formPeca">
+                    <form action="processa_alteracao_peca.php" id="formPeca">
                         <div class="mb-3">
-                            <label for="nomePeca" class="form-label">Nome da Peça</label>
-                            <input type="text" class="form-control" id="nomePeca" required>
+                            <input type="hidden" name="id_peca_est" value="<?=htmlspecialchars($peca_estoque['id_peca_est'])?>">
+                            <label for="nome_peca" class="form-label">Nome da Peça</label>
+                            <input type="text" class="form-control" id="nome_peca" name="nome_peca" required>
                         </div>
                         <div class="mb-3">
-                            <label for="categoriaPeca" class="form-label">Categoria</label>
-                            <select class="form-select" id="categoriaPeca" required>
+                            <label for="tipo" class="form-label">Categoria</label>
+                            <select class="form-select" id="tipo" name="tipo" required>
                                 <option value="" selected disabled>Selecione uma categoria</option>
-                                <option value="hardware">Hardware</option>
-                                <option value="perifericos">Periféricos</option>
-                                <option value="cabos">Cabos</option>
-                                <option value="outros">Outros</option>
+                                <option value="hardware" <?=$peca_estoque['tipo'] == 1 ? 'select':''?>>Hardware</option>
+                                <option value="perifericos" <?=$peca_estoque['tipo'] == 2 ? 'select':''?>>Periféricos</option>
+                                <option value="cabos" <?=$peca_estoque['tipo'] == 3 ? 'select':''?>>Cabos</option>
+                                <option value="outros" <?=$peca_estoque['tipo'] == 4 ? 'select':''?>>Outros</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="fornecedorPeca" class="form-label">Fornecedor</label>
-                            <input type="text" class="form-control" id="fornecedorPeca">
+                            <label for="fornecedor" class="form-label">Fornecedor</label>
+                            <input type="text" class="form-control" id="fornecedor" name="fornecedor">
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="estoqueAtual" class="form-label">Estoque Atual</label>
-                                <input type="number" class="form-control" id="estoqueAtual" min="0" required>
+                                <label for="quantidade" class="form-label">Estoque Atual</label>
+                                <input type="number" class="form-control" id="quantidade" name="quantidade" min="0" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="estoqueMinimo" class="form-label">Estoque Mínimo</label>
-                                <input type="number" class="form-control" id="estoqueMinimo" min="0" required>
+                                <label for="quantidade_minima" class="form-label">Estoque Mínimo</label>
+                                <input type="number" class="form-control" id="quantidade_minima" name="quantidade_minima" min="0" required>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="btnSalvarPeca">Salvar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSalvarPeca" onclick="window.location.href='relatorio_pecas_estoque.php'">Salvar</button>
                 </div>
             </div>
         </div>
@@ -477,13 +473,19 @@ require_once 'php/permissoes.php';
 
         // Funções para integração futura com PHP
         function editarPeca(id) {
-            console.log('Editando peça:', id);
-            // Abrir modal de edição
-            const modal = new bootstrap.Modal(document.getElementById('modalAdicionarPeca'));
-            document.getElementById('modalAdicionarPeca').querySelector('.modal-title').textContent = 'Editar Peça';
-            // Futuramente: carregar dados da peça via AJAX/PHP
-            modal.show();
-        }
+    const row = document.querySelector(`tr[data-id='${id}']`);
+    const modal = new bootstrap.Modal(document.getElementById('modalAdicionarPeca'));
+
+    document.getElementById('nome_peca').value = row.querySelector('.nome').textContent.trim();
+    document.getElementById('tipo').value = row.querySelector('.tipo').textContent.trim();
+    document.getElementById('fornecedor').value = row.querySelector('.fornecedor').textContent.trim();
+    document.getElementById('quantidade').value = row.querySelector('.qtde').textContent.trim();
+    document.getElementById('quantidade_minima').value = row.querySelector('.qtde_minima').textContent.trim();
+
+    document.querySelector('#formPeca input[name="id_peca"]').value = id;
+
+    modal.show();
+}
         
         function excluirPeca(id) {
             console.log('Excluindo peça:', id);
@@ -526,11 +528,11 @@ require_once 'php/permissoes.php';
         document.getElementById('btnSalvarPeca').addEventListener('click', function() {
             const nome = document.getElementById('nomePeca').value;
             const categoria = document.getElementById('categoriaPeca').value;
-            const fornecedor = document.getElementById('fornecedorPeca').value;
+            const peca$peca_estoque = document.getElementById('peca$peca_estoquePeca').value;
             const estoqueAtual = document.getElementById('estoqueAtual').value;
             const estoqueMinimo = document.getElementById('estoqueMinimo').value;
             
-            console.log('Salvando peça:', { nome, categoria, fornecedor, estoqueAtual, estoqueMinimo });
+            console.log('Salvando peça:', { nome, categoria, peca$peca_estoque, estoqueAtual, estoqueMinimo });
             
             // Futuramente: enviar dados para backend PHP
             // Após sucesso, fechar o modal

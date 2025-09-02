@@ -79,10 +79,62 @@ const { jsPDF } = window.jspdf;
     },
     tableWidth: "auto",  // ajusta ao conteúdo
     columnStyles: {
-        0: { cellWidth: 20 },  // Peça
+        0: { cellWidth: 40 },  // Peça
         1: { cellWidth: 30 },  // Categoria
         2: { cellWidth: 25 },  // Estoque
         3: { cellWidth: 23 },  // Fornecedor
+    }
+});
+
+const tablepecas = document.getElementById('report-table');
+            const datas = [];
+            
+            // Cabeçalhos da tabela
+            const header = [];
+            for (let i = 0; i < tablepecas.rows[0].cells.length; i++) {
+                header[i] = tablepecas.rows[0].cells[i].textContent;
+            }
+            datas.push(header);
+            
+            // Dados da tabela
+            for (let i = 1; i < tablepecas.rows.length; i++) {
+                const row = [];
+                for (let j = 0; j < tablepecas.rows[i].cells.length; j++) {
+                    row[j] = tablepecas.rows[i].cells[j].textContent;
+                }
+                datas.push(row);
+            }
+            let finalY = doc.lastAutoTable.finalY + 15;
+            // Adicionar tabela ao PDF
+            doc.autoTable({
+    startY: finalY,
+    head: [[
+        "ID",
+        "Nome",
+        "Categoria",
+        "Fornecedor",
+        "Estoque Atual",
+        "Estoque Mínimo",
+        "Status",
+    ]],
+    body: datas.slice(1), // já está pronto no seu código
+    theme: 'grid',
+    styles: { fontSize: 9, cellPadding: 3, overflow: 'linebreak' },
+    headStyles: {
+        fillColor: [0, 0, 0],
+        textColor: [255, 255, 255],
+        halign: 'center',
+        borderColor: [0, 0, 0],
+    },
+    tableWidth: "auto",  // ajusta ao conteúdo
+    columnStyles: {
+        0: { cellWidth: 20 },  // ID
+        1: { cellWidth: 30 },  // Nome
+        2: { cellWidth: 20 },  // Categoria
+        3: { cellWidth: 27 },  // Fornecedor
+        4: { cellWidth: 20 },  // Estoque Atual
+        5: { cellWidth: 20 },  // Estoque Mínimo
+        6: { cellWidth: 23 },  // Status
     }
 });
             
