@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $prioridade = $_POST['prioridade'];
     $observacao = $_POST['observacao'];
     $dt_recebimento = $_POST['dt_recebimento'];
-    $valor_total = $_POST['valor_total'];
+    $valor_total = str_replace(['.', ','], ['', '.'], $_POST['valor_total']);
+    $valor_total = floatval($valor_total);
     $metodo_pag = $_POST['metodo_pag'];
 
     // Verificar se o cliente existe no banco de dados
@@ -344,7 +345,7 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
 
         // Máscara para o campo de valor
         $(document).ready(function(){
-            $('#valor_total').mask('000.000.000.000.000,00', {reverse: true});
+            $('#valor_total').mask('#.##0,00', {reverse: true});
         });
     </script>
 
