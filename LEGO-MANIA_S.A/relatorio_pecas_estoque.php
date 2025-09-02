@@ -8,12 +8,16 @@ require_once 'php/permissoes.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Cadastro - Lego Mania</title>
-    <script src="javascript/validacoes_form.js"></script>
+    <script src="js/validacoes_form.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="js/ExportaRelatorios.js"></script>
 </head>
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
@@ -85,7 +89,7 @@ require_once 'php/permissoes.php';
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0"><i class="bi bi-boxes me-2"></i>Relatório de Peças no Estoque</h5>
                 <div>
-                    <button class="btn btn-outline-secondary btn-sm me-2">
+                    <button class="btn btn-outline-secondary btn-sm me-2" onclick="generatePDF()">
                         <i class="bi bi-download me-1"></i> Exportar
                     </button>
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalAdicionarPeca">
@@ -168,7 +172,7 @@ require_once 'php/permissoes.php';
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover mb-0">
+                                <table class="table table-hover mb-0" id="ultimas-pecas-table">
                                     <thead>
                                         <tr>
                                             <th>Peça</th>
@@ -267,7 +271,7 @@ require_once 'php/permissoes.php';
             <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped mb-0" id="tabelaPecas">
+                        <table class="table table-hover table-striped mb-0" id="report-table">
                             <thead class="table-dark">
                                 <tr>
                                     <th scope="col">ID</th>

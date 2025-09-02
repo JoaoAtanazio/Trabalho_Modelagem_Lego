@@ -50,8 +50,8 @@ campos = [
 inputs = [
     "Bateria Lg Bl-41a1h 3,8v 2020mah",
     "Uma bateria potente de 2020mah que é compatível apenas com smartphones Samsung, bateria possui coloração cinza",
-    "8" 
-    "R$149,99"
+    "8",
+    "R$149,99",
 ]
 
 for campo,texto in zip(campos, inputs):
@@ -75,7 +75,7 @@ fornecedor_input = driver.find_element(By. ID, "id_fornecedor")
 select = Select(fornecedor_input)
 time.sleep(0.5)
 
-select.select_by_value("3")
+select.select_by_value("2")
 time.sleep(1.5)
 
 submit_button = driver.find_element(By. ID, "botaocadastro")
