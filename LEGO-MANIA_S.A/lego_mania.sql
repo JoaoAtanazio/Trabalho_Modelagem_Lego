@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 01/09/2025 às 20:41
+-- Tempo de geração: 02/09/2025 às 21:14
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -157,7 +157,9 @@ INSERT INTO `log_acao` (`id_log`, `id_usuario`, `id_perfil`, `acao`, `tabela_afe
 (17, 12, 1, '12', 'Cadastro de cliente: Roger (Daltongaypkrl@gmail.com)', 0, '2025-08-29 18:49:59'),
 (18, 12, 1, '12', 'Abertura de Ordem de serviço: heitor (33)', 0, '2025-08-29 19:06:10'),
 (19, 12, 1, '12', 'Abertura de Ordem de serviço: heitor (33)', 0, '2025-08-29 19:07:13'),
-(20, 12, 1, '12', 'Cadastro de peça: asdasdad (Quantidade: 2342, Preço: R$ 34.234,00)', 0, '2025-09-01 18:36:55');
+(20, 12, 1, '12', 'Cadastro de peça: asdasdad (Quantidade: 2342, Preço: R$ 34.234,00)', 0, '2025-09-01 18:36:55'),
+(21, 12, 1, '12', 'Cadastro de peça: Bateria Lg Bl-41a1h 3,8v 2020mah (Quantidade: 8, Preço: R$ 149,99)', 0, '2025-09-01 20:01:19'),
+(22, 12, 1, '12', 'Cadastro de peça: Bateria Iphone (Quantidade: 5, Preço: R$ 80,00)', 0, '2025-09-02 19:08:00');
 
 -- --------------------------------------------------------
 
@@ -233,15 +235,18 @@ CREATE TABLE `peca_estoque` (
   `qtde` int(11) NOT NULL,
   `tipo` varchar(50) DEFAULT NULL,
   `dt_cadastro` date DEFAULT NULL,
-  `preco` int(11) DEFAULT NULL
+  `preco` int(11) DEFAULT NULL,
+  `qtde_minima` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `peca_estoque`
 --
 
-INSERT INTO `peca_estoque` (`id_peca_est`, `id_funcionario`, `id_fornecedor`, `nome_peca`, `descricao_peca`, `qtde`, `tipo`, `dt_cadastro`, `preco`) VALUES
-(1, 12, 2, 'asdasdad', '234234234', 2342, 'plastico', '2025-09-01', 34234);
+INSERT INTO `peca_estoque` (`id_peca_est`, `id_funcionario`, `id_fornecedor`, `nome_peca`, `descricao_peca`, `qtde`, `tipo`, `dt_cadastro`, `preco`, `qtde_minima`) VALUES
+(1, 12, 2, 'Placa Mãe ', 'Memória interna: 128 GB.\r\nConta com 4 GB de memória RAM.', 15, 'Hardware', '2025-09-01', 175, 3),
+(2, 12, 2, 'Bateria Lg Bl-41a1h 3,8v 2020mah', 'Uma bateria potente de 2020mah que é compatível apenas com smartphones Samsung, bateria possui coloração cinza', 5, 'eletronico', '2025-09-01', 150, 3),
+(5, 12, 2, 'Bateria Iphone', 'Bateria', 5, 'eletronico', '2025-09-02', 80, 2);
 
 -- --------------------------------------------------------
 
@@ -400,7 +405,7 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `log_acao`
 --
 ALTER TABLE `log_acao`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de tabela `motivo_inatividade`
@@ -418,7 +423,7 @@ ALTER TABLE `nova_ordem`
 -- AUTO_INCREMENT de tabela `peca_estoque`
 --
 ALTER TABLE `peca_estoque`
-  MODIFY `id_peca_est` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_peca_est` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `perfil`
