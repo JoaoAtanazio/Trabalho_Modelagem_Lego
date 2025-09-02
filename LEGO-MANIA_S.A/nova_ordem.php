@@ -237,9 +237,9 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
                                                 <span class="input-group-text"><i class="bi bi-arrow-up-right-circle"></i></span>
                                                 <select class="form-select" id="prioridade" name="prioridade" required>
                                                     <option value="" selected disabled>Selecione a prioridade</option>
-                                                    <option value="baixa">Baixa</option>
-                                                    <option value="media">Média</option>
-                                                    <option value="alta">Alta</option>
+                                                    <option value="Baixa">Baixa</option>
+                                                    <option value="Média">Média</option>
+                                                    <option value="Alta">Alta</option>
                                                 </select>
                                             </div>
                                         </div>
