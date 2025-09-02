@@ -127,6 +127,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <nav class="navbar navbar-light bg-white shadow-sm">
                 <div class="container-fluid">
                     <button class="btn btn-dark" id="menu-toggle"><i class="bi bi-list"></i></button>
+                    <!-- Botão voltar -->
+                    <button class="btn btn-outline-dark" style="position: absolute; margin-left: 60px;" onclick="history.back()">Voltar</button>
                     <span class="navbar-brand mb-0 h1">
                         <small class="text-muted">Horário atual:</small>
                         <span id="liveClock" class="badge bg-secondary"></span>
