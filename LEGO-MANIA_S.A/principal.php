@@ -105,9 +105,9 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
         .status-badge {
             font-size: 0.75rem;
         }
-        .status-aberta { background-color: #6c757d; }
-        .status-andamento { background-color: #17a2b8; }
-        .status-aguardando { background-color: #fd7e14; }
+        .status-aberta { background-color: #176efd; }
+        .status-andamento { background-color: #ffc107; }
+        .status-aguardando { background-color: #0dcaf0; }
         .status-concluido { background-color: #28a745; }
         .status-cancelada { background-color: #dc3545; }
     </style>
@@ -244,13 +244,31 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
             <div class="card-body p-0">
               <?php if(!empty($ultimas_ordens)): ?>
                 <div class="list-group list-group-flush">
-                  <?php foreach($ultimas_ordens as $ordem): 
+                  <?php foreach($ultimas_ordens as $ordem):
                     $priority_class = '';
                     if($ordem['prioridade'] == 'Alta') $priority_class = 'priority-high';
                     elseif($ordem['prioridade'] == 'Média') $priority_class = 'priority-medium';
                     else $priority_class = 'priority-low';
                     
-                    $status_class = 'status-' . strtolower(str_replace(' ', '-', $ordem['status']));
+                    switch ($ordem['status']) {
+                      case 'Aberta':
+                          $status_class = 'status-aberta';
+                          break;
+                      case 'Em Andamento':
+                          $status_class = 'status-andamento';
+                          break;
+                      case 'Aguardando Peças':
+                          $status_class = 'status-aguardando';
+                          break;
+                      case 'Concluído':
+                          $status_class = 'status-concluido';
+                          break;
+                      case 'Cancelada':
+                          $status_class = 'status-cancelada';
+                          break;
+                      default:
+                          $status_class = 'bg-secondary'; // fallback
+                  }
                   ?>
                     <div class="list-group-item <?php echo $priority_class; ?>">
                       <div class="d-flex w-100 justify-content-between">
@@ -362,9 +380,9 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
             <?php echo $ordens_status['cancelada']; ?>
           ],
           backgroundColor: [
-            '#6c757d', // Aberta
-            '#17a2b8', // Em Andamento
-            '#fd7e14', // Aguardando Peças
+            '#176efd', // Aberta
+            '#ffc107', // Em Andamento
+            '#0dcaf0', // Aguardando Peças
             '#28a745', // Concluído
             '#dc3545'  // Cancelada
           ],
