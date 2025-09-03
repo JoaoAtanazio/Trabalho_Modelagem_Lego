@@ -7,7 +7,14 @@ if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=2 && $_SESSION['perfil']!=4){
     echo "<script> alert ('Acesso negado!');window.location.href='principal.php';</script>";
     exit();
 }
-
+$fornecedores = [];
+try {
+    $stmt = $pdo->prepare("SELECT id_fornecedor, nome_fornecedor FROM fornecedor WHERE status = 'Ativo' ORDER BY nome_fornecedor");
+    $stmt->execute();
+    $fornecedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Erro ao buscar fornecedores: " . $e->getMessage());
+};
 $peca_estoque = [];
 
 if($_SERVER["REQUEST_METHOD"]== "POST" && !empty($_POST['busca'])){
@@ -15,7 +22,7 @@ if($_SERVER["REQUEST_METHOD"]== "POST" && !empty($_POST['busca'])){
 
     // VERIFICA SE A BUSCA É UM numero OU UM nome
     if(is_numeric($busca)){
-        $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,qtde_minima,tipo,dt_cadastro,preco,nome_funcionario,nome_fornecedor
+        $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,preco,qtde_minima,descricao_peca,tipo,dt_cadastro,preco,nome_funcionario,nome_fornecedor
                 from peca_estoque
                 join funcionario on peca_estoque.id_funcionario = funcionario.id_funcionario
                 join fornecedor on peca_estoque.id_fornecedor = fornecedor.id_fornecedor
@@ -23,17 +30,17 @@ if($_SERVER["REQUEST_METHOD"]== "POST" && !empty($_POST['busca'])){
         $stmt=$pdo->prepare($sql);
         $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
     }else{
-        $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,qtde_minima,tipo,dt_cadastro,preco,nome_funcionario,nome_fornecedor
+        $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,preco,descricao_peca,qtde_minima,tipo,dt_cadastro,preco,nome_funcionario,nome_fornecedor
                 from peca_estoque
                 join funcionario on peca_estoque.id_funcionario = funcionario.id_funcionario
                 join fornecedor on peca_estoque.id_fornecedor = fornecedor.id_fornecedor
-                where nome_peca = :busca_nome";
+                where nome_peca LIKE :busca_nome";
 
         $stmt=$pdo->prepare($sql);
         $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
     }
 } else{
-    $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,qtde_minima,tipo,dt_cadastro,preco, nome_funcionario,nome_fornecedor
+    $sql="SELECT id_peca_est,nome_peca,descricao_peca,qtde,preco,descricao_peca,qtde_minima,tipo,dt_cadastro,preco, nome_funcionario,nome_fornecedor
           from peca_estoque
           join funcionario on peca_estoque.id_funcionario = funcionario.id_funcionario
           join fornecedor on peca_estoque.id_fornecedor = fornecedor.id_fornecedor";
@@ -55,7 +62,69 @@ function estoqueStatus($rawQtde): array {
         return ['Alto', 'bg-success'];
     }
 }
+
+// Buscar todas as peças do estoque
+$stmtIndicadores = $pdo->prepare("SELECT qtde FROM peca_estoque");
+$stmtIndicadores->execute();
+$pecas = $stmtIndicadores->fetchAll(PDO::FETCH_ASSOC);
+
+$totalPecas = count($pecas);
+$emEstoque = 0;
+$estoqueMedio = 0;
+$estoqueBaixo = 0;
+
+foreach ($pecas as $peca) {
+    $qtde = (int)$peca['qtde'];
+    if ($qtde < 5) {
+        $estoqueBaixo++;
+    } elseif ($qtde <= 10) {
+        $estoqueMedio++;
+    } else {
+        $emEstoque++;
+    }
+}
+$categorias = ['hardware' => 0, 'perifericos' => 0, 'cabos' => 0, 'outros' => 0];
+if (!empty($pecas_estoque)) {
+    foreach ($pecas_estoque as $peca) {
+        $tipo = strtolower($peca['tipo']);
+        if (isset($categorias[$tipo])) {
+            $categorias[$tipo]++;
+        }
+    }
+}
 ?>
+<?php
+// Filtro por categoria
+if (!empty($_POST['categoria'])) {
+    $pecas_estoque = array_filter($pecas_estoque, function($peca) {
+        return $peca['tipo'] == $_POST['categoria'];
+    });
+}
+
+// Filtro por status
+if (!empty($_POST['status'])) {
+    $pecas_estoque = array_filter($pecas_estoque, function($peca) {
+        if ($_POST['status'] == 'baixo') return $peca['qtde'] < 5;
+        if ($_POST['status'] == 'medio') return $peca['qtde'] >= 5 && $peca['qtde'] <= 10;
+        if ($_POST['status'] == 'disponivel') return $peca['qtde'] > 10;
+        return true;
+    });
+}
+
+// Ordenação
+if (!empty($_POST['ordenacao'])) {
+    if ($_POST['ordenacao'] == 'nome_desc') {
+        usort($pecas_estoque, fn($a, $b) => strcmp($b['nome_peca'], $a['nome_peca']));
+    } elseif ($_POST['ordenacao'] == 'nome_asc') {
+        usort($pecas_estoque, fn($a, $b) => strcmp($a['nome_peca'], $b['nome_peca']));
+    } elseif ($_POST['ordenacao'] == 'estoque_desc') {
+        usort($pecas_estoque, fn($a, $b) => $b['qtde'] - $a['qtde']);
+    } elseif ($_POST['ordenacao'] == 'estoque_asc') {
+        usort($pecas_estoque, fn($a, $b) => $a['qtde'] - $b['qtde']);
+    }
+}
+?>
+
 
 
 <!DOCTYPE html>
@@ -74,6 +143,8 @@ function estoqueStatus($rawQtde): array {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="js/ExportaRelatorios.js"></script>
+    <script src="js/Exclusoes.js"></script>
+    <script src="js/oculta.js"></script>
 </head>
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
@@ -150,7 +221,7 @@ function estoqueStatus($rawQtde): array {
                     <button class="btn btn-outline-secondary btn-sm me-2" onclick="generatePDF()">
                         <i class="bi bi-download me-1"></i> Exportar
                     </button>
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalAdicionarPeca">
+                    <button class="btn btn-primary btn-sm" onclick="window.location.href='cadastro_pecas.php'">
                         <i class="bi bi-plus-circle me-1"></i> Nova Peça
                     </button>
                 </div>
@@ -164,9 +235,8 @@ function estoqueStatus($rawQtde): array {
                             <div class="text-primary mb-2">
                                 <i class="bi bi-box-seam fs-1"></i>
                             </div>
-                            <h4 class="card-title">128</h4>
+                            <h3><?= $totalPecas ?></h3>
                             <p class="card-text text-muted">Total de Peças</p>
-                            <span class="badge bg-success">+12%</span>
                         </div>
                     </div>
                 </div>
@@ -176,9 +246,9 @@ function estoqueStatus($rawQtde): array {
                             <div class="text-success mb-2">
                                 <i class="bi bi-check-circle fs-1"></i>
                             </div>
-                            <h4 class="card-title">94</h4>
+                            <h3><?= $emEstoque ?></h3>
+
                             <p class="card-text text-muted">Em Estoque</p>
-                            <span class="badge bg-success">+8%</span>
                         </div>
                     </div>
                 </div>
@@ -188,9 +258,8 @@ function estoqueStatus($rawQtde): array {
                             <div class="text-warning mb-2">
                                 <i class="bi bi-exclamation-triangle fs-1"></i>
                             </div>
-                            <h4 class="card-title">22</h4>
-                            <p class="card-text text-muted">Estoque Baixo</p>
-                            <span class="badge bg-warning text-dark">+15%</span>
+                            <h3><?= $estoqueMedio ?></h3>
+                            <p class="card-text text-muted">Estoque Médio</p>
                         </div>
                     </div>
                 </div>
@@ -200,9 +269,8 @@ function estoqueStatus($rawQtde): array {
                             <div class="text-danger mb-2">
                                 <i class="bi bi-x-circle fs-1"></i>
                             </div>
-                            <h4 class="card-title">12</h4>
-                            <p class="card-text text-muted">Fora de Estoque</p>
-                            <span class="badge bg-danger">+5%</span>
+                            <h3><?= $estoqueBaixo ?></h3>
+                            <p class="card-text text-muted">Estoque Baixo</p>
                         </div>
                     </div>
                 </div>
@@ -240,36 +308,27 @@ function estoqueStatus($rawQtde): array {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Placa de Vídeo RTX 3060</td>
-                                            <td>Hardware</td>
-                                            <td>8</td>
-                                            <td><span class="badge bg-success status-badge">Disponível</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Processador Intel i7-10700K</td>
-                                            <td>Hardware</td>
-                                            <td>3</td>
-                                            <td><span class="badge bg-warning status-badge text-dark">Baixo</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Fonte 600W 80 Plus</td>
-                                            <td>Hardware</td>
-                                            <td>0</td>
-                                            <td><span class="badge bg-danger status-badge">Esgotado</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Cabo HDMI 2.0</td>
-                                            <td>Cabos</td>
-                                            <td>25</td>
-                                            <td><span class="badge bg-success status-badge">Disponível</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Teclado Mecânico</td>
-                                            <td>Periféricos</td>
-                                            <td>2</td>
-                                            <td><span class="badge bg-warning status-badge text-dark">Baixo</span></td>
-                                        </tr>
+                                        <?php
+                                            // Buscar as 5 últimas peças adicionadas
+                                            $stmtUltimas = $pdo->prepare("
+                                                SELECT nome_peca, tipo, qtde, qtde_minima
+                                                FROM peca_estoque
+                                                ORDER BY dt_cadastro DESC
+                                                LIMIT 5
+                                            ");
+                                            $stmtUltimas->execute();
+                                            $ultimasPecas = $stmtUltimas->fetchAll(PDO::FETCH_ASSOC);
+
+                                            foreach ($ultimasPecas as $peca) {
+                                                [$statusTxt, $statusClass] = estoqueStatus($peca['qtde']);
+                                                echo '<tr>';
+                                                echo '<td>' . htmlspecialchars($peca['nome_peca']) . '</td>';
+                                                echo '<td>' . htmlspecialchars($peca['tipo']) . '</td>';
+                                                echo '<td>' . htmlspecialchars($peca['qtde']) . '</td>';
+                                                echo '<td><span class="badge ' . $statusClass . ' status-badge">' . $statusTxt . '</span></td>';
+                                                echo '</tr>';
+                                            }
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -281,46 +340,55 @@ function estoqueStatus($rawQtde): array {
             <!-- Barra de pesquisa e filtros -->
             <div class="card shadow-sm mb-3">
                 <div class="card-body py-2">
+                    <form method="POST" class="row g-2">
                     <div class="row g-2">
                         <div class="col-md-4">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Pesquisar peças..." id="pesquisaPecas">
-                                <button class="btn btn-outline-secondary" type="button" id="btnPesquisarPecas">
-                                    Pesquisar
-                                </button>
+                                <input type="text" class="form-control" placeholder="Pesquisar peças..." name="busca" value="<?= htmlspecialchars($_POST['busca'] ?? '') ?>">
+                                <button class="btn btn-outline-secondary" type="submit">Pesquisar</button>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select form-select-sm" id="filtroCategoria">
+                            <select class="form-select form-select-sm" id="filtroCategoria" name="categoria" onchange="this.form.submit()">>
                                 <option value="" selected>Todas categorias</option>
-                                <option value="hardware">Hardware</option>
-                                <option value="perifericos">Periféricos</option>
-                                <option value="cabos">Cabos</option>
-                                <option value="outros">Outros</option>
+                                <option value="hardware" <?= ($_POST['categoria'] ?? '') == 'hardware' ? 'selected' : '' ?>>Hardware</option>
+                                <option value="perifericos" <?= ($_POST['categoria'] ?? '') == 'perifericos' ? 'selected' : '' ?>>Periféricos</option>
+                                <option value="cabos" <?= ($_POST['categoria'] ?? '') == 'cabos' ? 'selected' : '' ?>>Cabos</option>
+                                <option value="outros" <?= ($_POST['categoria'] ?? '') == 'outros' ? 'selected' : '' ?>>Outros</option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select form-select-sm" id="filtroStatus">
+                            <select class="form-select form-select-sm" id="filtroStatus" name="status" onchange="this.form.submit()">>
                                 <option value="" selected>Todos status</option>
-                                <option value="disponivel">Disponível</option>
-                                <option value="baixo">Estoque Baixo</option>
-                                <option value="esgotado">Esgotado</option>
+                                <option value="disponivel" <?= ($_POST['status'] ?? '') == 'disponivel' ? 'selected' : '' ?>>Disponível</option>
+                                <option value="medio" <?= ($_POST['status'] ?? '') == 'medio' ? 'selected' : '' ?>>Estoque Médio</option>
+                                <option value="baixo" <?= ($_POST['status'] ?? '') == 'baixo' ? 'selected' : '' ?>>Estoque baixo</option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-select form-select-sm" id="ordenacaoPecas">
-                                <option value="nome_asc" selected>Nome (A-Z)</option>
-                                <option value="nome_desc">Nome (Z-A)</option>
-                                <option value="estoque_desc">Maior Estoque</option>
-                                <option value="estoque_asc">Menor Estoque</option>
+                            <select class="form-select form-select-sm" id="ordenacaoPecas" name="ordenacao" onchange="this.form.submit()">>
+                                <option value="nome_asc"<?= ($_POST['ordenacao'] ?? '') == 'nome_asc' ? 'selected' : '' ?>>Nome (A-Z)</option>
+                                <option value="nome_desc" <?= ($_POST['ordenacao'] ?? '') == 'nome_desc' ? 'selected' : '' ?>>Nome (Z-A)</option>
+                                <option value="estoque_desc" <?= ($_POST['ordenacao'] ?? '') == 'estoque_desc' ? 'selected' : '' ?>>Maior Estoque</option>
+                                <option value="estoque_asc" <?= ($_POST['ordenacao'] ?? '') == 'estoque_asc' ? 'selected' : '' ?>>Menor Estoque</option>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-outline-primary btn-sm w-100" id="btnLimparFiltros">
+                            <button class="btn btn-outline-primary btn-sm w-100" id="btnLimparFiltros" type="button" onclick="limparFiltros()">
                                 <i class="bi bi-arrow-clockwise me-1"></i> Limpar
                             </button>
+                            <script>
+                                function limparFiltros() {
+                                    document.querySelector('input[name="busca"]').value = '';
+                                    document.querySelector('select[name="categoria"]').value = '';
+                                    document.querySelector('select[name="status"]').value = '';
+                                    document.querySelector('select[name="ordenacao"]').value = 'nome_asc';
+                                    document.querySelector('form').submit();
+                                }
+                            </script>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -333,9 +401,11 @@ function estoqueStatus($rawQtde): array {
                         <table class="table table-hover table-striped mb-0" id="report-table">
                             <thead class="table-dark">
                                 <tr>
-                                    <th scope="col">ID</th>
+                                    <th scope="col" style="width: 60px;">ID</th>
                                     <th scope="col">Nome</th>
                                     <th scope="col">Categoria</th>
+                                    <th scope="col">Descrição</th>
+                                    <th scope="col">Preço</th>
                                     <th scope="col">Fornecedor</th>
                                     <th scope="col">Estoque Atual</th>
                                     <th scope="col">Estoque Mínimo</th>
@@ -345,10 +415,17 @@ function estoqueStatus($rawQtde): array {
                                 </thead>
                                 <tbody>
                                 <?php foreach($pecas_estoque as $peca_estoque): ?>
-                                 <tr data-id="<?= $peca_estoque['id_peca_est'] ?>">>
+                                 <tr data-id="<?= $peca_estoque['id_peca_est'] ?>">
                                  <td><?= htmlspecialchars($peca_estoque['id_peca_est']) ?></td>
                                  <td><?= htmlspecialchars($peca_estoque['nome_peca']) ?></td>
                                  <td><?= htmlspecialchars($peca_estoque['tipo']) ?></td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="toggleDescricao(this)">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <span class="descricao-texto d-none"><?= htmlspecialchars($peca_estoque['descricao_peca']) ?></span>
+                                    </td>
+                                 <td>R$ <?= number_format($peca_estoque['preco'], 2, ',', '.') ?></td>
                                  <td><?= htmlspecialchars($peca_estoque['nome_fornecedor']) ?></td>
                                  <td><?= htmlspecialchars($peca_estoque['qtde']) ?></td>
                                  <td><?= htmlspecialchars($peca_estoque['qtde_minima']) ?></td>
@@ -357,10 +434,18 @@ function estoqueStatus($rawQtde): array {
                                          echo "<span class='badge $cls'>$txt</span>";?>
                                  </td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary btn-action" title="Alterar" onclick="editarPeca('PÇ-005')">
+                                        <button class="btn btn-sm btn-outline-primary btn-action" title="Alterar"
+                                            onclick="editarPeca(
+                                                <?= $peca_estoque['id_peca_est'] ?>,
+                                                '<?= htmlspecialchars($peca_estoque['nome_peca'], ENT_QUOTES) ?>',
+                                                '<?= htmlspecialchars($peca_estoque['tipo'], ENT_QUOTES) ?>',
+                                                <?= $peca_estoque['id_fornecedor'] ?? 0 ?>,
+                                                <?= $peca_estoque['qtde'] ?>,
+                                                <?= $peca_estoque['qtde_minima'] ?>
+                                            )">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-danger btn-action" title="Excluir" onclick="excluirPeca('PÇ-005')">
+                                        <button class="btn btn-sm btn-outline-danger btn-action" title="Excluir" onclick="excluirPeca(<?= $peca_estoque['id_peca_est'] ?>)">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
@@ -411,9 +496,9 @@ function estoqueStatus($rawQtde): array {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="processa_alteracao_peca.php" id="formPeca">
+                    <form action="processa_alteracao_peca.php" method="POST" id="formPeca">
                         <div class="mb-3">
-                            <input type="hidden" name="id_peca_est" value="<?=htmlspecialchars($peca_estoque['id_peca_est'])?>">
+                            <input type="hidden" name="id_peca_est" value="">
                             <label for="nome_peca" class="form-label">Nome da Peça</label>
                             <input type="text" class="form-control" id="nome_peca" name="nome_peca" required>
                         </div>
@@ -428,8 +513,12 @@ function estoqueStatus($rawQtde): array {
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="fornecedor" class="form-label">Fornecedor</label>
-                            <input type="text" class="form-control" id="fornecedor" name="fornecedor">
+                            <select class="form-select select2-fornecedor" id="id_fornecedor" name="id_fornecedor" required>
+                                <option value="" selected disabled>Selecione um fornecedor</option>
+                                    <?php foreach ($fornecedores as $fornecedor): ?>
+                                        <option value="<?= $fornecedor['id_fornecedor'] ?>"><?= htmlspecialchars($fornecedor['nome_fornecedor']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -441,11 +530,12 @@ function estoqueStatus($rawQtde): array {
                                 <input type="number" class="form-control" id="quantidade_minima" name="quantidade_minima" min="0" required>
                             </div>
                         </div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSalvarPeca">Salvar</button>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="btnSalvarPeca" onclick="window.location.href='relatorio_pecas_estoque.php'">Salvar</button>
+                    
                 </div>
             </div>
         </div>
@@ -455,77 +545,52 @@ function estoqueStatus($rawQtde): array {
     <script>
         // Gráfico de distribuição de categorias
         const ctxCategorias = document.getElementById('graficoCategorias').getContext('2d');
-        new Chart(ctxCategorias, {
-            type: 'doughnut',
-            data: {
-                labels: ['Hardware', 'Periféricos', 'Cabos', 'Outros'],
-                datasets: [{
-                    data: [65, 20, 10, 5],
-                    backgroundColor: ['#0d6efd', '#6f42c1', '#20c997', '#fd7e14']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    }
+    new Chart(ctxCategorias, {
+        type: 'doughnut',
+        data: {
+            labels: ['Hardware', 'Periféricos', 'Cabos', 'Outros'],
+            datasets: [{
+                data: [
+                    <?= $categorias['hardware'] ?>,
+                    <?= $categorias['perifericos'] ?>,
+                    <?= $categorias['cabos'] ?>,
+                    <?= $categorias['outros'] ?>
+                ],
+                backgroundColor: ['#0d6efd', '#6f42c1', '#20c997', '#fd7e14']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
                 }
             }
-        });
+        }
+    });
 
         // Funções para integração futura com PHP
-        function editarPeca(id) {
-    const row = document.querySelector(`tr[data-id='${id}']`);
+       function editarPeca(id, nome, tipo, id_fornecedor, qtde, qtde_minima) {
+    document.getElementById('modalAdicionarPeca').querySelector('.modal-title').textContent = 'Editar Peça';
+    document.querySelector('#formPeca input[name="id_peca_est"]').value = id;
+    document.querySelector('#formPeca input[name="nome_peca"]').value = nome;
+    document.querySelector('#formPeca select[name="tipo"]').value = '';
+    document.querySelector('#formPeca select[name="id_fornecedor"]').value = '';
+    document.querySelector('#formPeca input[name="quantidade"]').value = qtde;
+    document.querySelector('#formPeca input[name="quantidade_minima"]').value = qtde_minima;
     const modal = new bootstrap.Modal(document.getElementById('modalAdicionarPeca'));
-
-    document.getElementById('nome_peca').value = row.querySelector('.nome').textContent.trim();
-    document.getElementById('tipo').value = row.querySelector('.tipo').textContent.trim();
-    document.getElementById('fornecedor').value = row.querySelector('.fornecedor').textContent.trim();
-    document.getElementById('quantidade').value = row.querySelector('.qtde').textContent.trim();
-    document.getElementById('quantidade_minima').value = row.querySelector('.qtde_minima').textContent.trim();
-
-    document.querySelector('#formPeca input[name="id_peca"]').value = id;
-
     modal.show();
 }
-        
-        function excluirPeca(id) {
-            console.log('Excluindo peça:', id);
-            if (confirm('Tem certeza que deseja excluir esta peça?')) {
-                // Futuramente: enviar requisição AJAX para exclusão
-            }
-        }
         
         // Event listeners para filtros
         document.getElementById('btnPesquisarPecas').addEventListener('click', function() {
             const termo = document.getElementById('pesquisaPecas').value;
             console.log('Pesquisando peças por:', termo);
-            aplicarFiltros();
         });
         
-        document.getElementById('btnLimparFiltros').addEventListener('click', function() {
-            document.getElementById('pesquisaPecas').value = '';
-            document.getElementById('filtroCategoria').value = '';
-            document.getElementById('filtroStatus').value = '';
-            document.getElementById('ordenacaoPecas').value = 'nome_asc';
-            aplicarFiltros();
-        });
         
         // Outros event listeners para filtros
-        document.getElementById('filtroCategoria').addEventListener('change', aplicarFiltros);
-        document.getElementById('filtroStatus').addEventListener('change', aplicarFiltros);
-        document.getElementById('ordenacaoPecas').addEventListener('change', aplicarFiltros);
         
-        function aplicarFiltros() {
-            const categoria = document.getElementById('filtroCategoria').value;
-            const status = document.getElementById('filtroStatus').value;
-            const ordem = document.getElementById('ordenacaoPecas').value;
-            const termo = document.getElementById('pesquisaPecas').value;
-            
-            console.log('Aplicando filtros:', { categoria, status, ordem, termo });
-            // Futuramente: enviar requisição para backend PHP com os filtros
-        }
         
         // Event listener para salvar peça
         document.getElementById('btnSalvarPeca').addEventListener('click', function() {

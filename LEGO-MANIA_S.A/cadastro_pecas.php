@@ -201,11 +201,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                                 <span class="input-group-text"><i class="bi bi-tag"></i></span>
                                                 <select class="form-select" id="tipo" name="tipo" required>
                                                     <option value="" selected disabled>Selecione o tipo</option>
-                                                    <option value="eletronico">Eletrônico</option>
-                                                    <option value="mecanico">Mecânico</option>
-                                                    <option value="plastico">Plástico</option>
-                                                    <option value="metal">Metal</option>
-                                                    <option value="outro">Outro</option>
+                                                    <option value="hardware">Hardware</option>
+                                                    <option value="perifericos">Periféricos</option>
+                                                    <option value="cabos">Cabos</option>
+                                                    <option value="outros">Outros</option>
                                                 </select>
                                             </div>
                                         </div>

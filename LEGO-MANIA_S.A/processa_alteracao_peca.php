@@ -12,12 +12,12 @@
         $id_peca = $_POST['id_peca_est'];
         $nome_peca = trim($_POST['nome_peca']);
         $tipo = trim($_POST['tipo']);
-        $fornecedor = trim($_POST['fornecedor']);
+        $fornecedor = trim($_POST['id_fornecedor']);
         $quantidade = (int)$_POST['quantidade'];
         $quantidade_minima = isset($_POST['quantidade_minima']) ? (int)$_POST['quantidade_minima'] : 0;
 // ATUALIZA OS DADOS DO USUÁRIO
 
-        $sql="UPDATE peca_estoque SET nome_peca = :nome_peca,tipo=:tipo,fornecedor=:fornecedor,quantidade=:quantidade,quantidade_minima=:quantidade_minima WHERE id_peca_est = :id";
+        $sql="UPDATE peca_estoque SET nome_peca = :nome_peca,tipo=:tipo,id_fornecedor=:fornecedor,qtde=:quantidade,qtde_minima=:quantidade_minima WHERE id_peca_est = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':nome_peca',$nome_peca);
         $stmt->bindParam(':tipo',$tipo);
