@@ -64,7 +64,7 @@ $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Cadastro - Lego Mania</title>
-    <script src="javascript/validacoes_form.js"></script>
+    <script src="js/validacoes_form.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
@@ -107,7 +107,7 @@ $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
                                             <label for="nome_usuario" class="form-label">Nome</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                <input type="text" class="form-control" id="nome_usuario" name="nome_usuario" placeholder="Digite o nome completo" required>
+                                                <input type="text" class="form-control" id="nome_usuario" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')" name="nome_usuario" placeholder="Digite o nome completo" required>
                                             </div>
                                         </div>
             

@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Cadastro - Lego Mania</title>
-    <script src="javascript/validacoes_form.js"></script>
+    <script src="js/validacoes_form.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="cpf_cnpj" class="form-label">CPF/CNPJ</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-card-checklist"></i></span>
-                                                <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" placeholder="000.000.000-00 ou 00.000.000/0000-00" required>
+                                                <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" oninput="mascaraCPFCNPJ()" placeholder="000.000.000-00 ou 00.000.000/0000-00" required>
                                             </div>
                                             <div class="form-text">Digite apenas números</div>
                                         </div>
@@ -302,35 +302,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             value = value.replace(/(\d)(\d{3}),/g, "$1.$2,");
             e.target.value = 'R$ ' + value;
         });
-
-        // Formatação do campo de CPF/CNPJ
-document.getElementById('cpf_cnpj').addEventListener('input', function(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    
-    // Verifica se é CPF (até 11 dígitos) ou CNPJ (mais de 11 dígitos)
-    if (value.length <= 11) {
-        // Formatação para CPF
-        if (value.length > 9) {
-            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-        } else if (value.length > 6) {
-            value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
-        } else if (value.length > 3) {
-            value = value.replace(/(\d{3})(\d+)/, '$1.$2');
-        }
-    } else {
-        // Formatação para CNPJ (limita a 14 dígitos)
-        if (value.length > 14) value = value.slice(0, 14);
-        
-        if (value.length > 12) {
-            value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-        } else if (value.length > 8) {
-            value = value.replace(/(\d{2})(\d{3})(\d{3})(\d+)/, '$1.$2.$3/$4');
-        } else if (value.length > 5) {
-            value = value.replace(/(\d{2})(\d{3})(\d+)/, '$1.$2.$3');
-        }
-    }
-    e.target.value = value;
-});
 
     // Buscar CEP via API
     document.getElementById('buscarCep').addEventListener('click', function() {
