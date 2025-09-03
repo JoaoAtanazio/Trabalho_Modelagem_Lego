@@ -2,6 +2,13 @@
     session_start();
     require_once 'conexao.php';
     require_once 'php/permissoes.php';
+    require_once 'php/estatisticas.php';
+
+    // Coletar filtros atuais para estatísticas
+    $filtrosEstatisticas = [];
+    if (isset($_GET['status']) && !empty($_GET['status'])) {
+        $filtrosEstatisticas['status'] = $_GET['status'];
+    }
 
     // VERIFICA SE O USUARIO TEM PERMISSÃO DE ADM OU SECRETARIA
     if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=3){
@@ -105,6 +112,18 @@
             echo "<script>alert('Erro ao alterar status do cliente!');</script>";
         }
     }
+
+    // Calcular estatísticas por cidade
+    $cidades = [];
+    foreach($clientes as $cliente) {
+        $cidade = $cliente['cidade'] ?: 'Não informada';
+        if(!isset($cidades[$cidade])) {
+            $cidades[$cidade] = 0;
+        }
+        $cidades[$cidade]++;
+    }
+    arsort($cidades);
+    $totalClientes = count($clientes);
 ?>
 
 <!DOCTYPE html>
@@ -142,11 +161,11 @@
             <!-- Conteúdo - Formulário -->
             <div class="flex-grow-1 p-3" style="overflow-y: auto;">
                 <div class="container-fluid">
-                    <!-- Cabeçalho com título e botão de novo cliente -->
+                    <!-- Cabeçalho com título and botão de novo cliente -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><i class="bi bi-people me-2"></i>Gestão de Clientes</h5>
                         <div>
-                            <!-- Botão de Estatísticas -->
+                            <!-- Botão de Estatísticas - MODIFICADO para funcionar igual ao de usuários -->
                             <button class="btn btn-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalEstatisticas">
                                 <i class="bi bi-graph-up me-1"></i> Estatísticas
                             </button>
@@ -376,7 +395,7 @@
                 </div>
             </div>
 
-            <!-- Modal para Estatísticas -->
+            <!-- Modal para Estatísticas - MODIFICADO para funcionar igual ao de usuários -->
             <div class="modal fade" id="modalEstatisticas" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -401,18 +420,6 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                        // Calcular estatísticas por cidade
-                                                        $cidades = [];
-                                                        
-                                                        foreach($clientes as $cliente) {
-                                                            $cidade = $cliente['cidade'] ?: 'Não informada';
-                                                            if(!isset($cidades[$cidade])) {
-                                                                $cidades[$cidade] = 0;
-                                                            }
-                                                            $cidades[$cidade]++;
-                                                        }
-                                                        
-                                                        arsort($cidades); // Ordenar por quantidade decrescente
                                                         $totalClientes = count($clientes);
                                                         foreach($cidades as $cidade => $quantidade):
                                                             $percentual = $totalClientes > 0 ? round(($quantidade / $totalClientes) * 100, 1) : 0;
