@@ -26,6 +26,7 @@
     $sql = "SELECT no.id_ordem, 
                    no.nome_client_ordem,
                    u.nome_usuario AS nome_tecnico,  
+                   u.id_usuario AS id_tecnico,
                    no.problema, 
                    no.dt_recebimento, 
                    no.valor_total,
@@ -319,7 +320,7 @@
                                                             <i class="bi bi-gear-fill me-1"></i> Status
                                                         </button>
                                                         
-                                                        <button class="btn btn-sm btn-info" onclick="mostrarDetalhesOrdem(<?=htmlspecialchars($ordem['id_ordem'])?>)">
+                                                        <button class="btn btn-sm btn-info" onclick="mostrarDetalhes(<?=htmlspecialchars($ordem['id_ordem'])?>)">
                                                             <i class="bi bi-info-circle"></i> Detalhes
                                                         </button>
                                                     </td>
@@ -441,22 +442,52 @@
             </div>
 
             <!-- Modal para Detalhes da Ordem -->
-            <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Detalhes da Ordem de Serviço</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body" id="detalhesOrdem">
-                            <!-- Conteúdo será preenchido via JavaScript -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                        </div>
+            <div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detalhesModalLabel">Detalhes da Ordem de Serviço</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                <div class="col-md-6">
+                    <p><strong>ID:</strong> <span id="detalhesId"></span></p>
+                    <p><strong>Cliente:</strong> <span id="detalhesCliente"></span></p>
+                    <p><strong>Técnico:</strong> <span id="detalhesTecnico"></span></p>
+                    <p><strong>Data de Recebimento:</strong> <span id="detalhesData"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Valor:</strong> <span id="detalhesValor"></span></p>
+                    <p><strong>Prioridade:</strong> <span id="detalhesPrioridade"></span></p>
+                    <p><strong>Marca:</strong> <span id="detalhesMarca"></span></p>
+                    <p><strong>Status:</strong> <span id="detalhesStatus"></span></p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <p><strong>Problema:</strong></p>
+                    <div class="border p-2 rounded bg-light">
+                        <span id="detalhesProblema"></span>
                     </div>
                 </div>
             </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <p><strong>Observações:</strong></p>
+                    <div class="border p-2 rounded bg-light">
+                        <span id="detalhesObservacao"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
             <!-- Modal para Alterar Status -->
             <div class="modal fade" id="modalStatus" tabindex="-1" aria-hidden="true">
@@ -589,71 +620,49 @@
         }
 
         // Função para mostrar detalhes da ordem
-        function mostrarDetalhesOrdem(id) {
-            // Fazer requisição AJAX para buscar os dados reais
-            fetch('consultar_ordem.php?carregar_ordem=true&id_ordem=' + id)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro ao carregar dados da ordem');
+        function mostrarDetalhes(idOrdem) {
+            // Fazer uma requisição AJAX para buscar os detalhes da ordem
+            fetch(`buscar_detalhes_ordem.php?id=${idOrdem}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
                     }
-                    return response.json();
-                })
-                .then(ordem => {
-                    const detalhesHTML = `
-                        <div class="mb-3">
-                            <strong>ID:</strong> ${ordem.id_ordem}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Cliente:</strong> ${ordem.nome_cliente || ordem.nome_client_ordem || 'Não informado'}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Técnico:</strong> ${ordem.nome_tecnico || ordem.tecnico || 'Não informado'}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Marca do Aparelho:</strong> ${ordem.marca_aparelho || 'Não informada'}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Prioridade:</strong> ${ordem.prioridade || 'Média'}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Status:</strong> 
-                    `;
-                    
-                    // Adiciona badge de status
-                    let badge_class = '';
-                    switch(ordem.status) {
-                        case 'Aberta': badge_class = 'bg-primary'; break;
-                        case 'Em Andamento': badge_class = 'bg-warning text-dark'; break;
-                        case 'Aguardando Peças': badge_class = 'bg-info'; break;
-                        case 'Concluído': badge_class = 'bg-success'; break;
-                        case 'Cancelada': badge_class = 'bg-danger'; break;
-                        default: badge_class = 'bg-secondary';
+            
+                    // Preencher os campos do modal com os dados retornados
+                    document.getElementById('detalhesId').textContent = data.id_ordem;
+                    document.getElementById('detalhesCliente').textContent = data.nome_cliente;
+                    document.getElementById('detalhesTecnico').textContent = data.nome_tecnico || 'Não atribuído'; // Nome do técnico
+                    document.getElementById('detalhesData').textContent = data.dt_recebimento;
+                    document.getElementById('detalhesValor').textContent = 'R$ ' + (data.valor_total ? parseFloat(data.valor_total).toFixed(2).replace('.', ',') : '0,00');
+                    document.getElementById('detalhesPrioridade').textContent = data.prioridade;
+                    document.getElementById('detalhesProblema').textContent = data.problema;
+                    document.getElementById('detalhesMarca').textContent = data.marca_aparelho || 'Não informado';
+                    document.getElementById('detalhesObservacao').textContent = data.observacao || 'Nenhuma observação';
+            
+                    // Status com badge colorido
+                    const statusBadge = document.getElementById('detalhesStatus');
+                    statusBadge.textContent = data.status_ordem;
+            
+                    // Aplicar classe CSS baseada no status
+                    statusBadge.className = '';
+                    switch(data.status_ordem) {
+                        case 'Aberta': statusBadge.classList.add('badge', 'bg-primary'); break;
+                        case 'Em Andamento': statusBadge.classList.add('badge', 'bg-warning', 'text-dark'); break;
+                        case 'Aguardando Peças': statusBadge.classList.add('badge', 'bg-info'); break;
+                        case 'Concluído': statusBadge.classList.add('badge', 'bg-success'); break;
+                        case 'Cancelada': statusBadge.classList.add('badge', 'bg-danger'); break;
+                        default: statusBadge.classList.add('badge', 'bg-secondary');
                     }
-                    
-                    detalhesHTML += `<span class="badge ${badge_class}">${ordem.status || 'Não definido'}</span></div>
-                        <div class="mb-3">
-                            <strong>Problema:</strong> ${ordem.problema || 'Não informado'}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Data de Recebimento:</strong> ${ordem.dt_recebimento || 'Não informada'}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Valor Total:</strong> R$ ${ordem.valor_total ? parseFloat(ordem.valor_total).toFixed(2).replace('.', ',') : '0,00'}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Observações:</strong> ${ordem.observacao || 'Nenhuma observação'}
-                        </div>
-                    `;
-                    
-                    document.getElementById('detalhesOrdem').innerHTML = detalhesHTML;
-                    
-                    // Abre o modal
-                    var modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
-                    modal.show();
+            
+                    // Abrir o modal
+                    const detalhesModal = new bootstrap.Modal(document.getElementById('detalhesModal'));
+                    detalhesModal.show();
                 })
                 .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Erro ao carregar detalhes da ordem: ' + error.message);
+                    console.error('Erro ao buscar detalhes:', error);
+                    alert('Não foi possível carregar os detalhes da ordem.');
                 });
         }
         
