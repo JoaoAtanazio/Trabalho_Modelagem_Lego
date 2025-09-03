@@ -98,6 +98,33 @@
             }
         }
     }
+
+    // Calcular estatísticas por ramo
+    $ramos = [];
+    foreach($fornecedores as $fornecedor) {
+        $ramo = $fornecedor['ramo_atividade'] ?: 'Não informado';
+        if(!isset($ramos[$ramo])) {
+            $ramos[$ramo] = 0;
+        }
+        $ramos[$ramo]++;
+    }
+    arsort($ramos);
+    $totalFornecedores = count($fornecedores);
+
+    // Calcular estatísticas por status
+    $statusCount = [
+        'Ativo' => 0,
+        'Inativo' => 0,
+        'Pendente' => 0,
+        'Bloqueado' => 0,
+        'Suspenso' => 0
+    ];
+    
+    foreach($fornecedores as $fornecedor) {
+        if (isset($statusCount[$fornecedor['status']])) {
+            $statusCount[$fornecedor['status']]++;
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -138,9 +165,15 @@
                     <!-- Cabeçalho com título and botão de novo fornecedor -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><i class="bi bi-truck me-2"></i>Gestão de Fornecedores</h5>
-                        <a href="cadastro_fornecedor.php" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle me-1"></i> Novo Fornecedor
-                        </a>
+                        <div>
+                            <!-- Botão de Estatísticas - ADICIONADO -->
+                            <button class="btn btn-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalEstatisticas">
+                                <i class="bi bi-graph-up me-1"></i> Estatísticas
+                            </button>
+                            <a href="cadastro_fornecedor.php" class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i> Novo Fornecedor
+                            </a>
+                        </div>
                     </div>
                     
                     <!-- Barra de pesquisa e filtros -->
@@ -401,7 +434,7 @@
                                         <span class="badge bg-success me-2"><i class="bi bi-check-circle"></i></span>
                                         Ativo
                                     </div>
-                                    <small class="text-muted">Fornecedor ativo e operando</small>
+                                    <small class="text-muted">Fornecedor ativo and operando</small>
                                 </a>
                                 <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="selecionarStatus('Inativo')">
                                     <div>
@@ -436,6 +469,89 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="button" class="btn btn-primary" id="confirmarStatus">Confirmar Alteração</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para Estatísticas - ADICIONADO -->
+            <div class="modal fade" id="modalEstatisticas" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Estatísticas de Fornecedores</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Distribuição por Ramo</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm" id="tabelaRamos">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Ramo</th>
+                                                            <th class="text-end">Quantidade</th>
+                                                            <th class="text-end">Percentual</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        $totalFornecedores = count($fornecedores);
+                                                        foreach($ramos as $ramo => $quantidade):
+                                                            $percentual = $totalFornecedores > 0 ? round(($quantidade / $totalFornecedores) * 100, 1) : 0;
+                                                        ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($ramo) ?></td>
+                                                            <td class="text-end"><?= $quantidade ?></td>
+                                                            <td class="text-end"><?= $percentual ?>%</td>
+                                                        </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Status dos Fornecedores</h6>
+                                            <div class="d-flex justify-content-around text-center">
+                                                <div>
+                                                    <div class="fs-2 text-success"><?= $statusCount['Ativo'] ?></div>
+                                                    <div class="text-muted">Ativos</div>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-2 text-danger"><?= $statusCount['Inativo'] ?></div>
+                                                    <div class="text-muted">Inativos</div>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-2 text-warning"><?= $statusCount['Pendente'] ?></div>
+                                                    <div class="text-muted">Pendentes</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Resumo Geral</h6>
+                                            <div class="mb-2">Total de Fornecedores: <strong><?= count($fornecedores) ?></strong></div>
+                                            <div class="mb-2">Fornecedores Ativos: <strong><?= $statusCount['Ativo'] ?></strong></div>
+                                            <div class="mb-2">Fornecedores Inativos: <strong><?= $statusCount['Inativo'] ?></strong></div>
+                                            <div class="mb-2">Fornecedores Pendentes: <strong><?= $statusCount['Pendente'] ?></strong></div>
+                                            <div class="mb-2">Fornecedores Bloqueados: <strong><?= $statusCount['Bloqueado'] ?></strong></div>
+                                            <div>Fornecedores Suspensos: <strong><?= $statusCount['Suspenso'] ?></strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-primary" onclick="exportarEstatisticas('pdf')">Exportar PDF</button>
                         </div>
                     </div>
                 </div>
@@ -618,6 +734,79 @@
                 }
             }
         });
+
+        // Função para exportar estatísticas
+        function exportarEstatisticas(formato) {
+            const dados = {
+                titulo: 'Relatório de Estatísticas de Fornecedores - ' + new Date().toLocaleDateString('pt-BR'),
+                totalFornecedores: <?= count($fornecedores) ?>,
+                ativos: <?= $statusCount['Ativo'] ?>,
+                inativos: <?= $statusCount['Inativo'] ?>,
+                pendentes: <?= $statusCount['Pendente'] ?>,
+                bloqueados: <?= $statusCount['Bloqueado'] ?>,
+                suspensos: <?= $statusCount['Suspenso'] ?>,
+                ramos: {
+                    <?php foreach($ramos as $ramo => $quantidade): ?>
+                        '<?= addslashes($ramo) ?>': <?= $quantidade ?>,
+                    <?php endforeach; ?>
+                }
+            };
+
+            if (formato === 'pdf') {
+                exportarPDF(dados);
+            }
+        }
+
+        // Função para exportar PDF
+        function exportarPDF(dados) {
+            const conteudo = `
+                <html>
+                <head>
+                    <title>${dados.titulo}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #333; }
+                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f8f9fa; }
+                        .total { font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${dados.titulo}</h1>
+                    
+                    <h2>Resumo Geral</h2>
+                    <table>
+                        <tr><th>Total de Fornecedores</th><td>${dados.totalFornecedores}</td></tr>
+                        <tr><th>Fornecedores Ativos</th><td>${dados.ativos}</td></tr>
+                        <tr><th>Fornecedores Inativos</th><td>${dados.inativos}</td></tr>
+                        <tr><th>Fornecedores Pendentes</th><td>${dados.pendentes}</td></tr>
+                        <tr><th>Fornecedores Bloqueados</th><td>${dados.bloqueados}</td></tr>
+                        <tr><th>Fornecedores Suspensos</th><td>${dados.suspensos}</td></tr>
+                    </table>
+                    
+                    <h2>Distribuição por Ramo</h2>
+                    <table>
+                        <tr><th>Ramo</th><th>Quantidade</th><th>Percentual</th></tr>
+                        ${Object.entries(dados.ramos).map(([ramo, quantidade]) => `
+                            <tr>
+                                <td>${ramo}</td>
+                                <td>${quantidade}</td>
+                                <td>${dados.totalFornecedores > 0 ? ((quantidade / dados.totalFornecedores) * 100).toFixed(1) + '%' : '0%'}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    
+                    <p><small>Gerado em: ${new Date().toLocaleString('pt-BR')}</small></p>
+                </body>
+                </html>
+            `;
+            
+            const janela = window.open('', '_blank');
+            janela.document.write(conteudo);
+            janela.document.close();
+            janela.print();
+        }
     </script>
 </body>
 </html>
