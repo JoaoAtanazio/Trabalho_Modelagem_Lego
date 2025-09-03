@@ -98,6 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['alterar_senha'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="js/ExportaRelatorios.js"></script>
     <style>
         body{
             overflow-y: hidden !important;
@@ -134,8 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['alterar_senha'])) {
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Perfil do Usuário</h5> 
                 <div>
-                    <button class="btn btn-outline-secondary btn-sm me-2">
-                        <i class="bi bi-printer me-1"></i> Imprimir
+                    <button class="btn btn-outline-secondary btn-sm me-2" onclick="ExportaPerfilPDF()">
+                        <i class="bi bi-download me-1"></i> Exportar
                     </button>
                 </div>
             </div>
@@ -151,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['alterar_senha'])) {
                                 <h5 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Informações do Perfil</h5>
                             </div>
                             <div class="card-body">
-                                <form method="POST" action="perfil.php">
+                                <form method="POST" action="perfil.php" id="perfilForm">
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="nome" class="form-label">Nome de Usuário</label>

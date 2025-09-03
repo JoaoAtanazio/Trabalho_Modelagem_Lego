@@ -126,7 +126,6 @@ $ids = [
     // Relatório de Estoque
     "relatorio_saida.php" => "menu-relatorio-saida",
     "relatorio_pecas_estoque.php" => "menu-relatorio-pecas",
-    "relatorio_uso.php" => "menu-relatorio-uso",
     
     // Logs
     "logs.php" => "menu-logs"

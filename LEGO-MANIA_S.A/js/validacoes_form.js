@@ -836,3 +836,115 @@ document.head.appendChild(styleSheet);
 
 ///////////////////
 
+// Formatação do campo de CPF/CNPJ
+function mascaraCPFCNPJ(){
+    document.getElementById('cpf_cnpj').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        
+        // Verifica se é CPF (até 11 dígitos) ou CNPJ (mais de 11 dígitos)
+        if (value.length <= 11) {
+            // Formatação para CPF
+            if (value.length > 9) {
+                value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+            } else if (value.length > 3) {
+                value = value.replace(/(\d{3})(\d+)/, '$1.$2');
+            }
+        } else {
+            // Formatação para CNPJ (limita a 14 dígitos)
+            if (value.length > 14) value = value.slice(0, 14);
+            
+            if (value.length > 12) {
+                value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+            } else if (value.length > 8) {
+                value = value.replace(/(\d{2})(\d{3})(\d{3})(\d+)/, '$1.$2.$3/$4');
+            } else if (value.length > 5) {
+                value = value.replace(/(\d{2})(\d{3})(\d+)/, '$1.$2.$3');
+            }
+        }
+        e.target.value = value;
+    });
+}
+function mascaraTelefone(){
+    // Formatação do campo de telefone
+    document.getElementById('telefone').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        
+        if (value.length > 11) value = value.slice(0, 11);
+        
+        if (value.length > 10) {
+            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        } else if (value.length > 6) {
+            value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        } else if (value.length > 2) {
+            value = value.replace(/(\d{2})(\d+)/, '($1) $2');
+        }
+        e.target.value = value;
+    });
+}
+
+function buscaCEP(){
+    // Buscar CEP via API
+    document.getElementById('buscarCep').addEventListener('click', function() {
+        const cep = document.getElementById('cep').value.replace(/\D/g, '');
+        
+        if (cep.length !== 8) {
+            alert('CEP inválido! Digite um CEP com 8 dígitos.');
+            return;
+        }
+    
+        // Mostrar loading
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Buscando...';
+        this.disabled = true;
+        
+        // Fazer requisição para a API ViaCEP
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.erro) {
+                    alert('CEP não encontrado!');
+                    return;
+                }
+                
+                // Preencher os campos com os dados retornados
+                document.getElementById('endereco').value = data.logradouro || '';
+                document.getElementById('bairro').value = data.bairro || '';
+                document.getElementById('cidade').value = data.localidade || '';
+                document.getElementById('estado').value = data.uf || '';
+            })
+            .catch(error => {
+                console.error('Erro ao buscar CEP:', error);
+                alert('Erro ao buscar CEP. Tente novamente.');
+            })
+            .finally(() => {
+                // Restaurar botão
+                this.innerHTML = '<i class="bi bi-search"></i> Buscar';
+                this.disabled = false;
+            });
+    });
+    }
+
+    function mascaraCEP(){
+        // Formatação do campo de CEP
+        document.getElementById('cep').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            
+            if (value.length > 5) {
+                value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+    }
+
+    function mascaraSalario(){
+        document.getElementById('salario').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = (value / 100).toFixed(2) + '';
+            value = value.replace(".", ",");
+            value = value.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+            value = value.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            e.target.value = 'R$ ' + value;
+        });
+    }

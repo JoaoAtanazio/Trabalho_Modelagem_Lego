@@ -112,9 +112,11 @@ const tablepecas = document.getElementById('report-table');
         "ID",
         "Nome",
         "Categoria",
+        "Descrição",
+        "Preço",
         "Fornecedor",
         "Estoque Atual",
-        "Estoque Mínimo",
+        "Mínimo",
         "Status",
     ]],
     body: datas.slice(1), // já está pronto no seu código
@@ -128,13 +130,15 @@ const tablepecas = document.getElementById('report-table');
     },
     tableWidth: "auto",  // ajusta ao conteúdo
     columnStyles: {
-        0: { cellWidth: 20 },  // ID
+        0: { cellWidth: 10 },  // ID
         1: { cellWidth: 30 },  // Nome
-        2: { cellWidth: 20 },  // Categoria
-        3: { cellWidth: 27 },  // Fornecedor
-        4: { cellWidth: 20 },  // Estoque Atual
-        5: { cellWidth: 20 },  // Estoque Mínimo
-        6: { cellWidth: 23 },  // Status
+        2: { cellWidth: 21 },  // Categoria
+        3: { cellWidth: 30, overflow: 'ellipsize' },
+        4: { cellWidth: 20 },  // Preço
+        5: { cellWidth: 27 },  // Fornecedor
+        6: { cellWidth: 18 },  // Estoque Atual
+        7: { cellWidth: 18 },  // Estoque Mínimo
+        8: { cellWidth: 19 },  // Status
     }
 });
             
@@ -151,4 +155,77 @@ const tablepecas = document.getElementById('report-table');
             // Salvar o PDF
             doc.save(`relatorio_peças_no_estoque${dateStr.replace(/\//g, '-')}.pdf`);
         }
-    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        function ExportaPerfilPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+        
+            // Cabeçalho
+            doc.setFontSize(20);
+            doc.text("Informações do Perfil", 105, 20, { align: "center" });
+        
+            doc.setFontSize(12);
+            doc.text("Sistema de Gestão de Ordens de Serviço", 105, 28, { align: "center" });
+        
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('pt-BR');
+            doc.text(`Data de emissão: ${dateStr}`, 105, 35, { align: "center" });
+        
+            doc.line(15, 40, 195, 40);
+        
+            // 👉 Pega valores do formulário
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const perfil = document.getElementById("perfil").value;
+            const status = document.getElementById("status").value;
+            const dataCadastro = document.getElementById("data_cadastro").value;
+        
+            // 👉 Monta a tabela com AutoTable
+            doc.autoTable({
+                startY: 50,
+                head: [[
+                    "Nome do Usuário",
+                    "Email",
+                    "Perfil",
+                    "Status",
+                    "Data-Cadastro"
+                ]],
+                body: [[nome, email, perfil, status, dataCadastro]],
+                theme: 'grid',
+                styles: { fontSize: 10, cellPadding: 3 },
+                headStyles: {
+                    fillColor: [0, 0, 0],
+                    textColor: [255, 255, 255],
+                    halign: 'center'
+                },
+                columnStyles: {
+                    0: { cellWidth: 40 },
+                    1: { cellWidth: 40 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 25 },
+                    4: { cellWidth: 35 },
+                }
+            });
+        
+            // Rodapé
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.text(`Página ${i} de ${pageCount}`, 195, 285, { align: "right" });
+                doc.text("Lego Mania OS - Perfil do Usuário", 15, 285);
+            }
+        
+            // Salvar
+            doc.save(`Perfil_Usuario_${dateStr.replace(/\//g, '-')}.pdf`);
+        }
