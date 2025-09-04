@@ -126,9 +126,6 @@ foreach ($saidas_pecas as $saida) {
                     <div class="d-flex justify-content-between align-items-center mb-3 no-print">
                         <h5 class="mb-0"><i class="bi bi-box-arrow-up me-2"></i>Relatório de Saída de Peças</h5>
                         <div>
-                            <button class="btn btn-outline-secondary btn-sm me-2" onclick="window.print()">
-                                <i class="bi bi-printer me-1"></i> Imprimir
-                            </button>
                             <button class="btn btn-success btn-sm" id="btnExportar">
                                 <i class="bi bi-file-earmark-excel me-1"></i> Exportar
                             </button>
@@ -211,32 +208,28 @@ foreach ($saidas_pecas as $saida) {
                                 <table class="table table-hover table-striped mb-0" id="tabelaRelatorio">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th scope="col">Data</th>
-                                            <th scope="col">Peça</th>
-                                            <th scope="col">Descrição</th>
-                                            <th scope="col" class="text-end">Preço Unit.</th>
-                                            <th scope="col" class="text-end">Valor Total</th>
-                                            <th scope="col">Cliente</th>
-                                            <th scope="col">Técnico</th>
-                                            <th scope="col" class="text-center no-print">OS</th>
+                                            <th scope="col" class="text-center no-print">Data</th>
+                                            <th scope="col" class="text-center no-print">Peça</th>
+                                            <th scope="col" class="text-center no-print">Descrição</th>
+                                            <th scope="col" class="text-center no-print">Preço Unit.</th>
+                                            <th scope="col" class="text-center no-print">Valor Total</th>
+                                            <th scope="col" class="text-center no-print">Cliente</th>
+                                            <th scope="col" class="text-center no-print">Técnico</th>
+                                            <th scope="col" class="text-center no-print">Quantidade</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (count($saidas_pecas) > 0): ?>
                                             <?php foreach ($saidas_pecas as $saida): ?>
                                                 <tr>
-                                                    <td><?php echo date('d/m/Y', strtotime($saida['dt_recebimento'])); ?></td>
-                                                    <td><?php echo htmlspecialchars($saida['nome_peca']); ?></td>
-                                                    <td><?php echo htmlspecialchars($saida['descricao_peca']); ?></td>
-                                                    <td class="text-end">R$ <?php echo number_format($saida['preco_unitario'], 2, ',', '.'); ?></td>
-                                                    <td class="text-end">R$ <?php echo number_format($saida['valor_total'], 2, ',', '.'); ?></td>
-                                                    <td><?php echo htmlspecialchars($saida['nome_client_ordem']); ?></td>
-                                                    <td><?php echo htmlspecialchars($saida['tecnico']); ?></td>
-                                                    <td class="text-center no-print">
-                                                        <a href="detalhes_ordem.php?id=<?php echo $saida['id_ordem']; ?>" class="btn btn-sm btn-outline-info" title="Ver OS">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                    </td>
+                                                    <td class="text-center"><?php echo date('d/m/Y', strtotime($saida['dt_recebimento'])); ?></td>
+                                                    <td class="text-center"><?php echo htmlspecialchars($saida['nome_peca']); ?></td>
+                                                    <td class="text-center"><?php echo htmlspecialchars($saida['descricao_peca']); ?></td>
+                                                    <td class="text-center">R$ <?php echo number_format($saida['preco_unitario'], 2, ',', '.'); ?></td>
+                                                    <td class="text-center">R$ <?php echo number_format($saida['valor_total'], 2, ',', '.'); ?></td>
+                                                    <td class="text-center"><?php echo htmlspecialchars($saida['nome_client_ordem']); ?></td>
+                                                    <td class="text-center"><?php echo htmlspecialchars($saida['tecnico']); ?></td>
+                                                    <td class="text-center no-print"> <?php echo htmlspecialchars($saida['quantidade']); ?></td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         <?php else: ?>
