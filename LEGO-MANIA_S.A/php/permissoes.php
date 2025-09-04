@@ -23,7 +23,11 @@ $permissoes = [
         "Ordem de Serviços" => ["nova_ordem.php", "consultar_ordem.php", "pagamento.php"],
         "Relatório de Finanças" => ["relatorio_despesas.php", "relatorio_lucro.php"],
         "Relatório de Estoque" => [
+<<<<<<< Updated upstream
             "relatorio_saida.php", "relatorio_pecas_estoque.php"
+=======
+            "relatorio_saida.php", "relatorio_pecas_estoque.php", 
+>>>>>>> Stashed changes
         ],
         "Logs" => ["logs.php"],
     ],
@@ -37,7 +41,11 @@ $permissoes = [
         "Gestão de Pessoas" => ["gestao_cliente.php"],
         "Ordem de Serviços" => ["nova_ordem.php", "consultar_ordem.php", "pagamento.php"],
         "Relatório de Estoque" => [
+<<<<<<< Updated upstream
             "relatorio_saida.php", "relatorio_pecas_estoque.php"
+=======
+            "relatorio_saida.php", "relatorio_pecas_estoque.php", 
+>>>>>>> Stashed changes
         ],
     ],
     3 => [
@@ -53,7 +61,11 @@ $permissoes = [
         "Cadastro" => ["cadastro_pecas.php"],
         "Ordem de Serviços" => ["nova_ordem.php", "consultar_ordem.php", "pagamento.php"],
         "Relatório de Estoque" => [
+<<<<<<< Updated upstream
             "relatorio_saida.php", "relatorio_pecas_estoque.php"
+=======
+            "relatorio_saida.php", "relatorio_pecas_estoque.php", 
+>>>>>>> Stashed changes
         ],
     ],
 ];
