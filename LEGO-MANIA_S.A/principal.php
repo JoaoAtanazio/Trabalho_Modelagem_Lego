@@ -124,8 +124,6 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
     <nav class="navbar navbar-light bg-white shadow-sm">
       <div class="container-fluid">
         <button class="btn btn-dark" id="menu-toggle"><i class="bi bi-list"></i></button>
-        <!-- Botão voltar -->
-        <button class="btn btn-outline-dark" style="position: absolute; margin-left: 60px;" onclick="history.back()">Voltar</button>
         <span class="navbar-brand mb-0 h1">
           <!-- Contéudo que identifica as horas -->
           <small class="text-muted">Horário atual:</small>
@@ -336,9 +334,9 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
                   </a>
                 </div>
                 <div class="col-md-3 col-6 mb-3">
-                  <a href="relatorios.php" class="btn btn-outline-warning w-100 d-flex flex-column align-items-center py-3">
+                  <a href="logs.php" class="btn btn-outline-warning w-100 d-flex flex-column align-items-center py-3">
                     <i class="bi bi-graph-up display-6 mb-2"></i>
-                    <span>Relatórios</span>
+                    <span>Logs</span>
                   </a>
                 </div>
               </div>
