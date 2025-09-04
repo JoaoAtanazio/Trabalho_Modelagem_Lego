@@ -26,7 +26,7 @@ try {
         FROM nova_ordem no 
         LEFT JOIN cliente c ON no.id_cliente = c.id_cliente 
         LEFT JOIN funcionario f ON no.tecnico = f.id_funcionario
-        WHERE no.status_ordem IN ('Aberta', 'Em Andamento', 'Aguardando Peças')
+        WHERE status_ordem LIKE 'Concluído'
         ORDER BY no.id_ordem DESC";
     $stmt_abertas = $pdo->query($sql_abertas);
     
@@ -188,19 +188,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
        <!-- Sidebar -->
        <?php exibirMenu(); ?>
 
-        <!-- Conteúdo principal -->
-        <div class="flex-grow-1 d-flex flex-column">
-            <!-- Header -->
-            <nav class="navbar navbar-light bg-white shadow-sm">
-                <div class="container-fluid">
-                    <!-- Botão voltar -->
-                    <button class="btn btn-outline-dark" style="position: absolute; margin-left: 60px;" onclick="history.back()">Voltar</button>
-                    <span class="navbar-brand mb-0 h1">
-                        <small class="text-muted">Horário atual:</small>
-                        <span id="liveClock" class="badge bg-secondary"></span>
-                    </span>
-                </div>
-            </nav>
+       <!-- Conteúdo principal -->
+  <div class="flex-grow-1 d-flex flex-column">
+    <!-- Header -->
+    <nav class="navbar navbar-light bg-white shadow-sm">
+      <div class="container-fluid">
+        <button class="btn btn-dark" id="menu-toggle"><i class="bi bi-list"></i></button>
+        <!-- Botão voltar -->
+        <button class="btn btn-outline-dark" style="position: absolute; margin-left: 60px;" onclick="history.back()">Voltar</button>
+        <span class="navbar-brand mb-0 h1">
+          <!-- Contéudo que identifica as horas -->
+          <small class="text-muted">Horário atual:</small>
+          <span id="liveClock" class="badge bg-secondary"></span>
+        </span>
+      </div>
+    </nav>
 
             <!-- Conteúdo - Formulário -->
             <div class="flex-grow-1 p-3" style="overflow-y: auto;">
@@ -232,8 +234,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
                                     <!-- Campo de pesquisa em tempo real -->
                                     <div class="p-2 border-bottom">
                                         <div class="input-group input-group-sm">
+                                            <form action="pagamento.php" method="POST"></form>
                                             <span class="input-group-text"><i class="bi bi-search"></i></span>
                                             <input type="text" class="form-control" id="filtro-ordens" placeholder="Filtrar por nome do cliente...">
+                                            <button type="submit" name="procurar" class="btn btn-primary">
+                                                    <i class="bi bi-search"></i> Buscar
+                                            </button>
                                         </div>
                                     </div>
                                     
@@ -278,7 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
                                         <?php else: ?>
                                             <div class="p-3 text-center text-muted">
                                                 <i class="bi bi-inbox display-4"></i>
-                                                <p class="mt-2">Nenhuma ordem em aberto</p>
+                                                <p class="mt-2">Nenhuma ordem concluída</p>
                                             </div>
                                         <?php endif; ?>
                                     </div>
@@ -299,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pagar'])) {
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
                                                 <input type="text" class="form-control" id="numero_ordem" name="numero_ordem" 
-                                                       placeholder="Buscar por ID, NOME ou CPF/CNPJ" required 
+                                                       placeholder="Buscar por ID ou NOME" required 
                                                        value="<?php echo isset($_POST['numero_ordem']) ? htmlspecialchars($_POST['numero_ordem']) : ''; ?>">
                                                 <button type="submit" name="buscar" class="btn btn-primary">
                                                     <i class="bi bi-search"></i> Buscar
