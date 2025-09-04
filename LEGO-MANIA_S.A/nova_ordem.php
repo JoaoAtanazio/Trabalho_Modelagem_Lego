@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $dt_recebimento = $_POST['dt_recebimento'];
     $valor_total = str_replace(['.', ','], ['', '.'], $_POST['valor_total']);
     $valor_total = floatval($valor_total);
-    $metodo_pag = $_POST['metodo_pag'];
 
     // Verificar se o cliente existe no banco de dados
     $sql_verificar_cliente = "SELECT id_cliente FROM cliente WHERE nome_cliente = :nome_cliente AND status = 'Ativo'";
@@ -34,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         echo "<script>alert('Erro: Cliente não encontrado no sistema! Selecione um cliente válido da lista.');</script>";
     } else {
         try {
-            $sql = "INSERT INTO nova_ordem(id_funcionario,nome_client_ordem,tecnico,marca_aparelho,tempo_uso,problema,prioridade,observacao,dt_recebimento,valor_total,metodo_pag) 
-                    VALUES (:id_funcionario,:nome_client_ordem,:tecnico,:marca_aparelho,:tempo_uso,:problema,:prioridade,:observacao,:dt_recebimento,:valor_total,:metodo_pag)";
+            $sql = "INSERT INTO nova_ordem(id_funcionario,nome_client_ordem,tecnico,marca_aparelho,tempo_uso,problema,prioridade,observacao,dt_recebimento,valor_total) 
+                    VALUES (:id_funcionario,:nome_client_ordem,:tecnico,:marca_aparelho,:tempo_uso,:problema,:prioridade,:observacao,:dt_recebimento,:valor_total)";
             
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':id_funcionario', $id_funcionario, PDO::PARAM_INT);
@@ -48,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $stmt->bindParam(':observacao', $observacao, PDO::PARAM_STR);
             $stmt->bindParam(':dt_recebimento', $dt_recebimento);
             $stmt->bindParam(':valor_total', $valor_total);
-            $stmt->bindParam(':metodo_pag', $metodo_pag);
 
             if ($stmt->execute()) {
                 // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
@@ -252,21 +250,6 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
                                                 <input type="text" class="form-control" id="valor_total" name="valor_total" placeholder="R$ 0,00" required>
                                             </div>
                                         </div>
-
-                                        <div class="mb-3">
-                                            <label for="forma_pagamento" class="form-label">Forma de Pagamento *</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
-                                                <select class="form-select" id="forma_pagamento" name="forma_pagamento" required>
-                                                    <option value="" selected disabled>Selecione o método de pagamento</option>
-                                                    <option value="pix">Pix</option>
-                                                    <option value="dinheiro">Dinheiro</option>
-                                                    <option value="credito">Cartão de Crédito</option>
-                                                    <option value="debito">Cartão de Débito</option>
-                                                </select>
-                                            </div>
-                                        </div>
-            
                                         <!-- Botões -->
                                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                             <button type="reset" class="btn btn-outline-secondary btn-sm me-md-2">
