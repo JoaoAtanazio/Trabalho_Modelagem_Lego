@@ -216,6 +216,18 @@
                 $quantidade = $_POST['quantidade_'.$id_peca_est] ?? 1;
                 
                 if ($quantidade > 0) {
+                    // Verificar estoque atual
+                    $sql_check_stock = "SELECT qtde FROM peca_estoque WHERE id_peca_est = :id_peca_est";
+                    $stmt_check_stock = $pdo->prepare($sql_check_stock);
+                    $stmt_check_stock->execute([':id_peca_est' => $id_peca_est]);
+                    $estoque_atual = $stmt_check_stock->fetchColumn();
+                    
+                    if ($estoque_atual < $quantidade) {
+                        echo "<script>alert('Erro: Estoque insuficiente para a peça selecionada!'); window.location.href='consultar_ordem.php';</script>";
+                        exit();
+                    }
+                    
+                    // Inserir na tabela de peças utilizadas
                     $sql_insert_peca = "INSERT INTO ordem_servico_pecas (id_ordem, id_peca_est, quantidade) 
                                         VALUES (:id_ordem, :id_peca_est, :quantidade)";
                     $stmt_insert_peca = $pdo->prepare($sql_insert_peca);
@@ -224,6 +236,35 @@
                         ':id_peca_est' => $id_peca_est,
                         ':quantidade' => $quantidade
                     ]);
+                    
+                    // Atualizar estoque (reduzir quantidade)
+                    $sql_update_stock = "UPDATE peca_estoque SET qtde = qtde - :quantidade WHERE id_peca_est = :id_peca_est";
+                    $stmt_update_stock = $pdo->prepare($sql_update_stock);
+                    $stmt_update_stock->execute([
+                        ':quantidade' => $quantidade,
+                        ':id_peca_est' => $id_peca_est
+                    ]);
+                    
+                    // Verificar se o estoque ficou baixo (3 ou menos)
+                    $novo_estoque = $estoque_atual - $quantidade;
+                    if ($novo_estoque <= 3) {
+                        $sql_get_nome_peca = "SELECT nome_peca FROM peca_estoque WHERE id_peca_est = :id_peca_est";
+                        $stmt_get_nome_peca = $pdo->prepare($sql_get_nome_peca);
+                        $stmt_get_nome_peca->execute([':id_peca_est' => $id_peca_est]);
+                        $nome_peca = $stmt_get_nome_peca->fetchColumn();
+                        
+                        echo "<script>alert('ATENÇÃO: Estoque da peça \\\"$nome_peca\\\" está baixo ($novo_estoque unidades restantes)!');</script>";
+                    }
+                    
+                    // Verificar se o estoque acabou
+                    if ($novo_estoque == 0) {
+                        $sql_get_nome_peca = "SELECT nome_peca FROM peca_estoque WHERE id_peca_est = :id_peca_est";
+                        $stmt_get_nome_peca = $pdo->prepare($sql_get_nome_peca);
+                        $stmt_get_nome_peca->execute([':id_peca_est' => $id_peca_est]);
+                        $nome_peca = $stmt_get_nome_peca->fetchColumn();
+                        
+                        echo "<script>alert('ATENÇÃO: Estoque da peça \\\"$nome_peca\\\" acabou!');</script>";
+                    }
                 }
             }
         }
@@ -560,6 +601,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Seção de Peças Utilizadas -->
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <p><strong>Peças Utilizadas:</strong></p>
+                                    <div class="border p-2 rounded bg-light">
+                                        <div id="detalhesPecas">
+                                            <p class="text-muted mb-0">Carregando informações das peças...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="modal-footer">
@@ -756,6 +808,38 @@
                         default: statusBadge.classList.add('badge', 'bg-secondary');
                     }
             
+                    // Buscar informações das peças utilizadas
+                    return fetch(`buscar_pecas_ordem.php?id_ordem=${idOrdem}`);
+                })
+                .then(response => response.json())
+                .then(pecas => {
+                    const pecasContainer = document.getElementById('detalhesPecas');
+                    
+                    if (pecas.length === 0) {
+                        pecasContainer.innerHTML = '<p class="text-muted mb-0">Nenhuma peça utilizada nesta ordem.</p>';
+                        return;
+                    }
+                    
+                    let html = '<ul class="list-group list-group-flush">';
+                    pecas.forEach(peca => {
+                        html += `
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-0 px-0 py-1">
+                                <div>
+                                    <span class="fw-medium">${peca.nome_peca}</span>
+                                    <small class="text-muted d-block">${peca.descricao_peca || 'Sem descrição'}</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-primary rounded-pill">${peca.quantidade} un.</span>
+                                    <small class="text-muted d-block">R$ ${parseFloat(peca.preco).toFixed(2).replace('.', ',')} cada</small>
+                                </div>
+                            </li>
+                        `;
+                    });
+                    html += '</ul>';
+                    
+                    pecasContainer.innerHTML = html;
+                })
+                .then(() => {
                     // Abrir o modal
                     const detalhesModal = new bootstrap.Modal(document.getElementById('detalhesModal'));
                     detalhesModal.show();
@@ -876,6 +960,9 @@
                 if (maxDisponivel === 0) {
                     feedbackElement.textContent = 'Estoque esgotado';
                     feedbackElement.className = 'form-text text-danger';
+                } else if (maxDisponivel <= 3) {
+                    feedbackElement.textContent = `ATENÇÃO: Estoque baixo (${maxDisponivel} unidades)`;
+                    feedbackElement.className = 'form-text text-warning';
                 } else {
                     feedbackElement.textContent = `(Estoque total: ${estoqueTotal})`;
                     feedbackElement.className = 'form-text text-muted';

@@ -11,20 +11,14 @@ if (!isset($_SESSION['id_usuario'])) {
 if (isset($_GET['id_ordem']) && is_numeric($_GET['id_ordem'])) {
     $id_ordem = $_GET['id_ordem'];
     
-    // Verificar se a tabela existe
-    $tableExists = $pdo->query("SHOW TABLES LIKE 'ordem_servico_pecas'")->rowCount() > 0;
+    $sql = "SELECT op.id_peca_est, op.quantidade, pe.nome_peca, pe.preco 
+            FROM ordem_servico_pecas op 
+            INNER JOIN peca_estoque pe ON op.id_peca_est = pe.id_peca_est 
+            WHERE op.id_ordem = :id_ordem";
     
-    if ($tableExists) {
-        $sql = "SELECT op.id_peca_est, op.quantidade 
-                FROM ordem_servico_pecas op 
-                WHERE op.id_ordem = :id_ordem";
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':id_ordem' => $id_ordem]);
-        $pecas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        $pecas = [];
-    }
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':id_ordem' => $id_ordem]);
+    $pecas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     header('Content-Type: application/json');
     echo json_encode($pecas);
