@@ -23,7 +23,7 @@ $permissoes = [
         "Ordem de Serviços" => ["nova_ordem.php", "consultar_ordem.php", "pagamento.php"],
         "Relatório de Finanças" => ["relatorio_despesas.php", "relatorio_lucro.php"],
         "Relatório de Estoque" => [
-            "relatorio_saida.php", "relatorio_pecas_estoque.php", "relatorio_uso.php"
+            "relatorio_saida.php", "relatorio_pecas_estoque.php"
         ],
         "Logs" => ["logs.php"],
     ],
@@ -37,7 +37,7 @@ $permissoes = [
         "Gestão de Pessoas" => ["gestao_cliente.php"],
         "Ordem de Serviços" => ["nova_ordem.php", "consultar_ordem.php", "pagamento.php"],
         "Relatório de Estoque" => [
-            "relatorio_saida.php", "relatorio_pecas_estoque.php", "relatorio_uso.php"
+            "relatorio_saida.php", "relatorio_pecas_estoque.php"
         ],
     ],
     3 => [
@@ -53,7 +53,7 @@ $permissoes = [
         "Cadastro" => ["cadastro_pecas.php"],
         "Ordem de Serviços" => ["nova_ordem.php", "consultar_ordem.php", "pagamento.php"],
         "Relatório de Estoque" => [
-            "relatorio_saida.php", "relatorio_pecas_estoque.php", "relatorio_uso.php"
+            "relatorio_saida.php", "relatorio_pecas_estoque.php"
         ],
     ],
 ];
