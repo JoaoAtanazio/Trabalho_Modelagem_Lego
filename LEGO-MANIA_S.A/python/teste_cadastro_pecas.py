@@ -44,13 +44,15 @@ campos = [
     driver.find_element(By. ID, "nome_peca"),
     driver.find_element(By.ID, "descricao_peca"),
     driver.find_element(By.ID, "quantidade"),
+    driver.find_element(By.ID, "quantidade_minima"),
     driver.find_element(By.ID, "preco"),
 ]
 
 inputs = [
-    "Bateria Lg Bl-41a1h 3,8v 2020mah",
-    "Uma bateria potente de 2020mah que é compatível apenas com smartphones Samsung, bateria possui coloração cinza",
+    "Fone de Ouvido Bluetooth",
+    "Um fone de ouvido bluetooth com 36h de duração de bateria",
     "8",
+    "3",
     "R$149,99",
 ]
 
@@ -67,7 +69,7 @@ time.sleep(0.5)
 select = Select(tipo_input)
 time.sleep(0.5)
 
-select.select_by_value("eletronico")
+select.select_by_value("hardware")
 time.sleep(1.5)
 
 fornecedor_input = driver.find_element(By. ID, "id_fornecedor")

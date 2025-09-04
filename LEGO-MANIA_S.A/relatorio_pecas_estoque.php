@@ -440,6 +440,7 @@ if (!empty($_POST['ordenacao'])) {
                                                 '<?= htmlspecialchars($peca_estoque['nome_peca'], ENT_QUOTES) ?>',
                                                 '<?= htmlspecialchars($peca_estoque['tipo'], ENT_QUOTES) ?>',
                                                 <?= $peca_estoque['id_fornecedor'] ?? 0 ?>,
+                                                <?=  $peca_estoque['preco'] ?? 0 ?>,
                                                 <?= $peca_estoque['qtde'] ?>,
                                                 <?= $peca_estoque['qtde_minima'] ?>
                                             )">
@@ -520,6 +521,10 @@ if (!empty($_POST['ordenacao'])) {
                                     <?php endforeach; ?>
                                 </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="preco" class="form-label">Preço da Peça</label>
+                            <input type="text" class="form-control" id="preco" name="preco" required>
+                        </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="quantidade" class="form-label">Estoque Atual</label>
@@ -570,12 +575,13 @@ if (!empty($_POST['ordenacao'])) {
     });
 
         // Funções para integração futura com PHP
-       function editarPeca(id, nome, tipo, id_fornecedor, qtde, qtde_minima) {
+       function editarPeca(id, nome, tipo, id_fornecedor, preco, qtde, qtde_minima) {
     document.getElementById('modalAdicionarPeca').querySelector('.modal-title').textContent = 'Editar Peça';
     document.querySelector('#formPeca input[name="id_peca_est"]').value = id;
     document.querySelector('#formPeca input[name="nome_peca"]').value = nome;
     document.querySelector('#formPeca select[name="tipo"]').value = '';
     document.querySelector('#formPeca select[name="id_fornecedor"]').value = '';
+    document.querySelector('#formPeca input[name="preco"]').value = preco;
     document.querySelector('#formPeca input[name="quantidade"]').value = qtde;
     document.querySelector('#formPeca input[name="quantidade_minima"]').value = qtde_minima;
     const modal = new bootstrap.Modal(document.getElementById('modalAdicionarPeca'));
@@ -597,10 +603,11 @@ if (!empty($_POST['ordenacao'])) {
             const nome = document.getElementById('nomePeca').value;
             const categoria = document.getElementById('categoriaPeca').value;
             const peca$peca_estoque = document.getElementById('peca$peca_estoquePeca').value;
+            const preco_peca = document.getElementById('preco').value;
             const estoqueAtual = document.getElementById('estoqueAtual').value;
             const estoqueMinimo = document.getElementById('estoqueMinimo').value;
             
-            console.log('Salvando peça:', { nome, categoria, peca$peca_estoque, estoqueAtual, estoqueMinimo });
+            console.log('Salvando peça:', { nome, categoria, peca$peca_estoque, preco, estoqueAtual, estoqueMinimo });
             
             // Futuramente: enviar dados para backend PHP
             // Após sucesso, fechar o modal

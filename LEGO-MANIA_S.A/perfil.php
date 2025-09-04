@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['alterar_senha'])) {
                                 <h5 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Informações do Perfil</h5>
                             </div>
                             <div class="card-body">
-                                <form method="POST" action="perfil.php" id="perfilForm">
+                                <form method="POST" action="perfil.php">
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="nome" class="form-label">Nome de Usuário</label>
