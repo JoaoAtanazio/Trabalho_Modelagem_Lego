@@ -169,6 +169,68 @@
     $sql_tecnicos = "SELECT id_usuario, nome_usuario FROM usuario WHERE id_perfil = 4 AND status = 'ativo' ORDER BY nome_usuario";
     $stmt_tecnicos = $pdo->query($sql_tecnicos);
     $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
+
+    // Buscar peças em estoque
+    $sql_pecas = "SELECT id_peca_est, nome_peca, descricao_peca, preco, qtde FROM peca_estoque WHERE qtde > 0 ORDER BY nome_peca";
+    $stmt_pecas = $pdo->query($sql_pecas);
+    $pecas_estoque = $stmt_pecas->fetchAll(PDO::FETCH_ASSOC);
+
+    // Processar alteração de ordem (incluindo peças utilizadas)
+    if (isset($_POST['alterar_ordem'])) {
+        $id_ordem = $_POST['id_ordem'];
+        
+        // Atualizar dados da ordem
+        $sql_update = "UPDATE nova_ordem SET 
+                        nome_client_ordem = :nome_cliente,
+                        tecnico = :tecnico,
+                        marca_aparelho = :marca_aparelho,
+                        prioridade = :prioridade,
+                        problema = :problema,
+                        dt_recebimento = :dt_recebimento,
+                        valor_total = :valor_total,
+                        observacao = :observacao
+                      WHERE id_ordem = :id_ordem";
+        
+        $stmt_update = $pdo->prepare($sql_update);
+        $stmt_update->execute([
+            ':nome_cliente' => $_POST['nome_cliente'],
+            ':tecnico' => $_POST['tecnico'],
+            ':marca_aparelho' => $_POST['marca_aparelho'],
+            ':prioridade' => $_POST['prioridade'],
+            ':problema' => $_POST['problema'],
+            ':dt_recebimento' => $_POST['dt_recebimento'],
+            ':valor_total' => $_POST['valor_total'],
+            ':observacao' => $_POST['observacao'],
+            ':id_ordem' => $id_ordem
+        ]);
+        
+        // Processar peças utilizadas
+        if (isset($_POST['pecas_utilizadas']) && is_array($_POST['pecas_utilizadas'])) {
+            // Primeiro, remover peças anteriores desta ordem
+            $sql_delete_pecas = "DELETE FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
+            $stmt_delete_pecas = $pdo->prepare($sql_delete_pecas);
+            $stmt_delete_pecas->execute([':id_ordem' => $id_ordem]);
+            
+            // Inserir novas peças utilizadas
+            foreach ($_POST['pecas_utilizadas'] as $id_peca_est) {
+                $quantidade = $_POST['quantidade_'.$id_peca_est] ?? 1;
+                
+                if ($quantidade > 0) {
+                    $sql_insert_peca = "INSERT INTO ordem_servico_pecas (id_ordem, id_peca_est, quantidade) 
+                                        VALUES (:id_ordem, :id_peca_est, :quantidade)";
+                    $stmt_insert_peca = $pdo->prepare($sql_insert_peca);
+                    $stmt_insert_peca->execute([
+                        ':id_ordem' => $id_ordem,
+                        ':id_peca_est' => $id_peca_est,
+                        ':quantidade' => $quantidade
+                    ]);
+                }
+            }
+        }
+        
+        echo "<script>alert('Ordem atualizada com sucesso!'); window.location.href='consultar_ordem.php';</script>";
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -367,13 +429,13 @@
 
             <!-- Modal para Alterar Ordem -->
             <div class="modal fade" id="modalOrdem" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Alterar Ordem de Serviço</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form method="POST" action="alterar_ordem.php">
+                        <form method="POST" action="consultar_ordem.php">
                             <div class="modal-body">
                                 <input type="hidden" id="id_ordem" name="id_ordem">
                                 
@@ -417,6 +479,24 @@
                                     <textarea class="form-control" id="problema" name="problema" rows="3"></textarea>
                                 </div>
                                 
+                                <!-- Seção de Peças Utilizadas -->
+                                <div class="mb-3">
+                                    <label class="form-label">Peças Utilizadas</label>
+                                    <div class="alert alert-info py-2">
+                                        <small><i class="bi bi-info-circle"></i> As quantidades são limitadas conforme o estoque disponível.</small>
+                                    </div>
+                                    <div class="border p-3 rounded">
+                                        <div class="mb-2">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" id="btnAdicionarPeca">
+                                                <i class="bi bi-plus-circle"></i> Adicionar Peça
+                                            </button>
+                                        </div>
+                                        <div id="lista-pecas">
+                                            <!-- As peças serão adicionadas aqui via JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <div class="mb-3">
                                     <label for="dt_recebimento" class="form-label">Data de Recebimento</label>
                                     <input type="date" class="form-control" id="dt_recebimento" name="dt_recebimento">
@@ -424,7 +504,7 @@
                                 
                                 <div class="mb-3">
                                     <label for="valor_total" class="form-label">Valor Total (R$)</label>
-                                    <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total">
+                                    <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total" readonly>
                                 </div>
                                 
                                 <div class="mb-3">
@@ -443,51 +523,51 @@
 
             <!-- Modal para Detalhes da Ordem -->
             <div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detalhesModalLabel">Detalhes da Ordem de Serviço</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                <div class="col-md-6">
-                    <p><strong>ID:</strong> <span id="detalhesId"></span></p>
-                    <p><strong>Cliente:</strong> <span id="detalhesCliente"></span></p>
-                    <p><strong>Técnico:</strong> <span id="detalhesTecnico"></span></p>
-                    <p><strong>Data de Recebimento:</strong> <span id="detalhesData"></span></p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Valor:</strong> <span id="detalhesValor"></span></p>
-                    <p><strong>Prioridade:</strong> <span id="detalhesPrioridade"></span></p>
-                    <p><strong>Marca:</strong> <span id="detalhesMarca"></span></p>
-                    <p><strong>Status:</strong> <span id="detalhesStatus"></span></p>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-12">
-                    <p><strong>Problema:</strong></p>
-                    <div class="border p-2 rounded bg-light">
-                        <span id="detalhesProblema"></span>
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="detalhesModalLabel">Detalhes da Ordem de Serviço</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>ID:</strong> <span id="detalhesId"></span></p>
+                                    <p><strong>Cliente:</strong> <span id="detalhesCliente"></span></p>
+                                    <p><strong>Técnico:</strong> <span id="detalhesTecnico"></span></p>
+                                    <p><strong>Data de Recebimento:</strong> <span id="detalhesData"></span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Valor:</strong> <span id="detalhesValor"></span></p>
+                                    <p><strong>Prioridade:</strong> <span id="detalhesPrioridade"></span></p>
+                                    <p><strong>Marca:</strong> <span id="detalhesMarca"></span></p>
+                                    <p><strong>Status:</strong> <span id="detalhesStatus"></span></p>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <p><strong>Problema:</strong></p>
+                                    <div class="border p-2 rounded bg-light">
+                                        <span id="detalhesProblema"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <p><strong>Observações:</strong></p>
+                                    <div class="border p-2 rounded bg-light">
+                                        <span id="detalhesObservacao"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-12">
-                    <p><strong>Observações:</strong></p>
-                    <div class="border p-2 rounded bg-light">
-                        <span id="detalhesObservacao"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
             <!-- Modal para Alterar Status -->
             <div class="modal fade" id="modalStatus" tabindex="-1" aria-hidden="true">
@@ -582,11 +662,14 @@
             document.getElementById('valor_total').value = '';
             document.getElementById('observacao').value = 'Carregando...';
             
+            // Limpar lista de peças
+            document.getElementById('lista-pecas').innerHTML = '';
+            
             // Abre o modal primeiro
             var modal = new bootstrap.Modal(document.getElementById('modalOrdem'));
             modal.show();
             
-            // Fazer requisição AJAX para buscar os dados reais
+            // Fazer requisição AJAX para buscar os dados reais da ordem
             fetch('consultar_ordem.php?carregar_ordem=true&id_ordem=' + id)
                 .then(response => {
                     if (!response.ok) {
@@ -612,10 +695,27 @@
                     
                     document.getElementById('valor_total').value = ordem.valor_total || '';
                     document.getElementById('observacao').value = ordem.observacao || '';
+                    
+                    // Carregar peças utilizadas nesta ordem
+                    return fetch('buscar_pecas_ordem.php?id_ordem=' + id);
+                })
+                .then(response => response.json())
+                .then(pecasUtilizadas => {
+                    // Adicionar peças utilizadas ao formulário
+                    if (pecasUtilizadas.length > 0) {
+                        pecasUtilizadas.forEach(peca => {
+                            adicionarPeca(peca.id_peca_est, peca.quantidade);
+                        });
+                    } else {
+                        // Adicionar uma peça vazia se não houver peças
+                        adicionarPeca();
+                    }
                 })
                 .catch(error => {
                     console.error('Erro:', error);
                     alert('Erro ao carregar dados da ordem: ' + error.message);
+                    // Adicionar uma peça vazia em caso de erro
+                    adicionarPeca();
                 });
         }
 
@@ -724,6 +824,160 @@
                 // Redirecionar para alterar o status
                 window.location.href = `consultar_ordem.php?id=${ordemIdStatus}&statuss=${encodeURIComponent(novoStatusSelecionado)}`;
             }
+        });
+
+        // Variável global para armazenar as peças disponíveis
+        const pecasDisponiveis = <?php echo json_encode($pecas_estoque); ?>;
+
+        // Função para obter o estoque de uma peça
+        function getEstoque(idPeca) {
+            const peca = pecasDisponiveis.find(p => p.id_peca_est == idPeca);
+            return peca ? parseInt(peca.qtde, 10) : 0;
+        }
+
+        // Função para calcular a quantidade já usada de uma peça (excluindo o item atual)
+        function calcularQuantidadeUsada(idPeca, excludeIndex = null) {
+            let soma = 0;
+            document.querySelectorAll('.peca-item').forEach(item => {
+                const idx = item.getAttribute('data-index');
+                if (idx === excludeIndex) return;
+                
+                const select = item.querySelector('select[name="pecas_utilizadas[]"]');
+                const qInput = item.querySelector('input[name="quantidades_utilizadas[]"]');
+                
+                if (select && select.value == idPeca && qInput) {
+                    const q = parseInt(qInput.value || 0, 10);
+                    soma += isNaN(q) ? 0 : q;
+                }
+            });
+            return soma;
+        }
+
+        // Função para atualizar a quantidade máxima permitida para um item
+        function atualizarQuantidadeMaxima(selectElement, index) {
+            const idPeca = selectElement.value;
+            const quantidadeInput = document.querySelector(`#quantidade-${index}`);
+            const feedbackElement = document.querySelector(`#feedback-${index}`);
+            
+            if (!idPeca) {
+                quantidadeInput.removeAttribute('max');
+                if (feedbackElement) feedbackElement.textContent = '';
+                return;
+            }
+            
+            const estoqueTotal = getEstoque(idPeca);
+            const usadoOutros = calcularQuantidadeUsada(idPeca, index);
+            const maxDisponivel = Math.max(0, estoqueTotal - usadoOutros);
+            
+            quantidadeInput.max = maxDisponivel;
+            
+            // Atualizar feedback visual
+            if (feedbackElement) {
+                if (maxDisponivel === 0) {
+                    feedbackElement.textContent = 'Estoque esgotado';
+                    feedbackElement.className = 'form-text text-danger';
+                } else {
+                    feedbackElement.textContent = `(Estoque total: ${estoqueTotal})`;
+                    feedbackElement.className = 'form-text text-muted';
+                }
+            }
+            
+            // Ajustar valor se exceder o novo máximo
+            const valorAtual = parseInt(quantidadeInput.value || 0, 10);
+            if (valorAtual > maxDisponivel) {
+                quantidadeInput.value = maxDisponivel;
+            }
+            
+            // Desabilitar se não houver estoque
+            quantidadeInput.disabled = maxDisponivel === 0;
+        }
+
+        // Função para validar a quantidade inserida
+        function validarQuantidade(index) {
+            const quantidadeInput = document.querySelector(`#quantidade-${index}`);
+            if (!quantidadeInput) return;
+            
+            const max = parseInt(quantidadeInput.max || 999, 10);
+            let val = parseInt(quantidadeInput.value || 0, 10);
+            
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > max) val = max;
+            
+            quantidadeInput.value = val;
+            
+            // Atualizar os limites de todos os itens após alteração
+            document.querySelectorAll('.peca-item').forEach(item => {
+                const select = item.querySelector('select[name="pecas_utilizadas[]"]');
+                const idx = item.getAttribute('data-index');
+                if (select) atualizarQuantidadeMaxima(select, idx);
+            });
+        }
+
+        // Função para remover uma peça da lista
+        function removerPeca(button) {
+            const pecaItem = button.closest('.peca-item');
+            if (!pecaItem) return;
+            
+            pecaItem.remove();
+            
+            // Atualizar limites para os demais itens
+            document.querySelectorAll('.peca-item').forEach(item => {
+                const select = item.querySelector('select[name="pecas_utilizadas[]"]');
+                const idx = item.getAttribute('data-index');
+                if (select) atualizarQuantidadeMaxima(select, idx);
+            });
+        }
+
+        // Função para adicionar uma nova peça à lista
+        function adicionarPeca(idPeca = '', quantidade = 1) {
+            const listaPecas = document.getElementById('lista-pecas');
+            const index = Date.now(); // ID único para a peça
+
+            const pecaItem = document.createElement('div');
+            pecaItem.className = 'peca-item mb-3 p-3 border rounded';
+            pecaItem.setAttribute('data-index', index);
+
+            pecaItem.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-5">
+                        <label class="form-label small mb-1">Peça</label>
+                        <select name="pecas_utilizadas[]" class="form-select" onchange="atualizarQuantidadeMaxima(this, '${index}')">
+                            <option value="">Selecione uma peça</option>
+                            ${pecasDisponiveis.map(peca => `
+                                <option value="${peca.id_peca_est}" ${peca.id_peca_est == idPeca ? 'selected' : ''}
+                                        data-preco="${peca.preco}" data-estoque="${peca.qtde}">
+                                    ${peca.nome_peca} (Estoque: ${peca.qtde})
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small mb-1">Quantidade</label>
+                        <input type="number" name="quantidade_${idPeca || 'new'}" class="form-control" 
+                               id="quantidade-${index}" value="${quantidade}" min="1" 
+                               onchange="validarQuantidade('${index}')" />
+                        <div id="feedback-${index}" class="form-text"></div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small mb-1">Ação</label>
+                        <button type="button" class="btn btn-danger btn-sm w-100" onclick="removerPeca(this)">
+                            <i class="bi bi-trash"></i> Remover
+                        </button>
+                    </div>
+                </div>
+            `;
+            listaPecas.appendChild(pecaItem);
+
+            // Se já tiver uma peça selecionada, atualizar a quantidade máxima
+            const selectEl = pecaItem.querySelector('select[name="pecas_utilizadas[]"]');
+            if (idPeca) {
+                atualizarQuantidadeMaxima(selectEl, index);
+            }
+        }
+
+        // Adicionar evento ao botão de adicionar peça
+        document.getElementById('btnAdicionarPeca').addEventListener('click', function() {
+            adicionarPeca();
         });
     </script>
 </body>
