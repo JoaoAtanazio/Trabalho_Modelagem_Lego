@@ -2,7 +2,7 @@
     session_start();
     require_once 'conexao.php';
     require_once 'php/permissoes.php';
-    require_once 'estatisticas.php';
+    require_once 'php/estatisticas.php';
 
     // VERIFICA SE O USUARIO TEM PERMISSÃO DE ADM OU SECRETARIA
     if($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3){
