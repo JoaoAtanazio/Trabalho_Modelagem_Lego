@@ -545,7 +545,7 @@
                                 
                                 <div class="mb-3">
                                     <label for="valor_total" class="form-label">Valor Total (R$)</label>
-                                    <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total" readonly>
+                                    <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total">
                                 </div>
                                 
                                 <div class="mb-3">
