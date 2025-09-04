@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Cadastro - Lego Mania</title>
-    <script src="javascript/validacoes_form.js"></script>
+    <script src="js/validacoes_form.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="preco" class="form-label">Preço *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-123"></i></span>
-                                                <input type="text" class="form-control" id="preco" name="preco" placeholder="R$ 49,99" min="0" required>
+                                                <input type="text" class="form-control" id="preco" name="preco" placeholder="R$ 49,99" min="0" oninput="mascaraPreco()" required>
                                             </div>
                                         </div>
 

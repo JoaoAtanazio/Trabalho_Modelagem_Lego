@@ -108,6 +108,7 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="js/validacoes_form.js"></script>
     <style>
         .ui-autocomplete {
             max-height: 200px;
@@ -160,7 +161,7 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
                                                 <input type="text" class="form-control" name="cliente" id="nome_cliente_ordem" 
-                                                       placeholder="Digite o nome do cliente (use seta ↓ para selecionar)" required
+                                                       placeholder="Digite o nome do cliente (use seta ↓ para selecionar)" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')" required
                                                        autocomplete="off">
                                             </div>
                                             <small class="text-muted">Selecione um cliente já cadastrado no sistema</small>
@@ -246,10 +247,10 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
 
                                         <!-- Valor da Ordem -->
                                         <div class="mb-3">
-                                            <label for="valor_total" class="form-label">Valor Total *</label>
+                                            <label for="preco" class="form-label">Valor Total *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-                                                <input type="text" class="form-control" id="valor_total" name="valor_total" placeholder="R$ 0,00" required>
+                                                <input type="text" class="form-control" id="preco" name="preco" oninput="mascaraPreco()" placeholder="R$ 0,00" required>
                                             </div>
                                         </div>
 
