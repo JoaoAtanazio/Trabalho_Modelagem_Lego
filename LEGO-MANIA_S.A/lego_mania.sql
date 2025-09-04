@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 02/09/2025 às 21:14
+-- Tempo de geração: 04/09/2025 às 19:28
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -50,8 +50,8 @@ CREATE TABLE `cliente` (
 
 INSERT INTO `cliente` (`id_cliente`, `id_funcionario`, `nome_cliente`, `cpf_cnpj`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `telefone`, `email`, `status`, `data_inatividade`, `observacao_inatividade`) VALUES
 (1, 12, 'DALTON MARCELINO', '55555555588', 'bom retiro', 'Bom retiro', '89223200', 'Joinville', 'SC', '57575757575', 'dalton@empresa.com', 'Inativo', '2025-08-29', ''),
-(2, 12, 'DALTONuuuu', '64774754578', 'São Paulo - 337', 'Bom retiro', '89223200', 'Joinville', 'SC', '47756568667', 'daltonuuu@daltonuuuu', 'Ativo', NULL, NULL),
-(3, 12, 'Atanázio espedições ultraaéres', '12345254612', 'Rua Newton Puerta Lentz', 'Jardim Sofia', '89223450', 'Joinville', 'SC', '4234939234', 'Daltongaypkrl@gmail.com', 'Inativo', '2025-08-27', 'Pediu para ser inativo por questões de querer se mudar'),
+(2, 12, 'DALTONuuuu', '64774754578', 'São Paulo - 337', 'Bom retiro', '89223200', 'Joinville', 'SC', '47756568667', 'daltonuuu@daltonuuuu', 'Inativo', '2025-09-03', ''),
+(3, 12, 'Bunda bunda peido', '12345254612', 'Rua Newton Puerta Lentz', 'Jardim Sofia', '89223450', 'Joinville', 'SC', '4234939234', 'Daltongaypkrl@gmail.com', 'Inativo', '2025-08-27', 'Pediu para ser inativo por questões de querer se mudar'),
 (4, 12, 'Roger', '14342342342342', 'Rua Newton Puerta Lentz', 'Jardim Sofia', '89223450', 'Joinville', 'SC', '4234939234', 'Daltongaypkrl@gmail.com', 'Ativo', NULL, NULL);
 
 -- --------------------------------------------------------
@@ -159,7 +159,14 @@ INSERT INTO `log_acao` (`id_log`, `id_usuario`, `id_perfil`, `acao`, `tabela_afe
 (19, 12, 1, '12', 'Abertura de Ordem de serviço: heitor (33)', 0, '2025-08-29 19:07:13'),
 (20, 12, 1, '12', 'Cadastro de peça: asdasdad (Quantidade: 2342, Preço: R$ 34.234,00)', 0, '2025-09-01 18:36:55'),
 (21, 12, 1, '12', 'Cadastro de peça: Bateria Lg Bl-41a1h 3,8v 2020mah (Quantidade: 8, Preço: R$ 149,99)', 0, '2025-09-01 20:01:19'),
-(22, 12, 1, '12', 'Cadastro de peça: Bateria Iphone (Quantidade: 5, Preço: R$ 80,00)', 0, '2025-09-02 19:08:00');
+(22, 12, 1, '12', 'Cadastro de peça: Bateria Iphone (Quantidade: 5, Preço: R$ 80,00)', 0, '2025-09-02 19:08:00'),
+(23, 12, 1, '12', 'Abertura de Ordem de serviço: DALTONuuuu (33)', 0, '2025-09-02 19:27:53'),
+(24, 12, 1, '12', 'Abertura de Ordem de serviço: Roger (33)', 0, '2025-09-02 19:29:08'),
+(25, 12, 1, '12', 'Abertura de Ordem de serviço: Roger (33)', 0, '2025-09-02 19:30:16'),
+(26, 12, 1, '12', 'Abertura de Ordem de serviço: DALTONuuuu (33)', 0, '2025-09-02 19:32:34'),
+(27, 12, 1, '12', 'Abertura de Ordem de serviço: DALTONuuuu (33)', 0, '2025-09-02 19:37:55'),
+(28, 12, 1, '12', 'Abertura de Ordem de serviço: DALTONuuuu (33)', 0, '2025-09-03 16:49:18'),
+(29, 12, 1, '12', 'Cadastro de peça: Peça Gamer (Quantidade: 12, Preço: R$ 47,22)', 0, '2025-09-04 16:59:08');
 
 -- --------------------------------------------------------
 
@@ -218,7 +225,33 @@ CREATE TABLE `nova_ordem` (
 
 INSERT INTO `nova_ordem` (`id_ordem`, `id_funcionario`, `nome_client_ordem`, `tecnico`, `marca_aparelho`, `tempo_uso`, `problema`, `prioridade`, `observacao`, `dt_recebimento`, `valor_total`, `metodo_pag`, `id_peca_est`, `id_cliente`, `status_ordem`, `id_usuario`) VALUES
 (2, 12, 'heitor', '33', 'iphone', '1 mes', 'monhou', 'alta', 'monhou na pia', '2025-08-30', 0.00, 'dinheiro', NULL, NULL, 'Aberta', NULL),
-(3, 12, 'heitor', '33', 'iphone', '1 mes', 'efsd', 'media', 'asdasd', '2025-08-30', 9900.00, 'dinheiro', NULL, NULL, 'Aberta', NULL);
+(3, 12, 'heitor', '33', 'iphone', '1 mes', 'efsd', 'media', 'asdasd', '2025-08-30', 9900.00, 'dinheiro', NULL, NULL, 'Aberta', NULL),
+(4, 12, 'DALTONuuuu', '33', 'Bumbum do boeing', '2 dias em horas', 'A pia pinga o pinto pia', 'alta', 'O-O', '2025-09-02', 47.00, NULL, NULL, NULL, 'Em Andamento', NULL),
+(5, 12, 'Roger', '33', 'Bumbum mouse dark', '2 horas', '4 problemas', 'alta', 'daw', '2024-04-15', 47.00, NULL, NULL, NULL, 'Aberta', NULL),
+(6, 12, 'Roger', '33', 'TSOAOTTDOTO', '47 semanas e 3 dias', 'O-O', 'alta', 'O-O', '2024-09-15', 47.00, NULL, NULL, NULL, 'Em Andamento', NULL),
+(7, 12, 'DALTONuuuu', '33', 'VAMOOO BILL', 'cavalo 2', 'cavalo 2', 'Baixa', 'O-O', '2023-02-01', 47.00, NULL, NULL, NULL, 'Cancelada', NULL),
+(8, 12, 'DALTONuuuu', '33', 'bunda', 'bunda', 'bunda', 'alta', 'bunda', '2025-02-01', 88.56, NULL, NULL, NULL, 'Concluído', NULL),
+(9, 12, 'DALTONuuuu', '33', 'VAMOS BILL', 'FI DO BILL', 'BORA MULHER DO BILL', 'Alta', 'Jonathan Santos', '2025-09-02', 480.00, NULL, NULL, NULL, 'Em Andamento', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `ordem_servico_pecas`
+--
+
+CREATE TABLE `ordem_servico_pecas` (
+  `id_os_peca` int(11) NOT NULL,
+  `id_ordem` int(11) NOT NULL,
+  `id_peca_est` int(11) NOT NULL,
+  `quantidade` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `ordem_servico_pecas`
+--
+
+INSERT INTO `ordem_servico_pecas` (`id_os_peca`, `id_ordem`, `id_peca_est`, `quantidade`) VALUES
+(1, 9, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -246,7 +279,8 @@ CREATE TABLE `peca_estoque` (
 INSERT INTO `peca_estoque` (`id_peca_est`, `id_funcionario`, `id_fornecedor`, `nome_peca`, `descricao_peca`, `qtde`, `tipo`, `dt_cadastro`, `preco`, `qtde_minima`) VALUES
 (1, 12, 2, 'Placa Mãe ', 'Memória interna: 128 GB.\r\nConta com 4 GB de memória RAM.', 15, 'Hardware', '2025-09-01', 175, 3),
 (2, 12, 2, 'Bateria Lg Bl-41a1h 3,8v 2020mah', 'Uma bateria potente de 2020mah que é compatível apenas com smartphones Samsung, bateria possui coloração cinza', 5, 'eletronico', '2025-09-01', 150, 3),
-(5, 12, 2, 'Bateria Iphone', 'Bateria', 5, 'eletronico', '2025-09-02', 80, 2);
+(5, 12, 2, 'Bateria Iphone', 'Bateria', 5, 'eletronico', '2025-09-02', 80, 2),
+(6, 12, 2, 'Peça Gamer', '1123', 12, 'cabos', '2025-09-04', 47, 5);
 
 -- --------------------------------------------------------
 
@@ -357,6 +391,14 @@ ALTER TABLE `nova_ordem`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
+-- Índices de tabela `ordem_servico_pecas`
+--
+ALTER TABLE `ordem_servico_pecas`
+  ADD PRIMARY KEY (`id_os_peca`),
+  ADD KEY `id_ordem` (`id_ordem`),
+  ADD KEY `id_peca_est` (`id_peca_est`);
+
+--
 -- Índices de tabela `peca_estoque`
 --
 ALTER TABLE `peca_estoque`
@@ -405,7 +447,7 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `log_acao`
 --
 ALTER TABLE `log_acao`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de tabela `motivo_inatividade`
@@ -417,13 +459,19 @@ ALTER TABLE `motivo_inatividade`
 -- AUTO_INCREMENT de tabela `nova_ordem`
 --
 ALTER TABLE `nova_ordem`
-  MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de tabela `ordem_servico_pecas`
+--
+ALTER TABLE `ordem_servico_pecas`
+  MODIFY `id_os_peca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `peca_estoque`
 --
 ALTER TABLE `peca_estoque`
-  MODIFY `id_peca_est` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_peca_est` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `perfil`
@@ -474,6 +522,13 @@ ALTER TABLE `nova_ordem`
   ADD CONSTRAINT `fk_id_peca_est` FOREIGN KEY (`id_peca_est`) REFERENCES `peca_estoque` (`id_peca_est`),
   ADD CONSTRAINT `nova_ordem_ibfk_1` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionario` (`id_funcionario`),
   ADD CONSTRAINT `nova_ordem_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
+
+--
+-- Restrições para tabelas `ordem_servico_pecas`
+--
+ALTER TABLE `ordem_servico_pecas`
+  ADD CONSTRAINT `ordem_servico_pecas_ibfk_1` FOREIGN KEY (`id_ordem`) REFERENCES `nova_ordem` (`id_ordem`),
+  ADD CONSTRAINT `ordem_servico_pecas_ibfk_2` FOREIGN KEY (`id_peca_est`) REFERENCES `peca_estoque` (`id_peca_est`);
 
 --
 -- Restrições para tabelas `peca_estoque`
