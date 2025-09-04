@@ -2,6 +2,7 @@
     session_start();
     require_once 'conexao.php';
     require_once 'php/permissoes.php';
+    require_once 'estatisticas.php';
 
     // VERIFICA SE O USUARIO TEM PERMISSÃO DE ADM OU SECRETARIA
     if($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3){
@@ -90,6 +91,21 @@
             echo "<script>alert('Erro ao alterar status do funcionário!');</script>";
         }
     }
+
+    // Obter estatísticas de funcionários
+    $estatisticasFuncionarios = gerarEstatisticas('funcionario');
+
+    // Função para calcular a média salarial dos funcionários
+    function calcularMediaSalarial() {
+        global $pdo;
+    
+        $sql = "SELECT AVG(salario) as media_salarial FROM funcionario WHERE status = 'Ativo'";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        return $resultado['media_salarial'] ?: 0;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -131,9 +147,16 @@
                     <!-- Cabeçalho com título e botão de novo funcionário -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Gestão de Funcionários</h5>
-                        <a href="cadastro_funcionario.php" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle me-1"></i> Novo Funcionário
-                        </a>
+                        <div>
+                            <!-- Botão de Estatísticas -->
+                            <button class="btn btn-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalEstatisticas">
+                                <i class="bi bi-graph-up me-1"></i> Estatísticas
+                            </button>
+                            
+                            <a href="cadastro_funcionario.php" class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i> Novo Funcionário
+                            </a>
+                        </div>
                     </div>
                     
                     <!-- Barra de pesquisa e filtros -->
@@ -372,6 +395,83 @@
                 </div>
             </div>
 
+            <!-- Modal para Estatísticas -->
+            <div class="modal fade" id="modalEstatisticas" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Estatísticas de Funcionários</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Distribuição por Cidade</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm" id="tabelaCidades">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Cidade</th>
+                                                            <th class="text-end">Quantidade</th>
+                                                            <th class="text-end">Percentual</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        $totalFuncionarios = $estatisticasFuncionarios['total'];
+                                                        foreach($estatisticasFuncionarios['cidades'] as $cidade):
+                                                            $percentual = $totalFuncionarios > 0 ? round(($cidade['quantidade'] / $totalFuncionarios) * 100, 1) : 0;
+                                                        ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($cidade['cidade'] ?: 'Não informada') ?></td>
+                                                            <td class="text-end"><?= $cidade['quantidade'] ?></td>
+                                                            <td class="text-end"><?= $percentual ?>%</td>
+                                                        </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Status dos Funcionários</h6>
+                                            <div class="d-flex justify-content-around text-center">
+                                                <div>
+                                                    <div class="fs-2 text-success"><?= $estatisticasFuncionarios['ativos'] ?></div>
+                                                    <div class="text-muted">Ativos</div>
+                                                </div>
+                                                <div>
+                                                    <div class="fs-2 text-danger"><?= $estatisticasFuncionarios['inativos'] ?></div>
+                                                    <div class="text-muted">Inativos</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Resumo Geral</h6>
+                                            <div class="mb-2">Total de Funcionários: <strong><?= $estatisticasFuncionarios['total'] ?></strong></div>
+                                            <div class="mb-2">Ativos: <strong><?= $estatisticasFuncionarios['ativos'] ?></strong></div>
+                                            <div class="mb-2">Inativos: <strong><?= $estatisticasFuncionarios['inativos'] ?></strong></div>
+                                            <div>Média Salarial: <strong>R$ <?= number_format(calcularMediaSalarial(), 2, ',', '.') ?></strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-primary" onclick="exportarEstatisticas('pdf')">Exportar PDF</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
     <!-- SCRIPTS -->
                                     
     <script>
@@ -540,8 +640,80 @@
                     console.error('Erro:', error);
                 });
         }
+
+        // Função para exportar estatísticas
+        function exportarEstatisticas(formato) {
+            const dados = {
+                titulo: 'Relatório de Estatísticas de Funcionários - ' + new Date().toLocaleDateString('pt-BR'),
+                totalFuncionarios: <?= $estatisticasFuncionarios['total'] ?>,
+                ativos: <?= $estatisticasFuncionarios['ativos'] ?>,
+                inativos: <?= $estatisticasFuncionarios['inativos'] ?>,
+                mediaSalarial: <?= calcularMediaSalarial() ?>,
+                cidades: <?= json_encode($estatisticasFuncionarios['cidades']) ?>
+            };
+
+            if (formato === 'pdf') {
+                exportarPDF(dados);
+            }
+        }
+
+        // Função para exportar PDF
+        function exportarPDF(dados) {
+            // Criar tabela de cidades
+            let tabelaCidades = '';
+            dados.cidades.forEach(cidade => {
+                const percentual = dados.totalFuncionarios > 0 ? 
+                    ((cidade.quantidade / dados.totalFuncionarios) * 100).toFixed(1) : 0;
+                tabelaCidades += `
+                    <tr>
+                        <td>${cidade.cidade || 'Não informada'}</td>
+                        <td>${cidade.quantidade}</td>
+                        <td>${percentual}%</td>
+                    </tr>
+                `;
+            });
+
+            const conteudo = `
+                <html>
+                <head>
+                    <title>${dados.titulo}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #333; }
+                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f8f9fa; }
+                        .total { font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${dados.titulo}</h1>
+                    
+                    <h2>Resumo Geral</h2>
+                    <table>
+                        <tr><th>Total de Funcionários</th><td>${dados.totalFuncionarios}</td></tr>
+                        <tr><th>Funcionários Ativos</th><td>${dados.ativos}</td></tr>
+                        <tr><th>Funcionários Inativos</th><td>${dados.inativos}</td></tr>
+                        <tr><th>Média Salarial</th><td>R$ ${dados.mediaSalarial.toFixed(2).replace('.', ',')}</td></tr>
+                    </table>
+                    
+                    <h2>Distribuição por Cidade</h2>
+                    <table>
+                        <tr><th>Cidade</th><th>Quantidade</th><th>Percentual</th></tr>
+                        ${tabelaCidades}
+                    </table>
+                    
+                    <p><small>Gerado em: ${new Date().toLocaleString('pt-BR')}</small></p>
+                </body>
+                </html>
+            `;
+            
+            const janela = window.open('', '_blank');
+            janela.document.write(conteudo);
+            janela.document.close();
+            janela.print();
+        }
     </script>
-        </script>
 
 </body>
 </html>
