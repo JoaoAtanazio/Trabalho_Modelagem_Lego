@@ -29,7 +29,7 @@ login_button = driver.find_element(By. ID, "entrar_button")
 login_button.click()
 time.sleep(1)
 
-cadastro_button = driver.find_element(By. ID, "cadastroDropdown")
+cadastro_button = driver.find_element(By. ID, "menu-cadastro")
 cadastro_button.click()
 time.sleep(1)
 
@@ -47,13 +47,13 @@ campos = [
 inputs = [
     "João Vitor Atanazio",
     "atanazio@atanazio",
-    "123"
+    "12345678"
 ]
 
 for campo,texto in zip(campos, inputs):
     for letra in texto:
      campo.send_keys(letra)
-     time.sleep(0.2)
+     time.sleep(0.12)
 
 
 perfil_input = driver.find_element(By.ID, "id_perfil")

@@ -69,7 +69,7 @@ time.sleep(0.5)
 select = Select(tipo_input)
 time.sleep(0.5)
 
-select.select_by_value("hardware")
+select.select_by_value("perifericos")
 time.sleep(1.5)
 
 fornecedor_input = driver.find_element(By. ID, "id_fornecedor")
@@ -77,7 +77,7 @@ fornecedor_input = driver.find_element(By. ID, "id_fornecedor")
 select = Select(fornecedor_input)
 time.sleep(0.5)
 
-select.select_by_value("2")
+select.select_by_value("3")
 time.sleep(1.5)
 
 submit_button = driver.find_element(By. ID, "botaocadastro")

@@ -10,7 +10,7 @@ driver = webdriver.Chrome ()
 # Acessa a página de cadastro usando o caminho absoluto com o protocolo file://
 # Ceritifuqe-se de que o caminho está apontando par aum arquivo HTML específico
 
-driver.get('http://localhost:8080/Teste_de_Sistemas/Trabalho_Modelagem_Lego/LEGO-MANIA_S.A')
+driver.get('http://localhost:8080/trabalho_modelagem_lego/LEGO-MANIA_S.A/index.php')
 time.sleep(2)
 #Preenche o campo Nome
 
@@ -40,31 +40,35 @@ usuario_button = driver.find_element(By. ID, "nova_ordem")
 usuario_button.click()
 time.sleep(1)
 
+cliente_input = driver.find_element(By. ID, "nome_cliente_ordem")
+cliente_input.send_keys("J")
+time.sleep(0.5)
+cliente_input.send_keys(Keys.ARROW_DOWN)
+time.sleep(0.3)
+cliente_input.send_keys(Keys.ENTER)
+time.sleep(0.5)
+
 tecnico_seleciona = driver.find_element(By. ID, "tecnico")
 time.sleep(0.5)
 
 select = Select(tecnico_seleciona)
 time.sleep(0.5)
 
-select.select_by_value("34")
+select.select_by_value("33")
 time.sleep(0.5)
 
 campos = [
-    driver.find_element(By. ID, "nome_cliente_ordem"),
     driver.find_element(By.ID, "marca_aparelho"),
     driver.find_element(By.ID, "tempo_uso"),
     driver.find_element(By.ID, "problema"),
     driver.find_element(By. ID, "observacao"),
-    driver.find_element(By. ID, "valor_total"),
 ]
 
 inputs = [
-    "Atanazio",
     "Motorola",
     "3 anos",
     "Microfone não funciona, e celular não carrega",
      "Celular caiu na piscina e esteve por aproximadamente 1 minuto dentro da água",
-    "R$ 230,00",
 ]
 
 for campo,texto in zip(campos, inputs):
@@ -92,8 +96,11 @@ time.sleep(0.5)
 select = Select(prioridade_select)
 time.sleep(0.5)
 
-select.select_by_value("alta")
+select.select_by_value("Alta")
 time.sleep(0.5)
+
+valor_total = driver.find_element(By. ID, "preco")
+valor_total.send_keys("23000")
 
 forma_pagamento_select = driver.find_element(By. ID, "forma_pagamento")
 time.sleep(0.5)
