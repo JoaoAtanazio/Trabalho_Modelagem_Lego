@@ -48,7 +48,6 @@ campos = [
     driver.find_element(By. ID, "bairro"),
     driver.find_element(By. ID, "cidade"),
     driver.find_element(By. ID, "cep"),
-    driver.find_element(By. ID, "nascimento"),
     driver.find_element(By.ID, "email"),
 ]
 
@@ -60,7 +59,6 @@ inputs = [
     "Bairro cabreros",
     "Cabrovilles",
     "89227650",
-    "03102003",
     "Atanazio@Atanazio",
 ]
 
@@ -70,6 +68,18 @@ for campo,texto in zip(campos, inputs):
      time.sleep(0.1)
 
 time.sleep(1)
+
+data_input = driver.find_element(By. ID, "nascimento")
+
+data_input.send_keys("03")
+time.sleep(0.3)
+
+data_input.send_keys("10")
+time.sleep(0.3)
+
+data_input.send_keys("2003")
+time.sleep(0.3)
+
 
 estado_input = driver.find_element(By. ID, "estado")
 time.sleep(0.5)
