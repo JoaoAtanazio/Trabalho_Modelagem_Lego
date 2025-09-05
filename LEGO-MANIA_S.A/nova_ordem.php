@@ -36,7 +36,38 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         try {
             $sql = "INSERT INTO nova_ordem(id_funcionario,nome_client_ordem,tecnico,marca_aparelho,tempo_uso,problema,prioridade,observacao,dt_recebimento,valor_total,metodo_pag) 
                     VALUES (:id_funcionario,:nome_client_ordem,:tecnico,:marca_aparelho,:tempo_uso,:problema,:prioridade,:observacao,:dt_recebimento,:valor_total,:metodo_pag)";
-            
+
+            // Obter o ID da ordem recém-criada
+            $id_ordem = $pdo->lastInsertId();
+
+            // PROCESSAR PEÇAS UTILIZADAS E DAR BAIXA NO ESTOQUE
+            if (isset($_POST['pecas_utilizadas']) && is_array($_POST['pecas_utilizadas'])) {
+                foreach ($_POST['pecas_utilizadas'] as $id_peca_est) {
+                    $quantidade = $_POST['quantidade_'.$id_peca_est] ?? 1;
+                    
+                    if ($quantidade > 0) {
+                        // Registrar peça utilizada na ordem
+                        $sql_peca = "INSERT INTO ordem_servico_pecas (id_ordem, id_peca_est, quantidade) 
+                                    VALUES (:id_ordem, :id_peca_est, :quantidade)";
+                        $stmt_peca = $pdo->prepare($sql_peca);
+                        $stmt_peca->execute([
+                            ':id_ordem' => $id_ordem,
+                            ':id_peca_est' => $id_peca_est,
+                            ':quantidade' => $quantidade
+                        ]);
+                        
+                        // DAR BAIXA NO ESTOQUE (PARTE QUE FALTA)
+                        $sql_baixa = "UPDATE peca_estoque SET qtde = qtde - :quantidade 
+                                    WHERE id_peca_est = :id_peca_est";
+                        $stmt_baixa = $pdo->prepare($sql_baixa);
+                        $stmt_baixa->execute([
+                            ':quantidade' => $quantidade,
+                            ':id_peca_est' => $id_peca_est
+                        ]);
+                    }
+                }
+            }
+
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':id_funcionario', $id_funcionario, PDO::PARAM_INT);
             $stmt->bindParam(':nome_client_ordem', $nome_client_ordem, PDO::PARAM_STR);

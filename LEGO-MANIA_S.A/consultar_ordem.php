@@ -213,7 +213,9 @@
             
             // Inserir novas peças utilizadas
             foreach ($_POST['pecas_utilizadas'] as $id_peca_est) {
-                $quantidade = $_POST['quantidade_'.$id_peca_est] ?? 1;
+            
+                $campo_quantidade = 'quantidade_' . $id_peca_est;
+                $quantidade = isset($_POST[$campo_quantidade]) ? (int)$_POST[$campo_quantidade] : 1;
                 
                 if ($quantidade > 0) {
                     // Verificar estoque atual
@@ -265,13 +267,13 @@
                         
                         echo "<script>alert('ATENÇÃO: Estoque da peça \\\"$nome_peca\\\" acabou!');</script>";
                     }
-                }
-            }
-        }
+                } // Fecha if ($quantidade > 0)
+            } // Fecha foreach
+        } // Fecha if (isset($_POST['pecas_utilizadas']))
         
         echo "<script>alert('Ordem atualizada com sucesso!'); window.location.href='consultar_ordem.php';</script>";
         exit();
-    }
+    } // Fecha if (isset($_POST['alterar_ordem']))
 ?>
 
 <!DOCTYPE html>
