@@ -32,8 +32,8 @@ try {
     die("Erro de conexão com o banco de dados: " . $e->getMessage());
 }
 
-// Função para registrar logs no sistema
-function registrarLog($acao, $tabela_afetada, $id_registro = null) {
+// Função para registrar logs no sistema - VERSÃO CORRIGIDA
+function registrarLog($id_usuario, $acao, $tabela_afetada, $id_registro = null) {
     global $pdo;
     
     // Verifica se a sessão está ativa e tem os dados necessários
@@ -52,7 +52,7 @@ function registrarLog($acao, $tabela_afetada, $id_registro = null) {
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            ':id_usuario' => $_SESSION['id_usuario'],
+            ':id_usuario' => $id_usuario,
             ':id_perfil' => $_SESSION['perfil'],
             ':acao' => $acao,
             ':tabela_afetada' => $tabela_afetada,
