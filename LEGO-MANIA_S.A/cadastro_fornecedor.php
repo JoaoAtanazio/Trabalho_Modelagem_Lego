@@ -67,14 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         if ($stmt->execute()) {
             // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
-            $id_novo_fornecedor = $pdo->lastInsertId();
-            
+            $id_novo_fornecedor = $pdo->lastInsertId();            
             // Incluir informações na ação
-            $acao = "Cadastro de fornecedor: " . $nome_fornecedor . " (" . $cpf_cnpj . ")";
-            
+            $acao = "Cadastro de fornecedor: " . $nome_fornecedor . " (" . $email . ")";            
             // Registrar o log
             if (function_exists('registrarLog')) {
-                registrarLog($id_usuario_cadastrante, $acao, "fornecedor", $id_novo_fornecedor);
+                registrarLog($_SESSION['id_usuario'], $acao, "fornecedor", $id_novo_fornecedor);
             } else {
                 error_log("Função registrarLog não encontrada! Ação: " . $acao);
             }

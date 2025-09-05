@@ -68,11 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         if ($stmt->execute()) {
             // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
-            $id_novo_cliente = $pdo->lastInsertId();
-            
+            $id_novo_cliente = $pdo->lastInsertId();            
             // Incluir informações na ação
-            $acao = "Cadastro de cliente: " . $nome_cliente . " (" . $email . ")";
-            
+            $acao = "Cadastro de cliente: " . $nome_cliente . " (" . $email . ")";            
             // Registrar o log
             if (function_exists('registrarLog')) {
                 registrarLog($_SESSION['id_usuario'], $acao, "cliente", $id_novo_cliente);

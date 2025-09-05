@@ -29,7 +29,7 @@
                 } else {
                     header("Location: principal.php");
                     exit();
-                }
+                }              
             } else {
                 $showErrorModal = true;
                 $errorMessage = 'E-mail ou senha incorretos';

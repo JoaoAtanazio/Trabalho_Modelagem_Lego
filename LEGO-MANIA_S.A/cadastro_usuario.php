@@ -10,43 +10,71 @@ if ($_SESSION['perfil'] != 1) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $nome_usuario = $_POST['nome_usuario'];
-    $email = $_POST['email'];
+    $nome_usuario = trim($_POST['nome_usuario']);
+    $email = trim($_POST['email']);
     $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
     $id_perfil = $_POST['id_perfil'];
 
-    $sql = "INSERT INTO usuario(nome_usuario, email, senha, id_perfil) VALUES (:nome_usuario, :email, :senha, :id_perfil)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':nome_usuario', $nome_usuario);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':senha', $senha);
-    $stmt->bindParam(':id_perfil', $id_perfil);
+    // Validações básicas
+    if (empty($nome_usuario) || empty($email) || empty($_POST['senha']) || empty($id_perfil)) {
+        echo "<script>alert('Preencha todos os campos obrigatórios!'); window.history.back();</script>";
+        exit();
+    }
 
-    if ($stmt->execute()) {
-        // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
-        $id_novo_usuario = $pdo->lastInsertId();
-        
-        // Descobrir o nome do perfil para incluir na ação
-        $sql_perfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
-        $stmt_perfil = $pdo->prepare($sql_perfil);
-        $stmt_perfil->bindParam(':id_perfil', $id_perfil);
-        $stmt_perfil->execute();
-        $perfil = $stmt_perfil->fetch(PDO::FETCH_ASSOC);
-        $nome_perfil = $perfil['nome_perfil'];
-        
-        // Incluir informações na ação
-        $acao = "Cadastro de usuário: " . $nome_usuario . " (" . $email . ") como " . $nome_perfil;
-        
-        // Registrar o log
-        if (function_exists('registrarLog')) {
-            registrarLog($acao, "usuario", $id_novo_usuario);
-        } else {
-            error_log("Função registrarLog não encontrada!");
+    try {
+        // Verificar se email já existe
+        $verificaEmail = $pdo->prepare("SELECT COUNT(*) FROM usuario WHERE email = :email");
+        $verificaEmail->bindParam(':email', $email, PDO::PARAM_STR);
+        $verificaEmail->execute();
+
+        if ($verificaEmail->fetchColumn() > 0) {
+            echo "<script>alert('Erro: E-mail já cadastrado no sistema!'); window.history.back();</script>";
+            exit();
         }
-        
-        echo "<script>alert('Usuário cadastrado com sucesso!');</script>";
-    } else {
-        echo "<script>alert('Erro ao cadastrar usuário!');</script>";
+
+        $sql = "INSERT INTO usuario(nome_usuario, email, senha, id_perfil) VALUES (:nome_usuario, :email, :senha, :id_perfil)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':nome_usuario', $nome_usuario);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':id_perfil', $id_perfil);
+
+        if ($stmt->execute()) {
+            // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
+            $id_novo_usuario = $pdo->lastInsertId();
+            
+            // Descobrir o nome do perfil para incluir na ação
+            $sql_perfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
+            $stmt_perfil = $pdo->prepare($sql_perfil);
+            $stmt_perfil->bindParam(':id_perfil', $id_perfil);
+            $stmt_perfil->execute();
+            $perfil = $stmt_perfil->fetch(PDO::FETCH_ASSOC);
+            $nome_perfil = $perfil['nome_perfil'];
+            
+            // Incluir informações na ação
+            $acao = "Cadastro de usuário: " . $nome_usuario . " (" . $email . ") como " . $nome_perfil;
+            
+            // Registrar o log - CORRIGIDO: passando id_usuario como primeiro parâmetro
+            if (function_exists('registrarLog')) {
+                registrarLog($_SESSION['id_usuario'], $acao, "usuario", $id_novo_usuario);
+            } else {
+                error_log("Função registrarLog não encontrada!");
+            }
+            
+            echo "<script>
+                alert('Usuário cadastrado com sucesso!');
+                window.location.href = 'cadastro_usuario.php';
+            </script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar usuário!'); window.history.back();</script>";
+        }
+    } catch (PDOException $e) {
+        if ($e->getCode() == 23000) {
+            echo "<script>alert('Erro: E-mail já cadastrado no sistema!'); window.history.back();</script>";
+        } else {
+            echo "<script>alert('Erro ao cadastrar usuário: " . addslashes($e->getMessage()) . "'); window.history.back();</script>";
+            error_log("Erro PDO: " . $e->getMessage());
+        }
     }
 }
 
@@ -54,8 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 $sql_perfis = "SELECT * FROM perfil";
 $stmt_perfis = $pdo->query($sql_perfis);
 $perfis = $stmt_perfis->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
 
 <!DOCTYPE html>
