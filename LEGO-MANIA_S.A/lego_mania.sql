@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 05/09/2025 às 19:43
+-- Tempo de geração: 05/09/2025 às 20:18
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -185,7 +185,11 @@ INSERT INTO `log_acao` (`id_log`, `id_usuario`, `id_perfil`, `acao`, `tabela_afe
 (6, 12, 1, 'Cadastro de usuário: Gustavort (Gustavort@Gustavort) como Administrador', 'usuario', 38, '2025-09-05 17:22:40'),
 (7, 12, 1, 'Cadastro de usuário: Leonardo (Leonardo123@Leonardo123) como Tecnico', 'usuario', 39, '2025-09-05 17:29:42'),
 (8, 12, 1, 'Cadastro de usuário: Danton (Danton123@Danton123) como Tecnico', 'usuario', 40, '2025-09-05 17:29:57'),
-(9, 12, 1, 'Cadastro de usuário: Dalton Silvio (DaltonSilvio@DaltonSilvio) como Tecnico', 'usuario', 41, '2025-09-05 17:30:27');
+(9, 12, 1, 'Cadastro de usuário: Dalton Silvio (DaltonSilvio@DaltonSilvio) como Tecnico', 'usuario', 41, '2025-09-05 17:30:27'),
+(10, 12, 1, 'Cadastro de usuário: trombolho (trombolho@trombolho) como Tecnico', 'usuario', 42, '2025-09-05 18:10:40'),
+(11, 12, 1, 'Cadastro de usuário: Malricio Espedições Ultraáreas (Malricio@Malricio) como Secretaria', 'usuario', 43, '2025-09-05 18:11:59'),
+(12, 12, 1, 'Cadastro de usuário: Amanda Expedições Ultra Submarina (AmandaSub@AmandaSub) como Tecnico', 'usuario', 44, '2025-09-05 18:13:23'),
+(13, 12, 1, 'Cadastro de usuário: José Vieira Santos Silva Pereira (josevieira@josevieira) como Tecnico', 'usuario', 45, '2025-09-05 18:18:09');
 
 -- --------------------------------------------------------
 
@@ -238,6 +242,28 @@ CREATE TABLE `nova_ordem` (
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Despejando dados para a tabela `nova_ordem`
+--
+
+INSERT INTO `nova_ordem` (`id_ordem`, `id_funcionario`, `nome_client_ordem`, `tecnico`, `marca_aparelho`, `tempo_uso`, `problema`, `prioridade`, `observacao`, `dt_recebimento`, `valor_total`, `metodo_pag`, `id_peca_est`, `id_cliente`, `status_ordem`, `id_usuario`) VALUES
+(1, 12, 'MARIA SILVA', '33', 'Samsung Galaxy S21', '1 ano', 'Tela trincada após queda', 'Alta', 'Cliente precisa do aparelho urgente para trabalho', '2025-09-01', 420.00, 'Cartão Crédito', 8, 5, 'Concluído', 39),
+(2, 12, 'JOÃO SANTOS', '41', 'iPhone 12', '8 meses', 'Bateria não segura carga', 'Média', 'Aparelho desliga sozinho com 30% de bateria', '2025-09-02', 550.00, 'Dinheiro', 13, 6, 'Em Andamento', 40),
+(3, 12, 'ANA COSTA', 'Dalton Silvio', 'Dell Inspiron', '2 anos', 'Teclado com teclas falhando', 'Baixa', 'Tecla espaço e enter não funcionam corretamente', '2025-09-03', 249.00, 'PIX', 12, 7, 'Aguardando Peças', 41),
+(4, 12, 'CARLA OLIVEIRA', 'Leonardo', 'PC Gamer', '6 meses', 'Placa de vídeo com artefatos na tela', 'Alta', 'Jogos ficam com linhas coloridas na tela', '2025-09-04', 1299.00, 'Cartão Débito', 9, 9, 'Aberta', 39),
+(5, 12, 'LUCAS PEREIRA', '45', 'Notebook Dell', '3 anos', 'Bateria não carrega', 'Média', 'Só funciona na tomada', '2025-09-05', 189.00, 'Cartão Crédito', 10, 10, 'Concluído', 40),
+(6, 12, 'ROBERTO MARTINS', 'Dalton Silvio', 'PC Desktop', '1 ano', 'Memória RAM com defeito', 'Alta', 'Computador não liga, dá bip contínuo', '2025-09-06', 199.00, 'Dinheiro', 16, 12, 'Em Andamento', 41),
+(7, 12, 'FERNANDA LIMA', '39', 'Webcam', '3 meses', 'Imagem estática', 'Baixa', 'Não transmite vídeo, apenas imagem congelada', '2025-09-07', 159.00, 'PIX', 18, 13, 'Aguardando Peças', 39),
+(8, 12, 'RAFAEL SOUZA', 'Danton', 'SSD', '1 mês', 'Lentidão excessiva', 'Média', 'SSD novo com performance abaixo do esperado', '2025-09-08', 289.00, 'Cartão Débito', 19, 14, 'Aberta', 40),
+(9, 12, 'TECNOLOGIA LTDA', '44', 'Headphone Gamer', '2 semanas', 'Áudio apenas de um lado', 'Alta', 'Fone direito sem áudio', '2025-09-09', 199.00, 'Cartão Crédito', 21, 15, 'Concluído', 41),
+(10, 12, 'MARCOS FERREIRA', '39', 'Carregador USB-C', '1 mês', 'Não carrega', 'Baixa', 'LED do carregador não acende', '2025-09-10', 99.00, 'Dinheiro', 20, 17, 'Em Andamento', 39),
+(11, 12, 'VANESSA CASTRO', '44', 'Mouse Gamer', '4 meses', 'Scroll não funciona', 'Média', 'Roda do mouse não responde', '2025-09-11', 120.00, 'PIX', 15, 18, 'Aguardando Peças', 40),
+(12, 12, 'DIEGO RAMOS', '42', 'Fonte ATX', '1 ano', 'Computador não liga', 'Alta', 'Fonte não dá sinal de vida', '2025-09-12', 329.00, 'Cartão Débito', 17, 19, 'Aberta', 41),
+(13, 12, 'PATRICIA GOMES', '39', 'Cooler Processador', '6 meses', 'Barulho excessivo', 'Baixa', 'Cooler faz barulho de britadeira', '2025-09-13', 89.00, 'Cartão Crédito', 14, 16, 'Concluído', 39),
+(14, 12, 'DALTON MARCELINO', '42', 'Cabo HDMI', '2 meses', 'Imagem intermitente', 'Média', 'Imagem pisca constantemente', '2025-09-14', 35.00, 'Dinheiro', 11, 1, 'Concluído', 40),
+(15, 12, 'MARIA SILVA', '41', 'iPhone 12', '1 ano', 'Carregador não reconhece', 'Alta', 'Não carrega com carregador original', '2025-09-15', 99.00, 'PIX', 20, 5, 'Aguardando Peças', 41),
+(16, 12, 'PEDRO ALMEIDA', '39', 'Samsung Galaxy A54', '1 ano', 'Tela quebrada', 'Alta', 'Cliente desistiu do reparo', '2025-08-20', 300.00, NULL, NULL, 8, 'Cancelada', 39);
+
 -- --------------------------------------------------------
 
 --
@@ -250,6 +276,19 @@ CREATE TABLE `ordem_servico_pecas` (
   `id_peca_est` int(11) NOT NULL,
   `quantidade` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `ordem_servico_pecas`
+--
+
+INSERT INTO `ordem_servico_pecas` (`id_os_peca`, `id_ordem`, `id_peca_est`, `quantidade`) VALUES
+(13, 12, 21, 1),
+(14, 11, 1, 1),
+(15, 1, 19, 1),
+(16, 10, 16, 1),
+(17, 9, 21, 1),
+(18, 7, 16, 1),
+(19, 5, 21, 1);
 
 -- --------------------------------------------------------
 
@@ -275,7 +314,7 @@ CREATE TABLE `peca_estoque` (
 --
 
 INSERT INTO `peca_estoque` (`id_peca_est`, `id_funcionario`, `id_fornecedor`, `nome_peca`, `descricao_peca`, `qtde`, `tipo`, `dt_cadastro`, `preco`, `qtde_minima`) VALUES
-(1, 12, 2, 'Placa Mãe ', 'Memória interna: 128 GB.\r\nConta com 4 GB de memória RAM.', 15, 'Hardware', '2025-09-01', 175.00, 3),
+(1, 12, 2, 'Placa Mãe ', 'Memória interna: 128 GB.\r\nConta com 4 GB de memória RAM.', 14, 'Hardware', '2025-09-01', 175.00, 3),
 (2, 12, 2, 'Bateria Lg Bl-41a1h 3,8v 2020mah', 'Uma bateria potente de 2020mah que é compatível apenas com smartphones Samsung, bateria possui coloração cinza', 3, 'perifericos', '2025-09-01', 15.00, 3),
 (5, 12, 2, 'Bateria Iphone', 'Bateria', 5, 'eletronico', '2025-09-02', 80.00, 2),
 (6, 12, 2, 'Peça Gamer', '1123', 0, 'cabos', '2025-09-04', 47.00, 5),
@@ -288,12 +327,12 @@ INSERT INTO `peca_estoque` (`id_peca_est`, `id_funcionario`, `id_fornecedor`, `n
 (13, 12, 9, 'Display iPhone 12', 'Tela de replacement para iPhone 12, 6.1 polegadas, OLED', 10, 'Display', '2025-09-04', 550.00, 4),
 (14, 12, 10, 'Cooler para Processador', 'Cooler para processadores Intel/AMD, LED azul, 120mm', 18, 'Hardware', '2025-09-04', 89.00, 6),
 (15, 12, 11, 'Mouse Gamer 6400DPI', 'Mouse gamer com 7 botões, RGB, sensor óptico 6400DPI', 14, 'Periférico', '2025-09-04', 120.00, 5),
-(16, 12, 12, 'Memória RAM 8GB DDR4', 'Memória RAM 8GB DDR4 2666MHz, Kingston', 20, 'Hardware', '2025-09-04', 199.00, 8),
+(16, 12, 12, 'Memória RAM 8GB DDR4', 'Memória RAM 8GB DDR4 2666MHz, Kingston', 18, 'Hardware', '2025-09-04', 199.00, 8),
 (17, 12, 13, 'Fonte ATX 600W 80 Plus', 'Fonte de alimentação 600W, certificação 80 Plus Bronze', 9, 'Hardware', '2025-09-04', 329.00, 3),
 (18, 12, 14, 'Webcam Full HD 1080p', 'Webcam com microfone integrado, resolução Full HD 1080p', 11, 'Periférico', '2025-09-04', 159.00, 4),
-(19, 12, 15, 'SSD 500GB SATA III', 'SSD 500GB, leitura 550MB/s, gravação 500MB/s, SATA III', 16, 'Armazenamento', '2025-09-04', 289.00, 6),
+(19, 12, 15, 'SSD 500GB SATA III', 'SSD 500GB, leitura 550MB/s, gravação 500MB/s, SATA III', 15, 'Armazenamento', '2025-09-04', 289.00, 6),
 (20, 12, 16, 'Carregador USB-C 65W', 'Carregador rápido USB-C 65W com cabo incluído', 22, 'Acessório', '2025-09-04', 99.00, 8),
-(21, 12, 17, 'Headphone Gamer 7.1', 'Headphone gamer com surround virtual 7.1, microfone retrátil', 13, 'Áudio', '2025-09-04', 199.00, 5);
+(21, 12, 17, 'Headphone Gamer 7.1', 'Headphone gamer com surround virtual 7.1, microfone retrátil', 10, 'Áudio', '2025-09-04', 199.00, 5);
 
 -- --------------------------------------------------------
 
@@ -353,7 +392,11 @@ INSERT INTO `usuario` (`id_usuario`, `nome_usuario`, `senha`, `email`, `senha_te
 (38, 'Gustavort', '$2y$10$/jtIjlCCnzI8d1i83Rk93.mXrsXWD.CChEclXYEknd52LksHPM7Gy', 'Gustavort@Gustavort', 0, 1, 'Ativo', NULL, NULL, NULL),
 (39, 'Leonardo', '$2y$10$/B2W4Bh776MxOfasEMbUVuteTo8NdjAL5VxHSktUNwHfV9FasEuHm', 'Leonardo123@Leonardo123', 0, 4, 'Ativo', NULL, NULL, NULL),
 (40, 'Danton', '$2y$10$ZaXTytTgQ5mJzPMPQ6BoZuRnEnsEgoBMyjoZ5YvTEuknIjziW52Vy', 'Danton123@Danton123', 0, 4, 'Ativo', NULL, NULL, NULL),
-(41, 'Dalton Silvio', '$2y$10$Y0e/AB9FYfAos1aZqNKHXuu4aL4IhJi3rUTGls2.8wpPu1Iol8JI.', 'DaltonSilvio@DaltonSilvio', 0, 4, 'Ativo', NULL, NULL, NULL);
+(41, 'Dalton Silvio', '$2y$10$Y0e/AB9FYfAos1aZqNKHXuu4aL4IhJi3rUTGls2.8wpPu1Iol8JI.', 'DaltonSilvio@DaltonSilvio', 0, 4, 'Ativo', NULL, NULL, NULL),
+(42, 'trombolho', '$2y$10$Lz2rBiJxY1sGIFLYFfHxLOn9aFd2fIyItVZkm0rknEnsBAiWdrgmm', 'trombolho@trombolho', 0, 4, 'Ativo', NULL, NULL, NULL),
+(43, 'Malricio Espedições Ultraáreas', '$2y$10$sTwoKv6ZIepapfXSbZL7ru4mne6mghNLLoWh6HQ.TaO8G8YlwTdo6', 'Malricio@Malricio', 0, 3, 'Ativo', NULL, NULL, NULL),
+(44, 'Amanda Expedições Ultra Submarina', '$2y$10$i5hdoqlanXh6BqwNN38gsORBp3lMxnuPI0Ycq1uYJZqhq9nAq2inu', 'AmandaSub@AmandaSub', 0, 4, 'Ativo', NULL, NULL, NULL),
+(45, 'José Vieira Santos Silva Pereira', '$2y$10$dPDe3jwrJ7OnmF5pw..saetcaKsI6FpdFi7iZyxckcQFEQ4DjxDei', 'josevieira@josevieira', 0, 4, 'Ativo', NULL, NULL, NULL);
 
 --
 -- Índices para tabelas despejadas
@@ -464,7 +507,7 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `log_acao`
 --
 ALTER TABLE `log_acao`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `motivo_inatividade`
@@ -476,13 +519,13 @@ ALTER TABLE `motivo_inatividade`
 -- AUTO_INCREMENT de tabela `nova_ordem`
 --
 ALTER TABLE `nova_ordem`
-  MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de tabela `ordem_servico_pecas`
 --
 ALTER TABLE `ordem_servico_pecas`
-  MODIFY `id_os_peca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_os_peca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de tabela `peca_estoque`
@@ -500,7 +543,7 @@ ALTER TABLE `perfil`
 -- AUTO_INCREMENT de tabela `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- Restrições para tabelas despejadas
