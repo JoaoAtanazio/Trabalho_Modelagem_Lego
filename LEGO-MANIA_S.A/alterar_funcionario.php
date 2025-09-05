@@ -14,7 +14,6 @@ if(isset($_POST['alterar_funcionario'])) {
     $cpf = $_POST['cpf_funcionario'];
     $salario = $_POST['salario'];
     $email = $_POST['email'];
-    $telefone = $_POST['telefone'];
     $endereco = $_POST['endereco'];
     $bairro = $_POST['bairro'];
     $cidade = $_POST['cidade'];
@@ -27,7 +26,6 @@ if(isset($_POST['alterar_funcionario'])) {
             cpf_funcionario = :cpf, 
             salario = :salario, 
             email = :email, 
-            telefone = :telefone, 
             endereco = :endereco, 
             bairro = :bairro, 
             cidade = :cidade, 
@@ -41,7 +39,6 @@ if(isset($_POST['alterar_funcionario'])) {
     $stmt->bindParam(':cpf', $cpf);
     $stmt->bindParam(':salario', $salario);
     $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':telefone', $telefone);
     $stmt->bindParam(':endereco', $endereco);
     $stmt->bindParam(':bairro', $bairro);
     $stmt->bindParam(':cidade', $cidade);
