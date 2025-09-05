@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 04/09/2025 às 19:28
+-- Tempo de geração: 05/09/2025 às 19:43
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -50,9 +50,21 @@ CREATE TABLE `cliente` (
 
 INSERT INTO `cliente` (`id_cliente`, `id_funcionario`, `nome_cliente`, `cpf_cnpj`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `telefone`, `email`, `status`, `data_inatividade`, `observacao_inatividade`) VALUES
 (1, 12, 'DALTON MARCELINO', '55555555588', 'bom retiro', 'Bom retiro', '89223200', 'Joinville', 'SC', '57575757575', 'dalton@empresa.com', 'Inativo', '2025-08-29', ''),
-(2, 12, 'DALTONuuuu', '64774754578', 'São Paulo - 337', 'Bom retiro', '89223200', 'Joinville', 'SC', '47756568667', 'daltonuuu@daltonuuuu', 'Inativo', '2025-09-03', ''),
-(3, 12, 'Bunda bunda peido', '12345254612', 'Rua Newton Puerta Lentz', 'Jardim Sofia', '89223450', 'Joinville', 'SC', '4234939234', 'Daltongaypkrl@gmail.com', 'Inativo', '2025-08-27', 'Pediu para ser inativo por questões de querer se mudar'),
-(4, 12, 'Roger', '14342342342342', 'Rua Newton Puerta Lentz', 'Jardim Sofia', '89223450', 'Joinville', 'SC', '4234939234', 'Daltongaypkrl@gmail.com', 'Ativo', NULL, NULL);
+(5, 12, 'MARIA SILVA', '12345678901', 'Rua das Flores, 123', 'Centro', '89223001', 'Joinville', 'SC', '4733334444', 'maria.silva@email.com', 'Ativo', NULL, NULL),
+(6, 12, 'JOÃO SANTOS', '23456789012', 'Avenida Brasil, 456', 'Bucarein', '89223002', 'Joinville', 'SC', '4733344555', 'joao.santos@email.com', 'Ativo', NULL, NULL),
+(7, 12, 'ANA COSTA', '34567890123', 'Rua XV de Novembro, 789', 'Anita Garibaldi', '89223003', 'Joinville', 'SC', '4733355666', 'ana.costa@email.com', 'Ativo', NULL, NULL),
+(8, 12, 'PEDRO ALMEIDA', '45678901234', 'Rua Blumenau, 101', 'Atiradores', '89223004', 'Joinville', 'SC', '4733366777', 'pedro.almeida@email.com', 'Inativo', '2025-08-15', 'Cliente mudou de cidade'),
+(9, 12, 'CARLA OLIVEIRA', '56789012345', 'Rua das Palmeiras, 202', 'Costa e Silva', '89223005', 'Joinville', 'SC', '4733377888', 'carla.oliveira@email.com', 'Ativo', NULL, NULL),
+(10, 12, 'LUCAS PEREIRA', '67890123456', 'Avenida Santos Dumont, 303', 'Iririú', '89223006', 'Joinville', 'SC', '4733388999', 'lucas.pereira@email.com', 'Ativo', NULL, NULL),
+(11, 12, 'JULIANA RODRIGUES', '78901234567', 'Rua Rio Branco, 404', 'Glória', '89223007', 'Joinville', 'SC', '4733399000', 'juliana.rodrigues@email.com', 'Inativo', '2025-07-20', 'Não atende mais'),
+(12, 12, 'ROBERTO MARTINS', '89012345678', 'Rua das Acácias, 505', 'Jardim Paraíso', '89223008', 'Joinville', 'SC', '4733311223', 'roberto.martins@email.com', 'Ativo', NULL, NULL),
+(13, 12, 'FERNANDA LIMA', '90123456789', 'Avenida Getúlio Vargas, 606', 'Saguaçu', '89223009', 'Joinville', 'SC', '4733322334', 'fernanda.lima@email.com', 'Ativo', NULL, NULL),
+(14, 12, 'RAFAEL SOUZA', '01234567890', 'Rua Joinville, 707', 'Boa Vista', '89223010', 'Joinville', 'SC', '4733333445', 'rafael.souza@email.com', 'Ativo', NULL, NULL),
+(15, 12, 'TECNOLOGIA LTDA', '12345678000190', 'Rua dos Empresários, 800', 'Zona Industrial', '89224001', 'Joinville', 'SC', '4733444555', 'contato@tecnologialtda.com.br', 'Ativo', NULL, NULL),
+(16, 12, 'PATRICIA GOMES', '23456789013', 'Rua das Orquídeas, 909', 'Petrópolis', '89223011', 'Joinville', 'SC', '4733555666', 'patricia.gomes@email.com', 'Inativo', '2025-09-01', 'Solicitou cancelamento'),
+(17, 12, 'MARCOS FERREIRA', '34567890124', 'Avenida Copacabana, 1010', 'América', '89223012', 'Joinville', 'SC', '4733666777', 'marcos.ferreira@email.com', 'Ativo', NULL, NULL),
+(18, 12, 'VANESSA CASTRO', '45678901235', 'Rua das Margaridas, 1111', 'Cobrasol', '89223013', 'São José', 'SC', '4833777888', 'vanessa.castro@email.com', 'Ativo', NULL, NULL),
+(19, 12, 'DIEGO RAMOS', '56789012346', 'Rua Central, 1212', 'Centro', '88010001', 'Florianópolis', 'SC', '4833888999', 'diego.ramos@email.com', 'Ativo', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -81,8 +93,22 @@ CREATE TABLE `fornecedor` (
 --
 
 INSERT INTO `fornecedor` (`id_fornecedor`, `id_funcionario`, `nome_fornecedor`, `cpf_cnpj`, `ramo_atividade`, `telefone`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `email`, `status`) VALUES
-(1, 12, 'DIEGO', '44444444444444', 'MADEIRA', '22222222222', 'Rua tabaute', 'São Paulo', '67967969', 'Joinville', 'SC', 'diego@fornecedor', 'Pendente'),
-(2, 12, 'dasda', '22222222222222', 'ttttttttttttttttttt', '22222222222', 'jgyjygj', 'ygjygjyjgyjygj', '89223200', 'Joinville', 'SC', 'gsg@gesg', 'Ativo');
+(2, 12, 'dasda', '22222222222222', 'ttttttttttttttttttt', '22222222222', 'jgyjygj', 'ygjygjyjgyjygj', '89223200', 'Joinville', 'SC', 'gsg@gesg', 'Ativo'),
+(3, 12, 'JOEs BARBER', '25235223255235', 'HARDWAR', '52323626616', 'GSEGSEGSEGSE', '5UTFJFTJ', '57454754', 'FTJFTJFTJFTJFTJT', 'PE', 'DRHRD@FWFS', 'Ativo'),
+(4, 12, 'MobileTech Solutions', '98.765.432/0001-10', 'Peças para Celulares', '(47) 3222-5555', 'Avenida Beira Rio, 456', 'Atiradores', '89203-002', 'Joinville', 'SC', 'vendas@mobiletech.com', 'Ativo'),
+(5, 12, 'EletroMundo Componentes', '55.444.333/0001-22', 'Eletrônicos em Geral', '(47) 3344-6677', 'Rua Blumenau, 789', 'Bom Retiro', '89223-200', 'Joinville', 'SC', 'compras@eletromundo.com', 'Ativo'),
+(6, 12, 'Baterias Express', '11.222.333/0001-44', 'Baterias e Fontes', '(47) 3456-7890', 'Rua Joinville, 321', 'Jardim Sofia', '89223-450', 'Joinville', 'SC', 'sac@bateriasexpress.com', 'Ativo'),
+(7, 12, 'Conecta Brasil', '66.777.888/0001-33', 'Cabos e Conectores', '(47) 3333-8888', 'Rua das Flores, 654', 'Costa e Silva', '89217-300', 'Joinville', 'SC', 'contato@conectabrasil.com', 'Ativo'),
+(8, 12, 'TechInova Components', '22.333.444/0001-55', 'Inovações Tecnológicas', '(47) 3444-9999', 'Avenida Santos Dumont, 987', 'Bucarein', '89202-300', 'Joinville', 'SC', 'vendas@techinova.com', 'Pendente'),
+(9, 12, 'DisplayMaster', '77.888.999/0001-66', 'Telas e Displays', '(47) 3555-0000', 'Rua Rio Branco, 147', 'Anita Garibaldi', '89203-100', 'Joinville', 'SC', 'suporte@displaymaster.com', 'Ativo'),
+(10, 12, 'AudioTech Fornecedora', '33.444.555/0001-77', 'Componentes de Áudio', '(47) 3666-1111', 'Rua XV de Novembro, 258', 'Centro', '89201-200', 'Joinville', 'SC', 'contato@audiotech.com', 'Ativo'),
+(11, 12, 'Hardware Brasil', '44.555.666/0001-88', 'Hardware em Geral', '(47) 3777-2222', 'Avenida Hermann August Lepper, 369', 'Saguaçu', '89221-100', 'Joinville', 'SC', 'vendas@hardwarebrasil.com', 'Bloqueado'),
+(12, 12, 'Circuitos Eletrônicos', '99.000.111/0001-99', 'Circuitos e Placas', '(47) 3888-3333', 'Rua Dona Francisca, 741', 'Centro', '89201-300', 'Joinville', 'SC', 'comercial@circuitoseletronicos.com', 'Ativo'),
+(13, 12, 'FontePower Ltda', '88.999.000/0001-11', 'Fontes e Carregadores', '(47) 3999-4444', 'Rua Amazonas, 852', 'Glória', '89216-200', 'Joinville', 'SC', 'sac@fonterpower.com', 'Ativo'),
+(14, 12, 'MegaParts Distribuidora', '00.111.222/0001-00', 'Distribuição de Peças', '(47) 3000-5555', 'Rua das Nações, 963', 'Iririú', '89227-100', 'Joinville', 'SC', 'contato@megaparts.com', 'Suspenso'),
+(15, 12, 'ConectorTech', '12.345.679/0001-91', 'Conectores e Adaptadores', '(47) 3111-6666', 'Avenida Colombo, 159', 'Costa e Silva', '89217-400', 'Joinville', 'SC', 'vendas@conectortech.com', 'Ativo'),
+(16, 12, 'CellParts Brasil', '23.456.789/0001-12', 'Peças para Celulares', '(47) 3222-7777', 'Rua São Paulo, 357', 'Bom Retiro', '89223-201', 'Joinville', 'SC', 'suporte@cellparts.com', 'Ativo'),
+(17, 12, 'TechSupply SC', '34.567.890/0001-23', 'Suprimentos Tecnológicos', '(47) 3333-8888', 'Rua Rio de Janeiro, 456', 'Atiradores', '89203-003', 'Joinville', 'SC', 'compras@techsupplysc.com', 'Pendente');
 
 -- --------------------------------------------------------
 
@@ -114,8 +140,21 @@ CREATE TABLE `funcionario` (
 
 INSERT INTO `funcionario` (`id_funcionario`, `nome_funcionario`, `cpf_funcionario`, `salario`, `endereco`, `bairro`, `cep`, `cidade`, `estado`, `email`, `dt_nascimento`, `status`, `id_motivo_inatividade`, `data_inatividade`, `observacao_inatividade`) VALUES
 (12, 'dalton', '44444444444', 99999999.99, 'wadawdwwawa', 'gsdgdsgs', '22222-222', 'hsdhshsdhsd', 'PR', 'adm@tste123', '2000-02-25', 'Ativo', NULL, NULL, NULL),
-(13, 'Adminfefs', '53523523226232', 52325235.23, 'sefsefsefs', 'eesfsefse', '33333333', 'fseesgsegsegsees', 'PI', 'n@te123', '3355-05-23', 'Inativo', 9, '2025-08-26', ''),
-(14, 'JULIO', '12130093914', 224.45, 'sefsefsefs', 'BOM RETIRO', '33232322', 'Joinville', 'PE', 'bom@retiro', '2007-02-04', 'Ativo', NULL, NULL, NULL);
+(15, 'CARLOS EDUARDO', '11122233344', 3500.00, 'Rua das Acácias, 100', 'Bucarein', '89223020', 'Joinville', 'SC', 'carlos.eduardo@empresa.com', '1990-05-15', 'Ativo', NULL, NULL, NULL),
+(16, 'AMANDA SANTOS', '22233344455', 2800.00, 'Avenida Brasil, 200', 'Anita Garibaldi', '89223021', 'Joinville', 'SC', 'amanda.santos@empresa.com', '1992-08-22', 'Ativo', NULL, NULL, NULL),
+(17, 'RODRIGO MENDES', '33344455566', 4200.00, 'Rua Blumenau, 300', 'Atiradores', '89223022', 'Joinville', 'SC', 'rodrigo.mendes@empresa.com', '1988-12-10', 'Ativo', NULL, NULL, NULL),
+(18, 'TATIANE OLIVEIRA', '44455566677', 3200.00, 'Rua XV de Novembro, 400', 'Centro', '89223023', 'Joinville', 'SC', 'tatiane.oliveira@empresa.com', '1991-03-30', 'Inativo', 8, '2025-07-15', 'Desligamento por acordo'),
+(19, 'FABIO COSTA', '55566677788', 3800.00, 'Avenida Santos Dumont, 500', 'Iririú', '89223024', 'Joinville', 'SC', 'fabio.costa@empresa.com', '1989-07-18', 'Ativo', NULL, NULL, NULL),
+(20, 'JÉSSICA PEREIRA', '66677788899', 3000.00, 'Rua das Palmeiras, 600', 'Costa e Silva', '89223025', 'Joinville', 'SC', 'jessica.pereira@empresa.com', '1993-11-05', 'Inativo', 2, '2025-08-10', 'Licença médica prolongada'),
+(21, 'BRUNO ALVES', '77788899900', 4500.00, 'Rua Rio Branco, 700', 'Glória', '89223026', 'Joinville', 'SC', 'bruno.alves@empresa.com', '1987-02-14', 'Ativo', NULL, NULL, NULL),
+(22, 'CAMILA RIBEIRO', '88899900011', 2900.00, 'Rua Joinville, 800', 'Boa Vista', '89223027', 'Joinville', 'SC', 'camila.ribeiro@empresa.com', '1994-06-25', 'Ativo', NULL, NULL, NULL),
+(23, 'DIEGO MARTINS', '99900011122', 5100.00, 'Avenida Getúlio Vargas, 900', 'Saguaçu', '89223028', 'Joinville', 'SC', 'diego.martins@empresa.com', '1986-09-12', 'Ativo', NULL, NULL, NULL),
+(24, 'LARISSA SILVEIRA', '00011122233', 3400.00, 'Rua das Flores, 1000', 'Jardim Paraíso', '89223029', 'Joinville', 'SC', 'larissa.silveira@empresa.com', '1990-12-08', 'Inativo', 3, '2025-06-01', 'Licença maternidade'),
+(25, 'RAFAEL GONÇALVES', '11122233300', 4700.00, 'Rua Central, 1100', 'Petrópolis', '89223030', 'Joinville', 'SC', 'rafael.goncalves@empresa.com', '1985-04-17', 'Ativo', NULL, NULL, NULL),
+(26, 'VANESSA LIMA', '22233344400', 3300.00, 'Avenida Copacabana, 1200', 'América', '89223031', 'Joinville', 'SC', 'vanessa.lima@empresa.com', '1992-10-03', 'Ativo', NULL, NULL, NULL),
+(27, 'MARCOS SOUZA', '33344455500', 3900.00, 'Rua das Orquídeas, 1300', 'Cobrasol', '89223032', 'São José', 'SC', 'marcos.souza@empresa.com', '1988-01-20', 'Inativo', 1, '2025-08-01', 'Férias programadas'),
+(28, 'PATRICIA FERREIRA', '44455566600', 3600.00, 'Rua dos Empresários, 1400', 'Zona Industrial', '89224002', 'Joinville', 'SC', 'patricia.ferreira@empresa.com', '1991-07-07', 'Ativo', NULL, NULL, NULL),
+(29, 'GUSTAVO RAMOS', '55566677700', 4300.00, 'Rua das Margaridas, 1500', 'Bom Retiro', '89223201', 'Joinville', 'SC', 'gustavo.ramos@empresa.com', '1987-12-28', 'Ativo', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -138,35 +177,15 @@ CREATE TABLE `log_acao` (
 --
 
 INSERT INTO `log_acao` (`id_log`, `id_usuario`, `id_perfil`, `acao`, `tabela_afetada`, `id_registro`, `data_hora`) VALUES
-(1, 19, 1, 'Limpeza completa dos logs do sistema', 'log_acao', NULL, '2025-08-25 00:09:24'),
-(2, 19, 1, 'Cadastro de usuário: joe (joe@gmail.com) como Administrador', 'usuario', 30, '2025-08-25 00:20:15'),
-(3, 12, 1, 'Atualização de perfil', 'usuario', 12, '2025-08-26 12:55:35'),
-(4, 12, 1, 'Cadastro de usuário: Gustavo (admin@teste123) como Administrador', 'usuario', 31, '2025-08-26 16:51:41'),
-(5, 12, 1, 'Cadastro de funcionário: Dalton (22222222222)', 'funcionario', 12, '2025-08-26 17:48:13'),
-(6, 12, 1, 'Cadastro de funcionário: dalton (44444444444)', 'funcionario', 12, '2025-08-26 19:04:46'),
-(7, 12, 1, '12', 'Cadastro de funcionário: Adminfefs (53523523226232)', 0, '2025-08-26 19:09:13'),
-(8, 12, 1, '12', 'Cadastro de funcionário: JULIO (12130093914)', 0, '2025-08-26 19:09:59'),
-(9, 12, 1, 'Cadastro de cliente: DALTON MARCELINO (dalton@empresa.com) pelo ', 'cliente', 1, '2025-08-27 01:57:26'),
-(10, 12, 1, '12', 'Cadastro de fornecedor: DIEGO (44444444444444)', 0, '2025-08-27 02:30:19'),
-(11, 12, 1, '12', 'Cadastro de cliente: DALTONuuuu (daltonuuu@daltonuuuu)', 0, '2025-08-27 02:40:03'),
-(12, 12, 1, '12', 'Cadastro de fornecedor: dasda (22222222222222)', 0, '2025-08-27 03:03:38'),
-(13, 12, 1, 'Cadastro de usuário: Dalton espedições ultraaéreas (Daltongaypkrl@gmail.com) como Secretaria', 'usuario', 32, '2025-08-27 16:41:19'),
-(14, 12, 1, '12', 'Cadastro de cliente: Atanázio espedições ultraaéres (Daltongaypkrl@gmail.com)', 0, '2025-08-27 16:43:32'),
-(15, 12, 1, 'Cadastro de usuário: LEAO (LEAO@TECNICO) como Tecnico', 'usuario', 33, '2025-08-27 19:23:34'),
-(16, 12, 1, '12', 'Abertura de Ordem de serviço: dalton (33)', 0, '2025-08-29 17:37:21'),
-(17, 12, 1, '12', 'Cadastro de cliente: Roger (Daltongaypkrl@gmail.com)', 0, '2025-08-29 18:49:59'),
-(18, 12, 1, '12', 'Abertura de Ordem de serviço: heitor (33)', 0, '2025-08-29 19:06:10'),
-(19, 12, 1, '12', 'Abertura de Ordem de serviço: heitor (33)', 0, '2025-08-29 19:07:13'),
-(20, 12, 1, '12', 'Cadastro de peça: asdasdad (Quantidade: 2342, Preço: R$ 34.234,00)', 0, '2025-09-01 18:36:55'),
-(21, 12, 1, '12', 'Cadastro de peça: Bateria Lg Bl-41a1h 3,8v 2020mah (Quantidade: 8, Preço: R$ 149,99)', 0, '2025-09-01 20:01:19'),
-(22, 12, 1, '12', 'Cadastro de peça: Bateria Iphone (Quantidade: 5, Preço: R$ 80,00)', 0, '2025-09-02 19:08:00'),
-(23, 12, 1, '12', 'Abertura de Ordem de serviço: DALTONuuuu (33)', 0, '2025-09-02 19:27:53'),
-(24, 12, 1, '12', 'Abertura de Ordem de serviço: Roger (33)', 0, '2025-09-02 19:29:08'),
-(25, 12, 1, '12', 'Abertura de Ordem de serviço: Roger (33)', 0, '2025-09-02 19:30:16'),
-(26, 12, 1, '12', 'Abertura de Ordem de serviço: DALTONuuuu (33)', 0, '2025-09-02 19:32:34'),
-(27, 12, 1, '12', 'Abertura de Ordem de serviço: DALTONuuuu (33)', 0, '2025-09-02 19:37:55'),
-(28, 12, 1, '12', 'Abertura de Ordem de serviço: DALTONuuuu (33)', 0, '2025-09-03 16:49:18'),
-(29, 12, 1, '12', 'Cadastro de peça: Peça Gamer (Quantidade: 12, Preço: R$ 47,22)', 0, '2025-09-04 16:59:08');
+(1, 12, 1, 'Cadastro de [ENTIDADE]:  ()', '[NOME_TABELA]', 3, '2025-09-05 17:09:07'),
+(2, 12, 1, 'Cadastro de cliente: AWFWAFWAFWA (fesfse@gegsege)', 'cliente', 8, '2025-09-05 17:11:16'),
+(3, 12, 1, 'Cadastro de fornecedor: JOEs BARBER (fawffwa@fafafsf)', 'fornecedor', 4, '2025-09-05 17:15:57'),
+(4, 12, 1, 'Cadastro de funcionário: JOÃO (52352352352)', 'funcionario', 15, '2025-09-05 17:17:10'),
+(5, 12, 1, 'Cadastro de peça: boing (Quantidade: 9, Preço: R$ 5,25)', 'peca_estoque', 7, '2025-09-05 17:18:00'),
+(6, 12, 1, 'Cadastro de usuário: Gustavort (Gustavort@Gustavort) como Administrador', 'usuario', 38, '2025-09-05 17:22:40'),
+(7, 12, 1, 'Cadastro de usuário: Leonardo (Leonardo123@Leonardo123) como Tecnico', 'usuario', 39, '2025-09-05 17:29:42'),
+(8, 12, 1, 'Cadastro de usuário: Danton (Danton123@Danton123) como Tecnico', 'usuario', 40, '2025-09-05 17:29:57'),
+(9, 12, 1, 'Cadastro de usuário: Dalton Silvio (DaltonSilvio@DaltonSilvio) como Tecnico', 'usuario', 41, '2025-09-05 17:30:27');
 
 -- --------------------------------------------------------
 
@@ -219,20 +238,6 @@ CREATE TABLE `nova_ordem` (
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Despejando dados para a tabela `nova_ordem`
---
-
-INSERT INTO `nova_ordem` (`id_ordem`, `id_funcionario`, `nome_client_ordem`, `tecnico`, `marca_aparelho`, `tempo_uso`, `problema`, `prioridade`, `observacao`, `dt_recebimento`, `valor_total`, `metodo_pag`, `id_peca_est`, `id_cliente`, `status_ordem`, `id_usuario`) VALUES
-(2, 12, 'heitor', '33', 'iphone', '1 mes', 'monhou', 'alta', 'monhou na pia', '2025-08-30', 0.00, 'dinheiro', NULL, NULL, 'Aberta', NULL),
-(3, 12, 'heitor', '33', 'iphone', '1 mes', 'efsd', 'media', 'asdasd', '2025-08-30', 9900.00, 'dinheiro', NULL, NULL, 'Aberta', NULL),
-(4, 12, 'DALTONuuuu', '33', 'Bumbum do boeing', '2 dias em horas', 'A pia pinga o pinto pia', 'alta', 'O-O', '2025-09-02', 47.00, NULL, NULL, NULL, 'Em Andamento', NULL),
-(5, 12, 'Roger', '33', 'Bumbum mouse dark', '2 horas', '4 problemas', 'alta', 'daw', '2024-04-15', 47.00, NULL, NULL, NULL, 'Aberta', NULL),
-(6, 12, 'Roger', '33', 'TSOAOTTDOTO', '47 semanas e 3 dias', 'O-O', 'alta', 'O-O', '2024-09-15', 47.00, NULL, NULL, NULL, 'Em Andamento', NULL),
-(7, 12, 'DALTONuuuu', '33', 'VAMOOO BILL', 'cavalo 2', 'cavalo 2', 'Baixa', 'O-O', '2023-02-01', 47.00, NULL, NULL, NULL, 'Cancelada', NULL),
-(8, 12, 'DALTONuuuu', '33', 'bunda', 'bunda', 'bunda', 'alta', 'bunda', '2025-02-01', 88.56, NULL, NULL, NULL, 'Concluído', NULL),
-(9, 12, 'DALTONuuuu', '33', 'VAMOS BILL', 'FI DO BILL', 'BORA MULHER DO BILL', 'Alta', 'Jonathan Santos', '2025-09-02', 480.00, NULL, NULL, NULL, 'Em Andamento', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -245,13 +250,6 @@ CREATE TABLE `ordem_servico_pecas` (
   `id_peca_est` int(11) NOT NULL,
   `quantidade` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `ordem_servico_pecas`
---
-
-INSERT INTO `ordem_servico_pecas` (`id_os_peca`, `id_ordem`, `id_peca_est`, `quantidade`) VALUES
-(1, 9, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -268,7 +266,7 @@ CREATE TABLE `peca_estoque` (
   `qtde` int(11) NOT NULL,
   `tipo` varchar(50) DEFAULT NULL,
   `dt_cadastro` date DEFAULT NULL,
-  `preco` int(11) DEFAULT NULL,
+  `preco` decimal(10,2) DEFAULT NULL,
   `qtde_minima` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -277,10 +275,25 @@ CREATE TABLE `peca_estoque` (
 --
 
 INSERT INTO `peca_estoque` (`id_peca_est`, `id_funcionario`, `id_fornecedor`, `nome_peca`, `descricao_peca`, `qtde`, `tipo`, `dt_cadastro`, `preco`, `qtde_minima`) VALUES
-(1, 12, 2, 'Placa Mãe ', 'Memória interna: 128 GB.\r\nConta com 4 GB de memória RAM.', 15, 'Hardware', '2025-09-01', 175, 3),
-(2, 12, 2, 'Bateria Lg Bl-41a1h 3,8v 2020mah', 'Uma bateria potente de 2020mah que é compatível apenas com smartphones Samsung, bateria possui coloração cinza', 5, 'eletronico', '2025-09-01', 150, 3),
-(5, 12, 2, 'Bateria Iphone', 'Bateria', 5, 'eletronico', '2025-09-02', 80, 2),
-(6, 12, 2, 'Peça Gamer', '1123', 12, 'cabos', '2025-09-04', 47, 5);
+(1, 12, 2, 'Placa Mãe ', 'Memória interna: 128 GB.\r\nConta com 4 GB de memória RAM.', 15, 'Hardware', '2025-09-01', 175.00, 3),
+(2, 12, 2, 'Bateria Lg Bl-41a1h 3,8v 2020mah', 'Uma bateria potente de 2020mah que é compatível apenas com smartphones Samsung, bateria possui coloração cinza', 3, 'perifericos', '2025-09-01', 15.00, 3),
+(5, 12, 2, 'Bateria Iphone', 'Bateria', 5, 'eletronico', '2025-09-02', 80.00, 2),
+(6, 12, 2, 'Peça Gamer', '1123', 0, 'cabos', '2025-09-04', 47.00, 5),
+(7, 12, 3, 'boing', 'Fadada', 9, 'hardware', '2025-09-05', 5.25, 1),
+(8, 12, 4, 'Tela Samsung Galaxy S21', 'Tela OLED 6.2 polegadas para Samsung Galaxy S21, resolução 2400x1080', 12, 'Display', '2025-09-04', 420.00, 5),
+(9, 12, 5, 'Placa de Vídeo GTX 1660', 'Placa de vídeo NVIDIA GeForce GTX 1660 Super 6GB GDDR6', 5, 'Hardware', '2025-09-04', 1299.00, 2),
+(10, 12, 6, 'Bateria Notebook Dell 5000mAh', 'Bateria replacement para notebooks Dell, capacidade 5000mAh', 15, 'Bateria', '2025-09-04', 189.00, 4),
+(11, 12, 7, 'Cabo HDMI 2.0 2 metros', 'Cabo HDMI alta velocidade 2.0, compatível com 4K@60Hz', 25, 'Cabo', '2025-09-04', 35.00, 10),
+(12, 12, 8, 'Teclado Mecânico RGB', 'Teclado mecânico com switches blue, iluminação RGB ABNT2', 7, 'Periférico', '2025-09-04', 249.00, 3),
+(13, 12, 9, 'Display iPhone 12', 'Tela de replacement para iPhone 12, 6.1 polegadas, OLED', 10, 'Display', '2025-09-04', 550.00, 4),
+(14, 12, 10, 'Cooler para Processador', 'Cooler para processadores Intel/AMD, LED azul, 120mm', 18, 'Hardware', '2025-09-04', 89.00, 6),
+(15, 12, 11, 'Mouse Gamer 6400DPI', 'Mouse gamer com 7 botões, RGB, sensor óptico 6400DPI', 14, 'Periférico', '2025-09-04', 120.00, 5),
+(16, 12, 12, 'Memória RAM 8GB DDR4', 'Memória RAM 8GB DDR4 2666MHz, Kingston', 20, 'Hardware', '2025-09-04', 199.00, 8),
+(17, 12, 13, 'Fonte ATX 600W 80 Plus', 'Fonte de alimentação 600W, certificação 80 Plus Bronze', 9, 'Hardware', '2025-09-04', 329.00, 3),
+(18, 12, 14, 'Webcam Full HD 1080p', 'Webcam com microfone integrado, resolução Full HD 1080p', 11, 'Periférico', '2025-09-04', 159.00, 4),
+(19, 12, 15, 'SSD 500GB SATA III', 'SSD 500GB, leitura 550MB/s, gravação 500MB/s, SATA III', 16, 'Armazenamento', '2025-09-04', 289.00, 6),
+(20, 12, 16, 'Carregador USB-C 65W', 'Carregador rápido USB-C 65W com cabo incluído', 22, 'Acessório', '2025-09-04', 99.00, 8),
+(21, 12, 17, 'Headphone Gamer 7.1', 'Headphone gamer com surround virtual 7.1, microfone retrátil', 13, 'Áudio', '2025-09-04', 199.00, 5);
 
 -- --------------------------------------------------------
 
@@ -335,8 +348,12 @@ INSERT INTO `usuario` (`id_usuario`, `nome_usuario`, `senha`, `email`, `senha_te
 (28, 'logs', '$2y$10$mhhzHehNFHKgp6TuIPeuCueRYzT4QnWs0INQvHODSZsHMc3.L4yKW', 'logs@logs', 0, 1, 'Ativo', NULL, NULL, NULL),
 (29, 'COBRA', '$2y$10$6R5zhbs09a1i4LQMD3UIXeU.qRa7S/VmV5OQBOMAkKJYJGUUwEyC2', 'cobra@cobra', 0, 1, 'Ativo', NULL, NULL, NULL),
 (31, 'Gustavo', '$2y$10$kLdUxZtMScvUoEARMPdb9e3QJ3nNyDgnvxdHJd1Q5nc8nLeEL4J2i', 'admin@teste123', 0, 1, 'Ativo', NULL, NULL, NULL),
-(32, 'Dalton espedições ultraaéreas', '$2y$10$xntfhMLPQmWvUT6h29X3Uu9BMApBOHN3H60UcjuU4cA4sSug7yF5K', 'Daltongaypkrl@gmail.com', 0, 3, 'Inativo', 7, '2025-08-29', 'qwe'),
-(33, 'LEAO', '$2y$10$vNM5byDVNIPskKPXIF2b3eRW.H.eWsyc.XQe7FE0QjmRvvMtjVipK', 'LEAO@TECNICO', 0, 4, 'Ativo', NULL, NULL, NULL);
+(33, 'LEAO', '$2y$10$vNM5byDVNIPskKPXIF2b3eRW.H.eWsyc.XQe7FE0QjmRvvMtjVipK', 'LEAO@TECNICO', 0, 4, 'Ativo', NULL, NULL, NULL),
+(35, 'Gustavo', '$2y$10$drYk9gOsC3Wjxc7Mx6Hf3e5h/0GYMs0me0ihnpcBeWTSp.ctRSjM6', 'Gustavo@Gustavo', 0, 2, 'Ativo', NULL, NULL, NULL),
+(38, 'Gustavort', '$2y$10$/jtIjlCCnzI8d1i83Rk93.mXrsXWD.CChEclXYEknd52LksHPM7Gy', 'Gustavort@Gustavort', 0, 1, 'Ativo', NULL, NULL, NULL),
+(39, 'Leonardo', '$2y$10$/B2W4Bh776MxOfasEMbUVuteTo8NdjAL5VxHSktUNwHfV9FasEuHm', 'Leonardo123@Leonardo123', 0, 4, 'Ativo', NULL, NULL, NULL),
+(40, 'Danton', '$2y$10$ZaXTytTgQ5mJzPMPQ6BoZuRnEnsEgoBMyjoZ5YvTEuknIjziW52Vy', 'Danton123@Danton123', 0, 4, 'Ativo', NULL, NULL, NULL),
+(41, 'Dalton Silvio', '$2y$10$Y0e/AB9FYfAos1aZqNKHXuu4aL4IhJi3rUTGls2.8wpPu1Iol8JI.', 'DaltonSilvio@DaltonSilvio', 0, 4, 'Ativo', NULL, NULL, NULL);
 
 --
 -- Índices para tabelas despejadas
@@ -429,25 +446,25 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de tabela `fornecedor`
 --
 ALTER TABLE `fornecedor`
-  MODIFY `id_fornecedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_fornecedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `id_funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_funcionario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de tabela `log_acao`
 --
 ALTER TABLE `log_acao`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de tabela `motivo_inatividade`
@@ -459,19 +476,19 @@ ALTER TABLE `motivo_inatividade`
 -- AUTO_INCREMENT de tabela `nova_ordem`
 --
 ALTER TABLE `nova_ordem`
-  MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_ordem` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `ordem_servico_pecas`
 --
 ALTER TABLE `ordem_servico_pecas`
-  MODIFY `id_os_peca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_os_peca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `peca_estoque`
 --
 ALTER TABLE `peca_estoque`
-  MODIFY `id_peca_est` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_peca_est` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de tabela `perfil`
@@ -483,7 +500,7 @@ ALTER TABLE `perfil`
 -- AUTO_INCREMENT de tabela `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- Restrições para tabelas despejadas
