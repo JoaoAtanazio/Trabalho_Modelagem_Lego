@@ -17,9 +17,8 @@ $senha = '';
 // o código dentro do 'catch' será executado para lidar com o erro de forma controlada.
 try {
     // Tenta criar uma nova conexão com o banco de dados usando PDO.
-
-    // "mysql:host=$host;dbname=$dbname" é o DSN (Data Source Name).
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $senha);
+    // "mysql:host=$host;dbname=$dbname;charset=utf8mb4" é o DSN (Data Source Name) CORRIGIDO.
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $senha);
 
     // Configura o PDO para lançar exceções em caso de erros.
     // PDO::ATTR_ERRMODE: Define o modo de relatório de erros.
@@ -65,5 +64,4 @@ function registrarLog($id_usuario, $acao, $tabela_afetada, $id_registro = null) 
         return false;
     }
 }
-
 ?>
