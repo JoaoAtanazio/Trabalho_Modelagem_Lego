@@ -17,7 +17,7 @@ $senha = '';
 // o código dentro do 'catch' será executado para lidar com o erro de forma controlada.
 try {
     // Tenta criar uma nova conexão com o banco de dados usando PDO.
-    // "mysql:host=$host;dbname=$dbname;charset=utf8mb4" é o DSN (Data Source Name) CORRIGIDO.
+    // "mysql:host=$host;dbname=$dbname;charset=utf8mb4" é o DSN (Data Source Name).
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $senha);
 
     // Configura o PDO para lançar exceções em caso de erros.
