@@ -9,7 +9,7 @@ driver = webdriver.Chrome ()
 # Acessa a página de cadastro usando o caminho absoluto com o protocolo file://
 # Ceritifuqe-se de que o caminho está apontando par aum arquivo HTML específico
 
-driver.get('http://localhost:8080/trabalho_modelagem_lego/LEGO-MANIA_S.A/index.php')
+driver.get('http://localhost/001Turma2024_2V1_TARDE/SA_Lego_Mania/Trabalho_Modelagem_Lego/LEGO-MANIA_S.A/index.php')
 time.sleep(2)
 #Preenche o campo Nome
 
