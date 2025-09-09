@@ -87,6 +87,7 @@ foreach ($pecas as $peca) {
 
 // Categorias
 $categorias = ['hardware' => 0, 'perifericos' => 0, 'cabos' => 0, 'outros' => 0];
+// Percorre uma array(peça no estoque) e define o tipo
 foreach ($pecas_estoque as $peca) {
     $tipo = strtolower($peca['tipo']);
     if (isset($categorias[$tipo])) {
@@ -94,13 +95,14 @@ foreach ($pecas_estoque as $peca) {
     }
 }
 
-// Filtros
+// Filtros por categoria
 if (!empty($_POST['categoria'])) {
     $pecas_estoque = array_filter($pecas_estoque, function($peca) {
         return $peca['tipo'] == $_POST['categoria'];
     });
 }
 
+// Filtra as peças no estoque conforme o status de quantidade selecionado no formulário.
 if (!empty($_POST['status'])) {
     $pecas_estoque = array_filter($pecas_estoque, function($peca) {
         if ($_POST['status'] == 'baixo') return $peca['qtde'] < 5;
@@ -110,7 +112,7 @@ if (!empty($_POST['status'])) {
     });
 }
 
-// Ordenação
+// Ordena o array de peças conforme o critério selecionado (nome ou estoque, ascendente ou descendente).
 if (!empty($_POST['ordenacao'])) {
     if ($_POST['ordenacao'] == 'nome_desc') {
         usort($pecas_estoque, fn($a, $b) => strcmp($b['nome_peca'], $a['nome_peca']));
@@ -330,6 +332,7 @@ $ultimasPecas = $stmtUltimas->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                 </div>
                                 <div class="col-md-2">
+                                    <!-- Seleciona a categoria -->
                                     <select class="form-select form-select-sm" name="categoria" onchange="this.form.submit()">
                                         <option value="" selected>Todas categorias</option>
                                         <option value="hardware" <?= ($_POST['categoria'] ?? '') == 'hardware' ? 'selected' : '' ?>>Hardware</option>
@@ -339,6 +342,7 @@ $ultimasPecas = $stmtUltimas->fetchAll(PDO::FETCH_ASSOC);
                                     </select>
                                 </div>
                                 <div class="col-md-2">
+                                    <!-- Seleciona o status -->
                                     <select class="form-select form-select-sm" name="status" onchange="this.form.submit()">
                                         <option value="" selected>Todos status</option>
                                         <option value="disponivel" <?= ($_POST['status'] ?? '') == 'disponivel' ? 'selected' : '' ?>>Disponível</option>
@@ -347,6 +351,7 @@ $ultimasPecas = $stmtUltimas->fetchAll(PDO::FETCH_ASSOC);
                                     </select>
                                 </div>
                                 <div class="col-md-2">
+                                    <!-- Seleciona a ordem -->
                                     <select class="form-select form-select-sm" name="ordenacao" onchange="this.form.submit()">
                                         <option value="nome_asc" <?= ($_POST['ordenacao'] ?? '') == 'nome_asc' ? 'selected' : '' ?>>Nome (A-Z)</option>
                                         <option value="nome_desc" <?= ($_POST['ordenacao'] ?? '') == 'nome_desc' ? 'selected' : '' ?>>Nome (Z-A)</option>

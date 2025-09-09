@@ -9,6 +9,7 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
+// Verifica se o formulario foi enviado e se o metodo é igual a POST
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Recebe e sanitiza os dados do formulário
     $id_funcionario = $_SESSION['id_usuario']; 
@@ -34,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         echo "<script>alert('Erro: Cliente não encontrado no sistema! Selecione um cliente válido da lista.');</script>";
     } else {
         try {
+            // Faz um inset na tabela nova_ordem no BD
             $sql = "INSERT INTO nova_ordem(id_funcionario,nome_client_ordem,tecnico,marca_aparelho,tempo_uso,problema,prioridade,observacao,dt_recebimento,valor_total,metodo_pag) 
                     VALUES (:id_funcionario,:nome_client_ordem,:tecnico,:marca_aparelho,:tempo_uso,:problema,:prioridade,:observacao,:dt_recebimento,:valor_total,:metodo_pag)";
 
@@ -56,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             ':quantidade' => $quantidade
                         ]);
                         
-                        // DAR BAIXA NO ESTOQUE (PARTE QUE FALTA)
+                        // DAR BAIXA NO ESTOQUE
                         $sql_baixa = "UPDATE peca_estoque SET qtde = qtde - :quantidade 
                                     WHERE id_peca_est = :id_peca_est";
                         $stmt_baixa = $pdo->prepare($sql_baixa);
@@ -68,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 }
             }
 
+            // Prepara e encapsula
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':id_funcionario', $id_funcionario, PDO::PARAM_INT);
             $stmt->bindParam(':nome_client_ordem', $nome_client_ordem, PDO::PARAM_STR);
@@ -206,6 +209,7 @@ $tecnicos = $stmt_tecnicos->fetchAll(PDO::FETCH_ASSOC);
                                             <label for="tecnico" class="form-label">Técnico *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-person-gear"></i></span>
+                                                <!-- Selecionar o Técnico -->
                                                 <select class="form-select" id="tecnico" name="tecnico" required>
                                                     <option value="" selected disabled>Selecione o técnico</option>
                                                     <?php foreach ($tecnicos as $tecnico): ?>

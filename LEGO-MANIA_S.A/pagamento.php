@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscar'])) {
                 $mensagem_erro = "Erro na preparação da consulta";
             }
         } else {
-            // Buscar por nome ou CPF/CNPJ
+            // Buscar por nome ou CPF/CNPJ do cliente
             $sql = "SELECT no.*, c.nome_cliente, c.cpf_cnpj, c.telefone, c.email,
                     f.nome_funcionario as tecnico_nome
                     FROM nova_ordem no 

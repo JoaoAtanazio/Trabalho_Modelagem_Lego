@@ -8,6 +8,7 @@
         exit();
     }
     
+    // Verifica se o formulario foi enviado e se o metodo for igual a POST
     if ($_SERVER['REQUEST_METHOD']=="POST"){
         $id_peca = $_POST['id_peca_est'];
         $nome_peca = trim($_POST['nome_peca']);
@@ -25,8 +26,8 @@
         $preco = (float)$preco;
         $quantidade = (int)$_POST['quantidade'];
         $quantidade_minima = isset($_POST['quantidade_minima']) ? (int)$_POST['quantidade_minima'] : 0;
-// ATUALIZA OS DADOS DO USUÁRIO
 
+        // ATUALIZA OS DADOS DO USUÁRIO
         $sql="UPDATE peca_estoque SET nome_peca = :nome_peca,tipo=:tipo,id_fornecedor=:fornecedor,preco=:preco,qtde=:quantidade,qtde_minima=:quantidade_minima WHERE id_peca_est = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':nome_peca',$nome_peca);
@@ -37,11 +38,13 @@
         $stmt->bindParam(':quantidade_minima',$quantidade_minima);
         $stmt->bindParam(':id',$id_peca);
 
+        // Alerta de quantidade minina no estoque.
         if($quantidade < $quantidade_minima){
             echo "<script>alert('A quantidade em estoque não pode ser menor que a quantidade mínima!');window.location.href='relatorio_pecas_estoque.php?id=$id_peca';</script>";
             exit();
         }
 
+        // Alerta de peça atualizada ou erro ao atualizar peça.
     if($stmt->execute()){
         echo "<script>alert('Peça atualizado com sucesso!');window.location.href='relatorio_pecas_estoque.php';</script>";
     } else{

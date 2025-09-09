@@ -9,6 +9,7 @@ if ($_SESSION['perfil'] != 1) {
 }
 
 try {
+    // Remove todos os registro do LOG 
     $sql = "TRUNCATE TABLE log_acao";
     $pdo->exec($sql);
     

@@ -3,6 +3,7 @@ session_start();
 require_once 'conexao.php';
 require_once 'php/permissoes.php';
 
+// Verifica o id do usuario logado
 if(!isset($_SESSION['id_usuario'])){
   header("Location: index.php");
   exit();
@@ -12,6 +13,7 @@ if(!isset($_SESSION['id_usuario'])){
 $id_perfil = $_SESSION['perfil'];
 $sqlPerfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
 
+// Prepara para encapsular
 $stmtPerfil = $pdo -> prepare($sqlPerfil);
 $stmtPerfil -> bindParam(":id_perfil",$id_perfil);
 $stmtPerfil -> execute();
@@ -45,6 +47,7 @@ $stmtClientes = $pdo->query($sqlClientes);
 $stats['total_clientes'] = $stmtClientes->fetch(PDO::FETCH_ASSOC)['total'];
 
 // Receita total (últimos 30 dias) - apenas ordens concluídas
+// Esta função é utilizada quando um conjunto de campos for passado e deve ser retornado o primeiro não nulo
 $sqlReceita = "SELECT COALESCE(SUM(valor_total), 0) as receita FROM nova_ordem 
               WHERE status_ordem = 'Concluído' 
               AND dt_recebimento >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
@@ -64,6 +67,12 @@ $stmtUltimasOrdens = $pdo->query($sqlUltimasOrdens);
 $ultimas_ordens = $stmtUltimasOrdens->fetchAll(PDO::FETCH_ASSOC);
 
 // Buscar ordens por status (para gráfico)
+/*
+  Verifica se o status da ordem é "Aberta".
+  Se for, retorna 1.
+  Se não for, retorna 0.
+  Para mostrar no dashboard de estatisticas.
+*/
 $sqlOrdensStatus = "SELECT 
                     SUM(CASE WHEN status_ordem = 'Aberta' THEN 1 ELSE 0 END) as aberta,
                     SUM(CASE WHEN status_ordem = 'Em Andamento' THEN 1 ELSE 0 END) as andamento,
@@ -277,12 +286,14 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
                       <p class="mb-1"><?php echo htmlspecialchars($ordem['marca_aparelho']); ?> - <?php echo substr(htmlspecialchars($ordem['problema']), 0, 50); ?>...</p>
                       <div class="d-flex justify-content-between align-items-center">
                         <small>
+                          <!-- Verifica tem algum tecnico atribuido a O.S -->
                           <?php if(!empty($ordem['tecnico'])): ?>
                             <i class="bi bi-person"></i> <?php echo htmlspecialchars($ordem['tecnico']); ?>
                           <?php else: ?>
                             <span class="text-muted">Sem técnico atribuído</span>
                           <?php endif; ?>
                         </small>
+                          <!-- Verifica tem algum status atribuido a O.S -->
                         <?php if(!empty($ordem['status'])): ?>
                           <span class="badge <?php echo $status_class; ?> status-badge"><?php echo $ordem['status']; ?></span>
                         <?php else: ?>

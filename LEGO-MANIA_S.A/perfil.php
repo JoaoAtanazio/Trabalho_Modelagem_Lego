@@ -13,6 +13,7 @@ if (!isset($_SESSION['id_usuario'])) {
 $id_usuario = $_SESSION['id_usuario'];
 
 try {
+    // Faz uma QUERY para buscar as informações do usuario logado
     $sql = "SELECT u.*, p.nome_perfil 
             FROM usuario u 
             INNER JOIN perfil p ON u.id_perfil = p.id_perfil 
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editar_perfil'])) {
     $telefone = $_POST['telefone'];
     
     try {
+        // Faz a QUERY de atualização caso o usuario queira alterar o nome ou email
         $sql_update = "UPDATE usuario SET nome_usuario = :nome, email = :email WHERE id_usuario = :id";
         $stmt_update = $pdo->prepare($sql_update);
         $stmt_update->bindParam(':nome', $nome);
@@ -72,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['alterar_senha'])) {
         if ($nova_senha === $confirmar_senha) {
             $nova_senha_hash = password_hash($nova_senha, PASSWORD_DEFAULT);
             
+            // Atualiza a senha do usuario no banco
             $sql_senha = "UPDATE usuario SET senha = :senha WHERE id_usuario = :id";
             $stmt_senha = $pdo->prepare($sql_senha);
             $stmt_senha->bindParam(':senha', $nova_senha_hash);

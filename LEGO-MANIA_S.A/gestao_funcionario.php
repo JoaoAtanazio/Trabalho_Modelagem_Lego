@@ -25,7 +25,7 @@
         $busca = trim($_GET['busca']);
     }
 
-    // CONSTRUIR A QUERY BASE
+    // CONSTRUIR A QUERY PARA BUSCAR AS INFORMAÇÕES/MOTIVO DO FUNCIONARIO POR SELECT
     $sql = "SELECT f.*, m.descricao as motivo_inatividade 
             FROM funcionario f 
             LEFT JOIN motivo_inatividade m ON f.id_motivo_inatividade = m.id_motivo";
@@ -68,6 +68,7 @@
     $funcionarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     // INATIVAR FUNCIONARIO //
+
     if(isset($_GET['id']) && is_numeric($_GET['id'])){
         $id_funcionario = $_GET['id'];
         
@@ -99,6 +100,7 @@
     function calcularMediaSalarial() {
         global $pdo;
     
+        // Faz uma busca por média de salario dos funcionarios ativos.
         $sql = "SELECT AVG(salario) as media_salarial FROM funcionario WHERE status = 'Ativo'";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
@@ -174,6 +176,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <!-- Busca por todos os status ou status selecionados(ativos/inativos) -->
                                         <select name="status" id="status" class="form-select form-select-sm">
                                             <option value="">Todos os status</option>
                                             <option value="Ativo" <?= (isset($_GET['status']) && $_GET['status'] == 'Ativo') ? 'selected' : '' ?>>Ativo</option>

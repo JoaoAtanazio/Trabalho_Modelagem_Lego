@@ -30,7 +30,7 @@
         $busca = trim($_GET['busca']);
     }
 
-    // CONSTRUIR A QUERY BASE
+    // CONSTRUIR A QUERY QUE BUSCA INFORMAÇÕES DO FORNECEDOR
     $sql = "SELECT * FROM fornecedor";
     $where_conditions = [];
     $params = [];
@@ -84,9 +84,11 @@
         if(isset($_GET['status'])) {
             $novo_status = $_GET['status'];
             
+            // Comando para atualizar status do fornecedor
             $sql = "UPDATE fornecedor SET status = :status WHERE id_fornecedor = :id";
             $mensagem = 'Status do fornecedor alterado com sucesso!';
         
+            //encapsula e protege
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':status', $novo_status);
             $stmt->bindParam(':id', $id_fornecedor, PDO::PARAM_INT);
@@ -191,6 +193,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <!-- Select em html para selecionar os status do fornecedor para busca -->
                                         <select name="status" id="status" class="form-select form-select-sm">
                                             <option value="">Todos os status</option>
                                             <option value="Ativo" <?= (isset($_GET['status']) && $_GET['status'] == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
@@ -201,6 +204,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
+                                        <!-- Select em html para selecionar o ramu do fornecedor para busca -->
                                         <select name="ramo" id="ramo" class="form-select form-select-sm">
                                             <option value="">Todos os ramos</option>
                                             <option value="Eletrônicos" <?= (isset($_GET['ramo']) && $_GET['ramo'] == 'Eletrônicos') ? 'selected' : '' ?>>Eletrônicos</option>
@@ -211,6 +215,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
+                                        <!-- Filtro para limpar busca -->
                                         <?php if(isset($_GET['busca']) || isset($_GET['status']) || isset($_GET['ramo'])): ?>
                                             <a href="gestao_fornecedor.php" class="btn btn-outline-danger btn-sm">Limpar Filtros</a>
                                         <?php endif; ?>
@@ -238,6 +243,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <!-- Percorre o array e traz a busca por meio da QUERY -->
                                             <?php foreach($fornecedores as $fornecedor): ?>
                                                 <tr>
                                                     <td><center><?=htmlspecialchars($fornecedor['id_fornecedor'])?></center></td>
@@ -247,6 +253,7 @@
                                                     <td><center><?=htmlspecialchars($fornecedor['telefone'])?></center></td>
                                                     <td>
                                                         <center>
+                                                            
                                                             <?php 
                                                             $badge_class = '';
                                                             switch($fornecedor['status']) {

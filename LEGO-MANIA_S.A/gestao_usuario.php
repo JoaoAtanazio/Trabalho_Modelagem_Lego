@@ -30,7 +30,7 @@
         $busca = trim($_GET['busca']);
     }
 
-    // CONSTRUIR A QUERY BASE
+    // CONSTRUIR A QUERY PARA BUSCAR INFORMAÇÕE DO USUARIO, PERFIL E MOTIVO DA INATIVIDADE
     $sql = "SELECT u.*, p.nome_perfil, m.descricao as motivo_inatividade 
             FROM usuario u 
             LEFT JOIN perfil p ON u.id_perfil = p.id_perfil 

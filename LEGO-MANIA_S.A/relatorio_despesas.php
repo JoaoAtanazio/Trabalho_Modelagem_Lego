@@ -3,6 +3,7 @@ session_start();
 require_once 'php/permissoes.php';
 require_once 'conexao.php';
 
+// Verifica se o usuario tem permissão de ADM, Funcionario ou Técnico
 if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=2 && $_SESSION['perfil']!=4){
     echo "<script> alert ('Acesso negado!');window.location.href='principal.php';</script>";
     exit();
@@ -35,10 +36,11 @@ $quantidade_total_pecas = 0;
 $categorias_valor = ['hardware' => 0, 'perifericos' => 0, 'cabos' => 0, 'outros' => 0];
 $categorias_quantidade = ['hardware' => 0, 'perifericos' => 0, 'cabos' => 0, 'outros' => 0];
 
+// Percorre cada elemento de peça no estoque
 foreach ($pecas_estoque as $peca) {
     $valor_total_estoque += $peca['valor_total'];
-    $quantidade_total_pecas += $peca['qtde'];
-    
+    $quantidade_total_pecas += $peca['qtde'];   
+    // tipo da peça
     $tipo = strtolower($peca['tipo']);
     if (isset($categorias_valor[$tipo])) {
         $categorias_valor[$tipo] += $peca['valor_total'];
@@ -255,6 +257,7 @@ $todas_pecas = $pecas_estoque; // Todas as peças ordenadas
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <!-- Percorre a variavel peça no estoque e tras a busca por meio da QUERY -->
                                         <?php foreach($pecas_estoque as $peca): ?>
                                         <tr>
                                             <td><?= htmlspecialchars($peca['id_peca_est']) ?></td>
@@ -516,6 +519,7 @@ $todas_pecas = $pecas_estoque; // Todas as peças ordenadas
                 head: [['ID', 'Nome', 'Categoria', 'Qtd', 'Preço Unit.', 'Valor Total']],
                 body: [
                     <?php 
+                    // Imprime as informações
                     foreach($pecas_estoque as $peca) {
                         echo "[";
                         echo "'" . $peca['id_peca_est'] . "',";

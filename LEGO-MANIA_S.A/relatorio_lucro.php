@@ -8,7 +8,10 @@ if($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] !
     exit();
 }
 
-// Consulta para obter dados das ordens e calcular lucros
+/* Consulta SQL que calcula o lucro bruto de ordens concluídas,
+    subtraindo o custo total das peças utilizadas do valor total da ordem, 
+    com informações do cliente e técnico responsável.
+*/
 $sql = "
     SELECT 
         no.id_ordem,
@@ -39,6 +42,7 @@ $total_valor_ordens = 0;
 $total_custo_pecas = 0;
 $total_lucro_bruto = 0;
 
+// Este loop soma os valores de cada ordem nos totais de valor, custo e lucro.
 foreach ($ordens as $ordem) {
     $total_valor_ordens += $ordem['valor_ordem'];
     $total_custo_pecas += $ordem['custo_pecas'];
@@ -67,7 +71,7 @@ foreach ($ordens as $ordem) {
     $dados_grafico_mensal[$mes]['custo_pecas'] += $ordem['custo_pecas'];
     $dados_grafico_mensal[$mes]['lucro'] += $ordem['lucro_bruto'];
     
-    // Categorizar por faixa de lucro
+    // Classifica o lucro bruto em faixas de valores e conta quantas ordens pertencem a cada categoria.
     if ($ordem['lucro_bruto'] <= 100) {
         $dados_grafico_categorias['0-100']++;
     } elseif ($ordem['lucro_bruto'] <= 500) {
@@ -259,6 +263,7 @@ $top_ordens = array_slice($ordens_lucrativas, 0, 10);
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                <!-- Me da as top ordens -->
                                                 <?php foreach ($top_ordens as $ordem): 
                                                     $margem_ordem = $ordem['valor_ordem'] > 0 ? ($ordem['lucro_bruto'] / $ordem['valor_ordem']) * 100 : 0;
                                                     $margem_class = $margem_ordem >= 20 ? 'text-success' : ($margem_ordem >= 10 ? 'text-warning' : 'text-danger');
