@@ -8,18 +8,22 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
+// Verifica se o formulário foi enviado e se a variável não está vazia
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_ordem'])) {
-    $id_ordem      = $_POST['id_ordem'];
-    $nome_cliente  = $_POST['nome_cliente'];
-    $tecnico       = $_POST['tecnico'];
-    $marca         = $_POST['marca_aparelho'];
-    $prioridade    = $_POST['prioridade'];
-    $problema      = $_POST['problema'];
-    $dt_receb      = $_POST['dt_recebimento'];
-    $valor_total   = $_POST['valor_total'];
-    $observacao    = $_POST['observacao'];
+    // Coleta da dados
+    $id_ordem = $_POST['id_ordem'];
+    $nome_cliente = $_POST['nome_cliente'];
+    $tecnico = $_POST['tecnico'];
+    $marca = $_POST['marca_aparelho'];
+    $prioridade = $_POST['prioridade'];
+    $problema = $_POST['problema'];
+    $dt_receb = $_POST['dt_recebimento'];
+    $valor_total = $_POST['valor_total'];
+    $observacao = $_POST['observacao'];
 
+    // Inicia um bloco de código para tratamento de erros
     try {
+        // Construir a query de atualização
         $sql = "UPDATE nova_ordem 
                 SET nome_client_ordem = :nome_cliente,
                     tecnico = :tecnico,
@@ -31,7 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_ordem'])) {
                     observacao = :observacao
                 WHERE id_ordem = :id_ordem";
 
+        // Preparando a variável sql
         $stmt = $pdo->prepare($sql);
+        // bindParam liga a variável ao parâmetro da query, enviando seu valor apenas na execução do execute().
         $stmt->bindParam(':nome_cliente', $nome_cliente);
         $stmt->bindParam(':tecnico', $tecnico);
         $stmt->bindParam(':marca', $marca);
@@ -42,14 +48,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_ordem'])) {
         $stmt->bindParam(':observacao', $observacao);
         $stmt->bindParam(':id_ordem', $id_ordem);
 
+        // Executa a query preparada e retorna mensagens
         if ($stmt->execute()) {
             echo "<script>alert('Ordem alterada com sucesso!'); window.location.href='consultar_ordem.php';</script>";
         } else {
             echo "<script>alert('Erro ao alterar a ordem!'); window.history.back();</script>";
         }
+    // Captura erros vindo do try e exibe alerta de erro
     } catch (Exception $e) {
         echo "<script>alert('Erro: " . $e->getMessage() . "'); window.history.back();</script>";
     }
+// Se o formulário não for enviado, redireciona á página
 } else {
     echo "<script>alert('Dados inválidos.'); window.location.href='consultar_ordem.php';</script>";
 }
