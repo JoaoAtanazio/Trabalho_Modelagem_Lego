@@ -1,11 +1,14 @@
 <?php
 require_once 'conexao.php';
 
+// Verifica se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Coleta de dados
     // Obter o ID do fornecedor (deve vir de um campo hidden no formulário)
     $id_fornecedor = $_POST['id_fornecedor'];
-    
+    // TRIM retira os espaços de uma string
     $nome_fornecedor = trim($_POST['nome_fornecedor']);
+    // preg_replace remove oq não for número da string, deixando apenas digitos de 0-9
     $cpf_cnpj = preg_replace('/[^0-9]/', '', $_POST['cpf_cnpj']);
     $ramo_atividade = trim($_POST['ramo_atividade']);
     $telefone = preg_replace('/[^0-9]/', '', $_POST['telefone']);
@@ -30,7 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             email = :email
             WHERE id_fornecedor = :id_fornecedor";
     
+    // Preparando a variável sql
     $stmt = $pdo->prepare($sql);
+    // bindParam liga a variável ao parâmetro da query, enviando seu valor apenas na execução do execute().
     $stmt->bindParam(':nome_fornecedor', $nome_fornecedor);
     $stmt->bindParam(':cpf_cnpj', $cpf_cnpj);
     $stmt->bindParam(':ramo_atividade', $ramo_atividade);
@@ -41,13 +46,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':cidade', $cidade);
     $stmt->bindParam(':estado', $estado);
     $stmt->bindParam(':email', $email);
+    // PARAM_INT Especifica a variável como número inteiro
     $stmt->bindParam(':id_fornecedor', $id_fornecedor, PDO::PARAM_INT);
     
+    // Executa a query preparada e retorna mensagens
     if ($stmt->execute()) {
         echo "<script>alert('Fornecedor atualizado com sucesso!');window.location.href='gestao_fornecedor.php';</script>";
     } else {
         echo "<script>alert('Erro ao atualizar o fornecedor!');window.history.back();</script>";
     }
+// Se o formulário não for enviado, redireciona á página
 } else {
     header("Location: gestao_fornecedor.php");
     exit();

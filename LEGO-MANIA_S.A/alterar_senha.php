@@ -2,39 +2,48 @@
     session_start();
     require_once 'conexao.php';
 
-    // Garante que o usuário esteja logado
+    // Verifica que o usuário esteja logado
     if(!isset($_SESSION['id_usuario'])) {
         echo "<script>alert('Acesso Negado!'); window.location.href='index.php';</script>";
         exit();
     }
-
+ 
+    // Verifica se o formulário foi enviado
     if($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Coleta de dados
         $id_usuario = $_SESSION['id_usuario'];
         $nova_senha = $_POST['nova_senha'];
         $confirmar_senha = $_POST['confirmar_senha'];
 
+        // Verifica se as senhas são iguais(nova e confirmação)
         if($nova_senha !== $confirmar_senha) {
             echo "<script>alert('As senhas não coincidem!');</script>";
         }
+        // Se a senha não conter pelo menos 8 caracteres, retorna erro
         elseif(strlen($nova_senha) < 8) {
             echo "<script>alert('A senha deve ter no mínimo 8 caracteres!');</script>";
         }
+        // Se a senha for igual á senha temporária, retorna erro
         elseif($nova_senha === "temp123") {
             echo "<script>alert('Escolha uma senha diferente de temporaria!');</script>";
         }
         else {
+            // Criptograda a senha
             $senha_hash = password_hash($nova_senha, PASSWORD_DEFAULT);
 
             // Atualiza a senha e remove o status de temporária
             $sql = "UPDATE usuario SET senha = :senha,senha_temporaria = FALSE WHERE id_usuario = :id";
+            // Prepara a query
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':senha',$senha_hash);
             $stmt->bindParam(':id',$id_usuario);
 
+            // Executa a query preparada e retorna mensagens
             if($stmt->execute()) {
                 session_destroy(); // Finaliza a sessão
                 echo "<script>alert('Senha alterada com sucesso! Faça login novamente');window.location.href='index.php';</script>";
             }
+            // Se der algum erro na query
             else {
                 echo "<script>alert('Erro ao alterar a senha!');</script>";
             }
@@ -73,6 +82,7 @@
             </div>
 
             <label>
+                <!-- Chama a função de exibir senha-->
                 <input type="checkbox" onclick="mostrarSenha()"> Mostrar Senha
             </label><br><br>
 
