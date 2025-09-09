@@ -286,7 +286,6 @@ if (isset($_POST['alterar_ordem'])) {
             }
         }
         
-        // 4. Remover peças que não estão mais na lista
         foreach ($pecas_antigas_map as $id_peca_est => $quantidade_antiga) {
             if (!isset($pecas_novas_map[$id_peca_est])) {
                 // Devolver ao estoque a quantidade que foi removida
@@ -299,7 +298,6 @@ if (isset($_POST['alterar_ordem'])) {
             }
         }
         
-        // 5. Atualizar tabela de peças utilizadas na ordem
         // Primeiro, remover todas as peças anteriores
         $sql_delete_pecas = "DELETE FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
         $stmt_delete_pecas = $pdo->prepare($sql_delete_pecas);

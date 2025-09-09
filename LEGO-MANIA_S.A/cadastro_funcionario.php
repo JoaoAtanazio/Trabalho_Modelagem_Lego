@@ -3,12 +3,13 @@ session_start();
 require_once 'conexao.php';
 require_once 'php/permissoes.php';
 
-// VERIFICA SE O USUARIO ESTÁ LOGADO E TEM PERMISSÃO
+// Verifica se o usuário está logado e tem permissão
 if (!isset($_SESSION['id_usuario'])) {
     echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
     exit();
 }
 
+// Verifica se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Recebe e sanitiza os dados do formulário
     $nome_funcionario = trim($_POST['nome']);
@@ -37,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         exit();
     }
 
+    // Tratamemto de erros
     try {
         // Verificar se CPF/CNPJ já existe
         $verificaCPF = $pdo->prepare("SELECT COUNT(*) FROM funcionario WHERE cpf_funcionario = :cpf");
@@ -64,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->bindParam(':dt_nascimento', $dt_nascimento, PDO::PARAM_STR);
 
+        // Executa a query
         if ($stmt->execute()) {
             // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
             $id_novo_funcionario = $pdo->lastInsertId();            

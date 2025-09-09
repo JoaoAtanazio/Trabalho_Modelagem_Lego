@@ -3,15 +3,17 @@ session_start();
 require_once 'conexao.php';
 require_once 'php/permissoes.php';
 
-// VERIFICA SE O USUARIO TEM PERMISSÃO
+// Verifica se o usuário tem permissão
 if ($_SESSION['perfil'] != 1) {
     echo "<script>alert('Acesso Negado!'); window.location.href='principal.php';</script>";
     exit();
 }
 
+// Verifica se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $nome_usuario = trim($_POST['nome_usuario']);
     $email = trim($_POST['email']);
+    // Criptografa a senha
     $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
     $id_perfil = $_POST['id_perfil'];
 
@@ -20,25 +22,28 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         echo "<script>alert('Preencha todos os campos obrigatórios!'); window.history.back();</script>";
         exit();
     }
-
+    // Tratamento de erros
     try {
         // Verificar se email já existe
         $verificaEmail = $pdo->prepare("SELECT COUNT(*) FROM usuario WHERE email = :email");
         $verificaEmail->bindParam(':email', $email, PDO::PARAM_STR);
         $verificaEmail->execute();
 
+        // Verifica se o email já está cadastrado
         if ($verificaEmail->fetchColumn() > 0) {
             echo "<script>alert('Erro: E-mail já cadastrado no sistema!'); window.history.back();</script>";
             exit();
         }
-
+        // Cria a query de inserção
         $sql = "INSERT INTO usuario(nome_usuario, email, senha, id_perfil) VALUES (:nome_usuario, :email, :senha, :id_perfil)";
+        // Prepara a query
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':nome_usuario', $nome_usuario);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':senha', $senha);
         $stmt->bindParam(':id_perfil', $id_perfil);
 
+        // Executa a query
         if ($stmt->execute()) {
             // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
             $id_novo_usuario = $pdo->lastInsertId();
@@ -54,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             // Incluir informações na ação
             $acao = "Cadastro de usuário: " . $nome_usuario . " (" . $email . ") como " . $nome_perfil;
             
-            // Registrar o log - CORRIGIDO: passando id_usuario como primeiro parâmetro
+            // Registrar o log
             if (function_exists('registrarLog')) {
                 registrarLog($_SESSION['id_usuario'], $acao, "usuario", $id_novo_usuario);
             } else {
@@ -68,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         } else {
             echo "<script>alert('Erro ao cadastrar usuário!'); window.history.back();</script>";
         }
+    // Corrige possíveis erros dentro do 'try'
     } catch (PDOException $e) {
         if ($e->getCode() == 23000) {
             echo "<script>alert('Erro: E-mail já cadastrado no sistema!'); window.history.back();</script>";

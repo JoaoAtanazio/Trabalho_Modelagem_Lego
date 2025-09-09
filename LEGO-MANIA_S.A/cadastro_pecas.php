@@ -3,7 +3,7 @@ session_start();
 require_once 'conexao.php';
 require_once 'php/permissoes.php';
 
-// VERIFICA SE O USUARIO ESTÁ LOGADO E TEM PERMISSÃO
+// Verifica se o usuário está logado
 if (!isset($_SESSION['id_usuario'])) {
     echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
     exit();
@@ -19,6 +19,7 @@ try {
     error_log("Erro ao buscar fornecedores: " . $e->getMessage());
 }
 
+// Verifica se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Recebe e sanitiza os dados do formulário
     $nome_peca = trim($_POST['nome_peca']);
@@ -64,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $sql = "INSERT INTO peca_estoque (id_funcionario, id_fornecedor, nome_peca, descricao_peca, qtde, qtde_minima, tipo, preco, dt_cadastro) 
                 VALUES (:id_funcionario, :id_fornecedor, :nome_peca, :descricao_peca, :qtde, :qtde_minima, :tipo, :preco, :dt_cadastro)";
         
+        // Prepara a query
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id_funcionario', $id_usuario_cadastrante, PDO::PARAM_INT);
         $stmt->bindParam(':id_fornecedor', $id_fornecedor, PDO::PARAM_INT);
@@ -75,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $stmt->bindParam(':preco', $preco, PDO::PARAM_STR);
         $stmt->bindParam(':dt_cadastro', $data_cadastro, PDO::PARAM_STR);
 
+        // Executa a query e registra no log
         if ($stmt->execute()) {
             // REGISTRAR LOG - APÓS INSERT BEM-SUCEDIDO
             $id_nova_peca = $pdo->lastInsertId();
