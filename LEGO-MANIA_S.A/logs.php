@@ -9,7 +9,7 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
-// Consulta para obter todos os logs
+// Consulta para obter todos os logs na tabela(logs_acao)
 $sql = "SELECT l.*, u.nome_usuario, p.nome_perfil
         FROM log_acao l
         JOIN usuario u ON l.id_usuario = u.id_usuario

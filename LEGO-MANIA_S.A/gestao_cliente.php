@@ -31,9 +31,8 @@
         $busca = trim($_GET['busca']);
     }
 
-    // CONSTRUIR A QUERY BASE
-        $sql = "SELECT 
-        c.id_cliente,
+    // Construir o select para pegar informações do cliente.
+        $sql = "SELECT c.id_cliente,
         c.nome_cliente,
         c.cpf_cnpj,
         c.endereco,
@@ -48,6 +47,7 @@
         f.nome_funcionario 
         FROM cliente c 
         LEFT JOIN funcionario f ON c.id_funcionario = f.id_funcionario";
+
     $where_conditions = [];
     $params = [];
 
@@ -71,14 +71,16 @@
 
     // COMBINAR CONDITIONS SE HOUVER
     if (!empty($where_conditions)) {
-        $sql .= " WHERE " . implode(" AND ", $where_conditions);
+        $sql .= " WHERE " . implode(" AND ", $where_conditions); // implode: unir um array de strings em uma única string
     }
 
+    // .= Concatenação e Atribuição
     $sql .= " ORDER BY c.nome_cliente ASC";
 
     // PREPARAR E EXECUTAR A QUERY
     $stmt = $pdo->prepare($sql);
 
+    // Para pelos parametros chaves e encapsula
     foreach ($params as $key => $value) {
         $stmt->bindValue($key, $value);
     }
@@ -104,9 +106,9 @@
         }
     
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id_cliente, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id_cliente, PDO::PARAM_INT); // Protege ID do cliente
 
-        if($stmt->execute()){
+        if($stmt->execute()){ // se der certo emite a mensagem e retorna para "gestao_cliente.php"
             echo "<script>alert('$mensagem');window.location.href='gestao_cliente.php';</script>";
         } else{
             echo "<script>alert('Erro ao alterar status do cliente!');</script>";
@@ -122,8 +124,8 @@
         }
         $cidades[$cidade]++;
     }
-    arsort($cidades);
-    $totalClientes = count($clientes);
+    arsort($cidades); // Retorna as cidades por ordem do maior para o menor
+    $totalClientes = count($clientes); // total clientes
 ?>
 
 <!DOCTYPE html>
@@ -224,8 +226,10 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <!-- Passa pelo array(BD) e traz as consultas por meio da QUERY do cliente -->
                                             <?php foreach($clientes as $cliente): ?>
                                                 <tr>
+                                                    <!-- Consultas por meio da QUERY(cliente) sendo chamada -->
                                                     <td><center><?=htmlspecialchars($cliente['id_cliente'])?></center></td>
                                                     <td><center><?=htmlspecialchars($cliente['nome_cliente'])?></center></td>
                                                     <td><center><?=htmlspecialchars($cliente['cpf_cnpj'])?></center></td>
@@ -419,6 +423,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        <!-- Mostra o total de cidades e o percentual de cidades -->
                                                         <?php
                                                         $totalClientes = count($clientes);
                                                         foreach($cidades as $cidade => $quantidade):
@@ -480,6 +485,7 @@
             document.getElementById("sidebar").classList.toggle("d-none");
         });
 
+        // Função de mostrar a hora
         function updateClock() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('pt-BR');
@@ -498,6 +504,7 @@
                         return;
                     }
 
+                    // Mostra os detalhes no modal das informações do cliente
                     document.getElementById('id_cliente').value = cliente.id_cliente;
                     document.getElementById('nome_cliente').value = cliente.nome_cliente;
                     document.getElementById('cpf_cnpj').value = cliente.cpf_cnpj;
@@ -530,6 +537,7 @@
                         return;
                     }
 
+                    // Caso não seja informado
                     let detalhesHTML = `
                         <div class="mb-3">
                             <strong>ID:</strong> ${cliente.id_cliente}
@@ -574,6 +582,7 @@
                             tempoInativo = `${diffDays} dia(s)`;
                         }
 
+                        // Estilização boostrap e alerta caso n seja informado
                         detalhesHTML += `
                             <div class="mb-3">
                                 <strong>Status:</strong> 

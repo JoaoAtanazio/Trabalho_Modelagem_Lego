@@ -224,8 +224,10 @@ foreach ($saidas_pecas as $saida) {
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <!-- Conta as saídas de peças e percorre o array -->
                                         <?php if (count($saidas_pecas) > 0): ?>
                                             <?php foreach ($saidas_pecas as $saida): ?>
+                                                <!-- tras os resultados de uma busca(nome da peça, descrição...) -->
                                                 <tr>
                                                     <td><?php echo date('d/m/Y', strtotime($saida['dt_recebimento'])); ?></td>
                                                     <td><?php echo htmlspecialchars($saida['nome_peca']); ?></td>

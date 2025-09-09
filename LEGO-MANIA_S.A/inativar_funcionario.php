@@ -2,19 +2,19 @@
 session_start();
 require_once 'conexao.php';
 
-// Verificar permissões
+// Verifica se tem permissão de ADM ou de secretaria
 if($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3){
     echo "<script>alert('Acesso negado!');window.location.href='principal.php';</script>";
     exit();
 }
 
-// Buscar motivos de inatividade
+// Buscar motivos de inatividade 
 $sql_motivos = "SELECT * FROM motivo_inatividade ORDER BY descricao";
 $stmt_motivos = $pdo->prepare($sql_motivos);
 $stmt_motivos->execute();
 $motivos = $stmt_motivos->fetchAll(PDO::FETCH_ASSOC);
 
-// Buscar dados do funcionário
+// Buscar dados do funcionário por ID
 if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     $id_funcionario = $_GET['id'];
     $sql_funcionario = "SELECT * FROM funcionario WHERE id_funcionario = :id";
@@ -32,12 +32,14 @@ if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     exit();
 }
 
-// Processar inativação
+// Verifica se o formulario foi enviado, se tem algo e se o metodo é igual a POST(Processa inativação)
 if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inativar_funcionario'])) {
     $id_motivo = $_POST['id_motivo'];
     $observacao = trim($_POST['observacao']);
     
+    // Altera no banco status do funcionario
     $sql = "UPDATE funcionario SET status = 'Inativo', id_motivo_inatividade = :motivo, data_inatividade = CURDATE(), observacao_inatividade = :obs WHERE id_funcionario = :id";
+    // Protege e encapsula
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':motivo', $id_motivo, PDO::PARAM_INT);
     $stmt->bindParam(':obs', $observacao);
@@ -75,6 +77,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inativar_funcionario'])
                         <form method="POST" action="inativar_funcionario.php?id=<?= $id_funcionario ?>">
                             <div class="mb-3">
                                 <label for="id_motivo" class="form-label">Motivo da Inativação *</label>
+                                <!-- Seleciona o motivo da inatividade -->
                                 <select class="form-select" id="id_motivo" name="id_motivo" required>
                                     <option value="">Selecione um motivo</option>
                                     <?php foreach($motivos as $motivo): ?>
@@ -84,6 +87,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inativar_funcionario'])
                             </div>
                             
                             <div class="mb-3">
+                                <!-- Descreve a observação da inatividade -->
                                 <label for="observacao" class="form-label">Observações</label>
                                 <textarea class="form-control" id="observacao" name="observacao" rows="3" placeholder="Detalhes adicionais sobre a inativação"></textarea>
                             </div>

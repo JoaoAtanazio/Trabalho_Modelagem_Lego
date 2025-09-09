@@ -1,3 +1,4 @@
+<!-- Tela de recuperação de senha -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

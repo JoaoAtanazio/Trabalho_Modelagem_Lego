@@ -2,10 +2,12 @@
     session_start();
     require_once 'conexao.php';
 
+    // Verifica se o formulario foi enviado e se o metodo é igual a POST
     if($_SERVER['REQUEST_METHOD'] == "POST") {
         $email = $_POST['email'];
         $senha = $_POST['senha'];
 
+        // Faz uma Busca na tabela usuario no banco de dados
         $sql = "SELECT * FROM usuario WHERE email = :email";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':email', $email);  

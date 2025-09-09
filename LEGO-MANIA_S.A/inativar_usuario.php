@@ -2,7 +2,7 @@
 session_start();
 require_once 'conexao.php';
 
-// Verificar permissões
+// Verifica se tem permissão de ADM ou secretaria
 if($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3){
     echo "<script>alert('Acesso negado!');window.location.href='principal.php';</script>";
     exit();
@@ -14,7 +14,7 @@ $stmt_motivos = $pdo->prepare($sql_motivos);
 $stmt_motivos->execute();
 $motivos = $stmt_motivos->fetchAll(PDO::FETCH_ASSOC);
 
-// Buscar dados do usuário
+// Buscar dados do usuário por ID(GET)
 if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     $id_usuario = $_GET['id'];
     $sql_usuario = "SELECT * FROM usuario WHERE id_usuario = :id";
@@ -32,11 +32,12 @@ if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     exit();
 }
 
-// Processar inativação
+// // Verifica se o formulario foi enviado, se tem algo e se o metodo é igual a POST(Processa inativação)
 if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inativar_usuario'])) {
     $id_motivo = $_POST['id_motivo'];
     $observacao = trim($_POST['observacao']);
     
+    // Atualiza no banco o status do usuário
     $sql = "UPDATE usuario SET status = 'Inativo', id_motivo_inatividade = :motivo, data_inatividade = CURDATE(), observacao_inatividade = :obs WHERE id_usuario = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':motivo', $id_motivo, PDO::PARAM_INT);
@@ -75,6 +76,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inativar_usuario'])) {
                         <form method="POST" action="inativar_usuario.php?id=<?= $id_usuario ?>">
                             <div class="mb-3">
                                 <label for="id_motivo" class="form-label">Motivo da Inativação *</label>
+                                <!-- Seleciona o motivo da inatividade -->
                                 <select class="form-select" id="id_motivo" name="id_motivo" required>
                                     <option value="">Selecione um motivo</option>
                                     <?php foreach($motivos as $motivo): ?>

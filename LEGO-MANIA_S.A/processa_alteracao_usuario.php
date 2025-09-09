@@ -8,6 +8,7 @@ if($_SESSION['perfil'] != 1){
     exit();
 }
 
+// Verifica se o formulario foi enviado e se o metodo for igual a POST
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $id_usuario = $_POST['id_usuario'];
     $nome = $_POST['nome'];
@@ -27,11 +28,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 WHERE id_usuario = :id";
         $stmt = $pdo -> prepare($sql);
     }
+    // Protege e encapsula
     $stmt -> bindParam(':nome',$nome);
     $stmt -> bindParam(':email',$email);
     $stmt -> bindParam(':id_perfil',$id_perfil);
     $stmt -> bindParam(':id',$id_usuario);
 
+    // Alerta de atualizado ou erro ao atualizar
     if($stmt -> execute()){
         echo "<script>alert('Usuário atualizado com sucesso!');window.location.href='buscar_usuario.php';</script>";
     } else{
