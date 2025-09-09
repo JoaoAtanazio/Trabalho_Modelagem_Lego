@@ -176,104 +176,130 @@
     $pecas_estoque = $stmt_pecas->fetchAll(PDO::FETCH_ASSOC);
 
     // Processar alteração de ordem (incluindo peças utilizadas)
-    if (isset($_POST['alterar_ordem'])) {
-        $id_ordem = $_POST['id_ordem'];
+if (isset($_POST['alterar_ordem'])) {
+    $id_ordem = $_POST['id_ordem'];
+    
+    // Atualizar dados da ordem (código existente mantido)
+    $sql_update = "UPDATE nova_ordem SET 
+                    nome_client_ordem = :nome_cliente,
+                    tecnico = :tecnico,
+                    marca_aparelho = :marca_aparelho,
+                    prioridade = :prioridade,
+                    problema = :problema,
+                    dt_recebimento = :dt_recebimento,
+                    valor_total = :valor_total,
+                    observacao = :observacao
+                  WHERE id_ordem = :id_ordem";
+    
+    $stmt_update = $pdo->prepare($sql_update);
+    $stmt_update->execute([
+        ':nome_cliente' => $_POST['nome_cliente'],
+        ':tecnico' => $_POST['tecnico'],
+        ':marca_aparelho' => $_POST['marca_aparelho'],
+        ':prioridade' => $_POST['prioridade'],
+        ':problema' => $_POST['problema'],
+        ':dt_recebimento' => $_POST['dt_recebimento'],
+        ':valor_total' => $_POST['valor_total'],
+        ':observacao' => $_POST['observacao'],
+        ':id_ordem' => $id_ordem
+    ]);
+    
+    // Processar peças utilizadas - CÓDIGO CORRIGIDO
+    if (isset($_POST['pecas_utilizadas']) && is_array($_POST['pecas_utilizadas'])) {
         
-        // Atualizar dados da ordem
-        $sql_update = "UPDATE nova_ordem SET 
-                        nome_client_ordem = :nome_cliente,
-                        tecnico = :tecnico,
-                        marca_aparelho = :marca_aparelho,
-                        prioridade = :prioridade,
-                        problema = :problema,
-                        dt_recebimento = :dt_recebimento,
-                        valor_total = :valor_total,
-                        observacao = :observacao
-                      WHERE id_ordem = :id_ordem";
+        // 1. Buscar peças atualmente utilizadas na ordem
+        $sql_pecas_atuais = "SELECT id_peca_est, quantidade FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
+        $stmt_pecas_atuais = $pdo->prepare($sql_pecas_atuais);
+        $stmt_pecas_atuais->execute([':id_ordem' => $id_ordem]);
+        $pecas_antigas = $stmt_pecas_atuais->fetchAll(PDO::FETCH_ASSOC);
         
-        $stmt_update = $pdo->prepare($sql_update);
-        $stmt_update->execute([
-            ':nome_cliente' => $_POST['nome_cliente'],
-            ':tecnico' => $_POST['tecnico'],
-            ':marca_aparelho' => $_POST['marca_aparelho'],
-            ':prioridade' => $_POST['prioridade'],
-            ':problema' => $_POST['problema'],
-            ':dt_recebimento' => $_POST['dt_recebimento'],
-            ':valor_total' => $_POST['valor_total'],
-            ':observacao' => $_POST['observacao'],
-            ':id_ordem' => $id_ordem
-        ]);
+        // Converter para formato mais fácil de manipular
+        $pecas_antigas_map = [];
+        foreach ($pecas_antigas as $peca) {
+            $pecas_antigas_map[$peca['id_peca_est']] = (int)$peca['quantidade'];
+        }
         
-        // Processar peças utilizadas
-        if (isset($_POST['pecas_utilizadas']) && is_array($_POST['pecas_utilizadas'])) {
-            // Primeiro, remover peças anteriores desta ordem
-            $sql_delete_pecas = "DELETE FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
-            $stmt_delete_pecas = $pdo->prepare($sql_delete_pecas);
-            $stmt_delete_pecas->execute([':id_ordem' => $id_ordem]);
+        // 2. Processar novas peças
+        $pecas_novas_map = [];
+        foreach ($_POST['pecas_utilizadas'] as $id_peca_est) {
+            if (empty($id_peca_est)) continue;
             
-            // Inserir novas peças utilizadas
-            foreach ($_POST['pecas_utilizadas'] as $id_peca_est) {
+            $campo_quantidade = 'quantidade_' . $id_peca_est;
+            $quantidade = isset($_POST[$campo_quantidade]) ? (int)$_POST[$campo_quantidade] : 1;
             
-                $campo_quantidade = 'quantidade_' . $id_peca_est;
-                $quantidade = isset($_POST[$campo_quantidade]) ? (int)$_POST[$campo_quantidade] : 1;
+            if ($quantidade > 0) {
+                $pecas_novas_map[$id_peca_est] = $quantidade;
+            }
+        }
+        
+        // 3. Calcular diferenças e atualizar estoque
+        foreach ($pecas_novas_map as $id_peca_est => $quantidade_nova) {
+            $quantidade_antiga = isset($pecas_antigas_map[$id_peca_est]) ? $pecas_antigas_map[$id_peca_est] : 0;
+            $diferenca = $quantidade_nova - $quantidade_antiga;
+            
+            if ($diferenca != 0) {
+                // Verificar estoque atual
+                $sql_check_stock = "SELECT qtde, nome_peca FROM peca_estoque WHERE id_peca_est = :id_peca_est";
+                $stmt_check_stock = $pdo->prepare($sql_check_stock);
+                $stmt_check_stock->execute([':id_peca_est' => $id_peca_est]);
+                $estoque_info = $stmt_check_stock->fetch(PDO::FETCH_ASSOC);
                 
-                if ($quantidade > 0) {
-                    // Verificar estoque atual
-                    $sql_check_stock = "SELECT qtde FROM peca_estoque WHERE id_peca_est = :id_peca_est";
-                    $stmt_check_stock = $pdo->prepare($sql_check_stock);
-                    $stmt_check_stock->execute([':id_peca_est' => $id_peca_est]);
-                    $estoque_atual = $stmt_check_stock->fetchColumn();
-                    
-                    if ($estoque_atual < $quantidade) {
-                        echo "<script>alert('Erro: Estoque insuficiente para a peça selecionada!'); window.location.href='consultar_ordem.php';</script>";
-                        exit();
-                    }
-                    
-                    // Inserir na tabela de peças utilizadas
-                    $sql_insert_peca = "INSERT INTO ordem_servico_pecas (id_ordem, id_peca_est, quantidade) 
-                                        VALUES (:id_ordem, :id_peca_est, :quantidade)";
-                    $stmt_insert_peca = $pdo->prepare($sql_insert_peca);
-                    $stmt_insert_peca->execute([
-                        ':id_ordem' => $id_ordem,
-                        ':id_peca_est' => $id_peca_est,
-                        ':quantidade' => $quantidade
-                    ]);
-                    
-                    // Atualizar estoque (reduzir quantidade)
-                    $sql_update_stock = "UPDATE peca_estoque SET qtde = qtde - :quantidade WHERE id_peca_est = :id_peca_est";
-                    $stmt_update_stock = $pdo->prepare($sql_update_stock);
-                    $stmt_update_stock->execute([
-                        ':quantidade' => $quantidade,
-                        ':id_peca_est' => $id_peca_est
-                    ]);
-                    
-                    // Verificar se o estoque ficou baixo (3 ou menos)
-                    $novo_estoque = $estoque_atual - $quantidade;
-                    if ($novo_estoque <= 3) {
-                        $sql_get_nome_peca = "SELECT nome_peca FROM peca_estoque WHERE id_peca_est = :id_peca_est";
-                        $stmt_get_nome_peca = $pdo->prepare($sql_get_nome_peca);
-                        $stmt_get_nome_peca->execute([':id_peca_est' => $id_peca_est]);
-                        $nome_peca = $stmt_get_nome_peca->fetchColumn();
-                        
-                        echo "<script>alert('ATENÇÃO: Estoque da peça \\\"$nome_peca\\\" está baixo ($novo_estoque unidades restantes)!');</script>";
-                    }
-                    
-                    // Verificar se o estoque acabou
-                    if ($novo_estoque == 0) {
-                        $sql_get_nome_peca = "SELECT nome_peca FROM peca_estoque WHERE id_peca_est = :id_peca_est";
-                        $stmt_get_nome_peca = $pdo->prepare($sql_get_nome_peca);
-                        $stmt_get_nome_peca->execute([':id_peca_est' => $id_peca_est]);
-                        $nome_peca = $stmt_get_nome_peca->fetchColumn();
-                        
-                        echo "<script>alert('ATENÇÃO: Estoque da peça \\\"$nome_peca\\\" acabou!');</script>";
-                    }
-                } // Fecha if ($quantidade > 0)
-            } // Fecha foreach
-        } // Fecha if (isset($_POST['pecas_utilizadas']))
+                if ($estoque_info['qtde'] < $diferenca) {
+                    echo "<script>alert('Erro: Estoque insuficiente para a peça \\\"{$estoque_info['nome_peca']}\\\"! Disponível: {$estoque_info['qtde']}, Necessário: $diferenca'); window.location.href='consultar_ordem.php';</script>";
+                    exit();
+                }
+                
+                // Atualizar estoque pela diferença
+                $sql_update_stock = "UPDATE peca_estoque SET qtde = qtde - :diferenca WHERE id_peca_est = :id_peca_est";
+                $stmt_update_stock = $pdo->prepare($sql_update_stock);
+                $stmt_update_stock->execute([
+                    ':diferenca' => $diferenca,
+                    ':id_peca_est' => $id_peca_est
+                ]);
+                
+                // Verificar estoque baixo (código existente mantido)
+                $novo_estoque = $estoque_info['qtde'] - $diferenca;
+                if ($novo_estoque <= 3) {
+                    echo "<script>alert('ATENÇÃO: Estoque da peça \\\"{$estoque_info['nome_peca']}\\\" está baixo ($novo_estoque unidades restantes)!');</script>";
+                }
+            }
+        }
         
-        echo "<script>alert('Ordem atualizada com sucesso!'); window.location.href='consultar_ordem.php';</script>";
-        exit();
-    } // Fecha if (isset($_POST['alterar_ordem']))
+        // 4. Remover peças que não estão mais na lista
+        foreach ($pecas_antigas_map as $id_peca_est => $quantidade_antiga) {
+            if (!isset($pecas_novas_map[$id_peca_est])) {
+                // Devolver ao estoque a quantidade que foi removida
+                $sql_update_stock = "UPDATE peca_estoque SET qtde = qtde + :quantidade WHERE id_peca_est = :id_peca_est";
+                $stmt_update_stock = $pdo->prepare($sql_update_stock);
+                $stmt_update_stock->execute([
+                    ':quantidade' => $quantidade_antiga,
+                    ':id_peca_est' => $id_peca_est
+                ]);
+            }
+        }
+        
+        // 5. Atualizar tabela de peças utilizadas na ordem
+        // Primeiro, remover todas as peças anteriores
+        $sql_delete_pecas = "DELETE FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
+        $stmt_delete_pecas = $pdo->prepare($sql_delete_pecas);
+        $stmt_delete_pecas->execute([':id_ordem' => $id_ordem]);
+        
+        // Inserir novas peças utilizadas
+        foreach ($pecas_novas_map as $id_peca_est => $quantidade) {
+            $sql_insert_peca = "INSERT INTO ordem_servico_pecas (id_ordem, id_peca_est, quantidade) 
+                                VALUES (:id_ordem, :id_peca_est, :quantidade)";
+            $stmt_insert_peca = $pdo->prepare($sql_insert_peca);
+            $stmt_insert_peca->execute([
+                ':id_ordem' => $id_ordem,
+                ':id_peca_est' => $id_peca_est,
+                ':quantidade' => $quantidade
+            ]);
+        }
+    }
+    
+    echo "<script>alert('Ordem atualizada com sucesso!'); window.location.href='consultar_ordem.php';</script>";
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -1048,7 +1074,7 @@
                         <div id="feedback-${index}" class="form-text"></div>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label small mb-1">Ação</label>
+                        <label class="form-label small mb-1">Ação</label>z
                         <button type="button" class="btn btn-danger btn-sm w-100" onclick="removerPeca(this)">
                             <i class="bi bi-trash"></i> Remover
                         </button>
