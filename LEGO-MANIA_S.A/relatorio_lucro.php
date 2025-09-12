@@ -199,7 +199,7 @@ $top_ordens = array_slice($ordens_lucrativas, 0, 10);
                                         <i class="bi bi-currency-exchange fs-1"></i>
                                     </div>
                                     <h4 class="card-title">R$ <?= number_format($total_lucro_bruto, 2, ',', '.') ?></h4>
-                                    <p class="card-text text-muted">Lucro Bruto Total</p>
+                                    <p class="card-text text-muted">Lucro Líquido Total</p>
                                 </div>
                             </div>
                         </div>
