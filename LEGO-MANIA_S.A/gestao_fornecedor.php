@@ -19,12 +19,6 @@
     if(isset($_GET['status']) && !empty($_GET['status'])) {
         $filtro_status = $_GET['status'];
     }
-
-    // VERIFICA SE HÁ FILTRO POR RAMO (GET)
-    if(isset($_GET['ramo']) && !empty($_GET['ramo'])) {
-        $filtro_ramo = $_GET['ramo'];
-    }
-
     // VERIFICA SE HÁ BUSCA POR TEXTO (GET)
     if(isset($_GET['busca']) && !empty($_GET['busca'])){
         $busca = trim($_GET['busca']);
@@ -54,8 +48,8 @@
             $params[':busca'] = $busca;
         } else {
             $where_conditions[] = "(nome_fornecedor LIKE :busca_nome OR cpf_cnpj LIKE :busca_cpf)";
-            $params[':busca_nome'] = "%$busca%";
-            $params[':busca_cpf'] = "%$busca%";
+            $params[':busca_nome'] = "$busca%";
+            $params[':busca_cpf'] = "$busca%";
         }
     }
 
@@ -203,17 +197,6 @@
                                             <option value="Suspenso" <?= (isset($_GET['status']) && $_GET['status'] == 'Suspenso') ? 'selected' : '' ?>>Suspenso</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <!-- Select em html para selecionar o ramu do fornecedor para busca -->
-                                        <select name="ramo" id="ramo" class="form-select form-select-sm">
-                                            <option value="">Todos os ramos</option>
-                                            <option value="Eletrônicos" <?= (isset($_GET['ramo']) && $_GET['ramo'] == 'Eletrônicos') ? 'selected' : '' ?>>Eletrônicos</option>
-                                            <option value="Peças Mecânicas" <?= (isset($_GET['ramo']) && $_GET['ramo'] == 'Peças Mecânicas') ? 'selected' : '' ?>>Peças Mecânicas</option>
-                                            <option value="Plásticos" <?= (isset($_GET['ramo']) && $_GET['ramo'] == 'Plásticos') ? 'selected' : '' ?>>Plásticos</option>
-                                            <option value="Metais" <?= (isset($_GET['ramo']) && $_GET['ramo'] == 'Metais') ? 'selected' : '' ?>>Metais</option>
-                                            <option value="Embalagens" <?= (isset($_GET['ramo']) && $_GET['ramo'] == 'Embalagens') ? 'selected' : '' ?>>Embalagens</option>
-                                        </select>
-                                    </div>
                                     <div class="col-md-2">
                                         <!-- Filtro para limpar busca -->
                                         <?php if(isset($_GET['busca']) || isset($_GET['status']) || isset($_GET['ramo'])): ?>
@@ -293,25 +276,6 @@
                                 <div>
                                     <span class="text-muted">Mostrando <?= count($fornecedores) ?> de <?= count($fornecedores) ?> fornecedores</span>
                                 </div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
-                                        </li>
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
-                                        </li>
-                                    </ul>
-                                </nav>
                             </div>
                         </div>
                     </div>

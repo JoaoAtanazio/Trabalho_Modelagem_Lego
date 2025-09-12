@@ -55,7 +55,7 @@
             $params[':busca'] = $busca;
         } else {
             $where_conditions[] = "(c.nome_cliente LIKE :busca_nome OR no.nome_client_ordem LIKE :busca_nome)";
-            $params[':busca_nome'] = "%$busca%";
+            $params[':busca_nome'] = "$busca%";
         }
     }
 
