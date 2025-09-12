@@ -1,5 +1,6 @@
 <?php
     session_start();
+
     require_once 'conexao.php';
     require_once 'php/permissoes.php';
     require_once 'php/estatisticas.php';
@@ -45,8 +46,8 @@
             $params[':busca'] = $busca;
         } else {
             $where_conditions[] = "(f.nome_funcionario LIKE :busca_nome OR f.cpf_funcionario LIKE :busca_cpf)";
-            $params[':busca_nome'] = "%$busca%";
-            $params[':busca_cpf'] = "%$busca%";
+            $params[':busca_nome'] = "$busca%";
+            $params[':busca_cpf'] = "$busca%";
         }
     }
 
@@ -254,25 +255,7 @@
                                 <div>
                                     <span class="text-muted">Mostrando <?= count($funcionarios) ?> de <?= count($funcionarios) ?> funcionários</span>
                                 </div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
-                                        </li>
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                
                             </div>
                         </div>
                     </div>

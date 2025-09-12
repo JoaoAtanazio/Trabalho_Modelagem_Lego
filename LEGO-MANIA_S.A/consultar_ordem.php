@@ -55,7 +55,7 @@
             $params[':busca'] = $busca;
         } else {
             $where_conditions[] = "(c.nome_cliente LIKE :busca_nome OR no.nome_client_ordem LIKE :busca_nome)";
-            $params[':busca_nome'] = "%$busca%";
+            $params[':busca_nome'] = "$busca%";
         }
     }
 
@@ -286,7 +286,6 @@ if (isset($_POST['alterar_ordem'])) {
             }
         }
         
-        // 4. Remover peças que não estão mais na lista
         foreach ($pecas_antigas_map as $id_peca_est => $quantidade_antiga) {
             if (!isset($pecas_novas_map[$id_peca_est])) {
                 // Devolver ao estoque a quantidade que foi removida
@@ -299,7 +298,6 @@ if (isset($_POST['alterar_ordem'])) {
             }
         }
         
-        // 5. Atualizar tabela de peças utilizadas na ordem
         // Primeiro, remover todas as peças anteriores
         $sql_delete_pecas = "DELETE FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
         $stmt_delete_pecas = $pdo->prepare($sql_delete_pecas);
@@ -492,25 +490,7 @@ if (isset($_POST['alterar_ordem'])) {
                                 <div>
                                     <span class="text-muted">Mostrando <?= count($ordens) ?> de <?= count($ordens) ?> registros</span>
                                 </div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
-                                        </li>
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                
                             </div>
                         </div>
                     </div>
