@@ -1,0 +1,9 @@
+LEGO_MANIA_SA_O.S
+
+Funcionalidades a serem arrumadas/feitas:
+
+- Poder alterar o perfil do usuário; Por exemplo, promoção do atendente para administrador.
+
+- Alterar ordens não funfa
+
+- Filtro de status das ordens não funfa
