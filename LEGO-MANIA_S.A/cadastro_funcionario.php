@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="salario" class="form-label">Salário</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-                                                <input type="text" class="form-control" id="salario" name="salario" placeholder="R$ 0,00" required>
+                                                <input type="text" class="form-control" id="salario" name="salario" placeholder="R$ 0,00" maxlength="14" required>
                                             </div>
                                         </div>
 

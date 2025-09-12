@@ -217,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                             <label for="preco" class="form-label">Preço *</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text"><i class="bi bi-123"></i></span>
-                                                <input type="text" class="form-control" id="preco" name="preco" placeholder="R$ 49,99" min="0" oninput="mascaraPreco()" required>
+                                                <input type="text" class="form-control" id="preco" name="preco" placeholder="R$ 49,99" maxlength="14" min="0" oninput="mascaraPreco()" required>
                                             </div>
                                         </div>
 
