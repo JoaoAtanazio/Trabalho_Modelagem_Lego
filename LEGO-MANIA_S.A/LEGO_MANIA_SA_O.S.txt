@@ -29,3 +29,9 @@ Funcionalidades a serem arrumadas/feitas:
 - PHP e JAVAs internos, se der tempo separar em arquivos externos;
 
 - Não tem como conferir a senha do usuário;
+
+- Mascara de formulários faltando;
+
+- Casos de documentação;
+
+-
