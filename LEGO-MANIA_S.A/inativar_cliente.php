@@ -30,6 +30,7 @@ if(isset($_GET['id']) && is_numeric($_GET['id'])) {
 if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['inativar_cliente'])) {
     $observacao = trim($_POST['observacao']);
     
+    // Atualiza no banco o status do cliente e observação da inatividade
     $sql = "UPDATE cliente SET status = 'Inativo', data_inatividade = CURDATE(), observacao_inatividade = :obs 
             WHERE id_cliente = :id";
     $stmt = $pdo->prepare($sql);

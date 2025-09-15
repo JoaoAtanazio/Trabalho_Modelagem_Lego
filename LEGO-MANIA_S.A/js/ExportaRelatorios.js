@@ -1,6 +1,6 @@
-const { jsPDF } = window.jspdf;
-        
+    
         function generatePDF() {
+            const { jsPDF } = window.jspdf;
             // Criar instância do jsPDF
             const doc = new jsPDF();
             
@@ -54,7 +54,7 @@ const { jsPDF } = window.jspdf;
             for (let i = 1; i < table.rows.length; i++) {
                 const row = [];
                 for (let j = 0; j < table.rows[i].cells.length; j++) {
-                    row[j] = table.rows[i].cells[j].textContent;
+                    row[j] = table.rows[i].cells[j].textContent.trim().replace(/\s+/g, ' ');
                 }
                 data.push(row);
             }
@@ -100,7 +100,7 @@ const tablepecas = document.getElementById('report-table');
             for (let i = 1; i < tablepecas.rows.length; i++) {
                 const row = [];
                 for (let j = 0; j < tablepecas.rows[i].cells.length; j++) {
-                    row[j] = tablepecas.rows[i].cells[j].textContent;
+                    row[j] = tablepecas.rows[i].cells[j].textContent.trim().replace(/\s+/g, ' ');
                 }
                 datas.push(row);
             }
@@ -133,7 +133,7 @@ const tablepecas = document.getElementById('report-table');
         0: { cellWidth: 10 },  // ID
         1: { cellWidth: 30 },  // Nome
         2: { cellWidth: 21 },  // Categoria
-        3: { cellWidth: 30, overflow: 'ellipsize' },
+        3: { cellWidth: 30, overflow: 'hidden' },
         4: { cellWidth: 20 },  // Preço
         5: { cellWidth: 27 },  // Fornecedor
         6: { cellWidth: 18 },  // Estoque Atual

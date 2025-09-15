@@ -1,8 +1,9 @@
 <?php
     session_start();
-    require_once 'conexao.php';
+    require_once 'conexao.php'; // Arquivo que faz a conexão com o BD
     require_once 'funcao_email.php'; // Arquivo com as funções que geram a senha e simulam o envio
 
+    // Verifica se metodo é igual a POST e executa a condição.
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         $email=$_POST['email'];
 
@@ -13,6 +14,7 @@
         $stmt->execute();
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // 
         if($usuario) {
             // Gera uma senha temporária e aleatória
             $senha_temporaria = gerarSenhaTemporaria();

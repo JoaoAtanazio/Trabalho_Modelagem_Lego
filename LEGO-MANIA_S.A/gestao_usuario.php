@@ -30,7 +30,7 @@
         $busca = trim($_GET['busca']);
     }
 
-    // CONSTRUIR A QUERY BASE
+    // CONSTRUIR A QUERY PARA BUSCAR INFORMAÇÕE DO USUARIO, PERFIL E MOTIVO DA INATIVIDADE
     $sql = "SELECT u.*, p.nome_perfil, m.descricao as motivo_inatividade 
             FROM usuario u 
             LEFT JOIN perfil p ON u.id_perfil = p.id_perfil 
@@ -57,7 +57,7 @@
             $params[':busca'] = $busca;
         } else {
             $where_conditions[] = "u.nome_usuario LIKE :busca_nome";
-            $params[':busca_nome'] = "%$busca%";
+            $params[':busca_nome'] = "$busca%";
         }
     }
 
@@ -262,25 +262,6 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
                                 <div>
                                     <span class="text-muted">Mostrando <?= count($usuarios) ?> de <?= count($usuarios) ?> usuários</span>
                                 </div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
-                                        </li>
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
-                                        </li>
-                                    </ul>
-                                </nav>
                             </div>
                         </div>
                     </div>

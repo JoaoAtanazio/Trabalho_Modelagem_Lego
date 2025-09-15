@@ -3,26 +3,27 @@
     require_once 'conexao.php';
     require_once 'php/permissoes.php';
 
-    // VERIFICA SE O USUARIO ESTÁ LOGADO
+    // Verifica se o usuário está logado
     if (!isset($_SESSION['id_usuario'])) {
         echo "<script>alert('Acesso Negado! Faça login primeiro.'); window.location.href='index.php';</script>";
         exit();
     }
 
+    // Inicializa o array ordens_ocultas na sessão se ele não existir, prevenindo erros de variável indefinida.
     if (!isset($_SESSION['ordens_ocultas'])) {
         $_SESSION['ordens_ocultas'] = [];
     }
 
-    // INICIALIZA VARIÁVEIS
+    // Inicializa variáveis
     $busca = '';
     $ordens = [];
 
-    // VERIFICA SE HÁ BUSCA POR TEXTO (GET)
+    // Verifica se há busca por texto (GET)
     if (isset($_GET['busca']) && !empty($_GET['busca'])) {
         $busca = trim($_GET['busca']);
     }
 
-    // CONSTRUIR A QUERY BASE - CORRIGIDA PARA MOSTRAR NOME DO TÉCNICO
+     // Construir a query de seleção
     $sql = "SELECT no.id_ordem, 
                    no.nome_client_ordem,
                    u.nome_usuario AS nome_tecnico,  
@@ -42,63 +43,78 @@
             LEFT JOIN funcionario f ON no.id_funcionario = f.id_funcionario
             LEFT JOIN usuario u ON no.tecnico = u.id_usuario";
 
+    // Inicializa variáveis
     $where_conditions = [];
     $params = [];
 
-    // ADICIONAR FILTRO POR BUSCA SE EXISTIR
+    // Adiciona filtro por busca se existir
     if (!empty($busca)) {
+        // Se a busca for numérica
         if (is_numeric($busca)) {
             $where_conditions[] = "no.id_ordem = :busca";
             $params[':busca'] = $busca;
         } else {
             $where_conditions[] = "(c.nome_cliente LIKE :busca_nome OR no.nome_client_ordem LIKE :busca_nome)";
-            $params[':busca_nome'] = "%$busca%";
+            $params[':busca_nome'] = "$busca%";
         }
     }
 
-    // COMBINAR CONDITIONS SE HOUVER
+    // Combinar conditions se houver
     if (!empty($where_conditions)) {
+        // Adiciona ao comando sql clausula WHERE e junta ao array
         $sql .= " WHERE " . implode(" AND ", $where_conditions);
     }
 
+    // Adiciona ao comando sql
     $sql .= " ORDER BY no.id_ordem DESC";
 
-    // PREPARAR E EXECUTAR A QUERY
+    // Prepara a query
     $stmt = $pdo->prepare($sql);
 
+    // Percorre array $params
     foreach ($params as $key => $value) {
         $stmt->bindValue($key, $value);
     }
-
+    
+    // Executa a query
     $stmt->execute();
     $ordens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Filtro oculto com valor, senão sem valor
     $filtro_oculto = isset($_GET['filtro_oculto']) ? $_GET['filtro_oculto'] : '0';
 
+    // Se o valor for 0,
     if ($filtro_oculto == '0') {
+        // Filtra os dados do array
         $ordens = array_filter($ordens, function($ordem) {
+            // Retorna as ordens não ocultas
             return !in_array($ordem['id_ordem'], $_SESSION['ordens_ocultas']);
         });
     } else {
+        // Filtra os dados do array
         $ordens = array_filter($ordens, function($ordem) {
+            // Retorna as ordens ocultas
             return in_array($ordem['id_ordem'], $_SESSION['ordens_ocultas']);
         });
     }
 
-    // ALTERAR STATUS ORDEM //
+    // Alterar os status da ordem
     if(isset($_GET['id']) && is_numeric($_GET['id'])){
         $id_ordem = $_GET['id'];
         
         if(isset($_GET['statuss'])) {
             $novo_status = $_GET['statuss'];
-            
+             
+            // Cria a query de atualização
             $sql = "UPDATE nova_ordem SET status_ordem = :statuss WHERE id_ordem = :id";
             $mensagem = 'Status da ordem alterado com sucesso!';
         
+            // Prepara a query
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':statuss', $novo_status);
             $stmt->bindParam(':id', $id_ordem, PDO::PARAM_INT);
 
+            // Executa a query e exibe mensagens
             if($stmt->execute()){
                 echo "<script>alert('$mensagem');window.location.href='consultar_ordem.php';</script>";
             } else{
@@ -112,10 +128,12 @@
         $id_ordem = $_GET['id'];
         
         if ($_GET['acao'] == 'excluir') {
+            // Cria a query de exclusão
             $sql_excluir = "DELETE FROM nova_ordem WHERE id_ordem = :id";
             $stmt_excluir = $pdo->prepare($sql_excluir);
             $stmt_excluir->bindParam(':id', $id_ordem, PDO::PARAM_INT);
             
+            // Executa a query e exbie mensagens
             if ($stmt_excluir->execute()) {
                 echo "<script>alert('Ordem excluída com sucesso!'); window.location.href='consultar_ordem.php';</script>";
             } else {
@@ -124,12 +142,13 @@
         }
 
         if ($_GET['acao'] == 'ocultar') {
+            // Garante que não terá ordens duplicadas
             if (!in_array($id_ordem, $_SESSION['ordens_ocultas'])) {
                 $_SESSION['ordens_ocultas'][] = $id_ordem;
             }
             echo "<script>alert('Ordem ocultada!'); window.location.href='consultar_ordem.php';</script>";
         }
-        
+        // Se a ação for "mostrar", remove o ID da ordem da lista de ordens ocultas na sessão e redireciona com alerta.
         if ($_GET['acao'] == 'mostrar') {
             if (($key = array_search($id_ordem, $_SESSION['ordens_ocultas'])) !== false) {
                 unset($_SESSION['ordens_ocultas'][$key]);
@@ -142,12 +161,14 @@
     if (isset($_GET['carregar_ordem']) && isset($_GET['id_ordem'])) {
         $id_ordem = $_GET['id_ordem'];
         
+        // Cria a query de seleção
         $sql_ordem = "SELECT no.*, c.nome_cliente, u.nome_usuario as nome_tecnico 
                       FROM nova_ordem no 
                       LEFT JOIN cliente c ON no.id_cliente = c.id_cliente 
                       LEFT JOIN usuario u ON no.tecnico = u.id_usuario
                       WHERE no.id_ordem = :id_ordem";
         
+        // Prepara a query
         $stmt_ordem = $pdo->prepare($sql_ordem);
         $stmt_ordem->bindParam(':id_ordem', $id_ordem, PDO::PARAM_INT);
         $stmt_ordem->execute();
@@ -265,7 +286,6 @@ if (isset($_POST['alterar_ordem'])) {
             }
         }
         
-        // 4. Remover peças que não estão mais na lista
         foreach ($pecas_antigas_map as $id_peca_est => $quantidade_antiga) {
             if (!isset($pecas_novas_map[$id_peca_est])) {
                 // Devolver ao estoque a quantidade que foi removida
@@ -278,7 +298,6 @@ if (isset($_POST['alterar_ordem'])) {
             }
         }
         
-        // 5. Atualizar tabela de peças utilizadas na ordem
         // Primeiro, remover todas as peças anteriores
         $sql_delete_pecas = "DELETE FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
         $stmt_delete_pecas = $pdo->prepare($sql_delete_pecas);
@@ -471,25 +490,7 @@ if (isset($_POST['alterar_ordem'])) {
                                 <div>
                                     <span class="text-muted">Mostrando <?= count($ordens) ?> de <?= count($ordens) ?> registros</span>
                                 </div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
-                                        </li>
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                
                             </div>
                         </div>
                     </div>

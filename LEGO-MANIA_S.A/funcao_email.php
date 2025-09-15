@@ -25,4 +25,5 @@ function simularEnvioEmail($destinatario, $senha) {
     file_put_contents("emails_simulados.txt", $registro, FILE_APPEND);
 }
 
+// FILE_APPEND utilizado para gerar novos registros sem apagar os anteriores.
 ?>
