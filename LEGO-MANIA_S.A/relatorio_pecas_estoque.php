@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
     $busca = trim($_POST['busca']);
     
     if (is_numeric($busca)) {
-        $sql = "SELECT id_peca_est, nome_peca, descricao_peca, qtde, preco, qtde_minima, tipo, dt_cadastro, nome_funcionario, nome_fornecedor
+        $sql = "SELECT id_peca_est, nome_peca, descricao_peca, qtde, preco, qtde_minima, tipo, dt_cadastro, nome_funcionario, nome_fornecedor, peca_estoque.id_fornecedor
                 FROM peca_estoque
                 JOIN funcionario ON peca_estoque.id_funcionario = funcionario.id_funcionario
                 JOIN fornecedor ON peca_estoque.id_fornecedor = fornecedor.id_fornecedor
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':busca', $busca, PDO::PARAM_INT);
     } else {
-        $sql = "SELECT id_peca_est, nome_peca, descricao_peca, qtde, preco, qtde_minima, tipo, dt_cadastro, nome_funcionario, nome_fornecedor
+        $sql = "SELECT id_peca_est, nome_peca, descricao_peca, qtde, preco, qtde_minima, tipo, dt_cadastro, nome_funcionario, nome_fornecedor, peca_estoque.id_fornecedor
                 FROM peca_estoque
                 JOIN funcionario ON peca_estoque.id_funcionario = funcionario.id_funcionario
                 JOIN fornecedor ON peca_estoque.id_fornecedor = fornecedor.id_fornecedor
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['busca'])) {
         $stmt->bindValue(':busca_nome', "$busca%", PDO::PARAM_STR);
     }
 } else {
-    $sql = "SELECT id_peca_est, nome_peca, descricao_peca, qtde, preco, qtde_minima, tipo, dt_cadastro, nome_funcionario, nome_fornecedor
+    $sql = "SELECT id_peca_est, nome_peca, descricao_peca, qtde, preco, qtde_minima, tipo, dt_cadastro, nome_funcionario, nome_fornecedor, peca_estoque.id_fornecedor
             FROM peca_estoque
             JOIN funcionario ON peca_estoque.id_funcionario = funcionario.id_funcionario
             JOIN fornecedor ON peca_estoque.id_fornecedor = fornecedor.id_fornecedor";
@@ -562,8 +562,8 @@ $ultimasPecas = $stmtUltimas->fetchAll(PDO::FETCH_ASSOC);
         function editarPeca(id, nome, tipo, id_fornecedor, preco, qtde, qtde_minima) {
             document.querySelector('#formPeca input[name="id_peca_est"]').value = id;
             document.querySelector('#formPeca input[name="nome_peca"]').value = nome;
-            document.querySelector('#formPeca select[name="tipo"]').value = tipo;
-            document.querySelector('#formPeca select[name="id_fornecedor"]').value = id_fornecedor;
+            document.querySelector('#formPeca select[name="tipo"]').value = String(tipo).toLowerCase();
+            document.querySelector('#formPeca select[name="id_fornecedor"]').value = String(id_fornecedor);
             document.querySelector('#formPeca input[name="preco"]').value = preco;
             document.querySelector('#formPeca input[name="quantidade"]').value = qtde;
             document.querySelector('#formPeca input[name="quantidade_minima"]').value = qtde_minima;

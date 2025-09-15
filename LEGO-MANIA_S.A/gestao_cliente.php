@@ -139,6 +139,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="js/validacoes_form.js"></script>
 </head>
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
@@ -297,13 +298,13 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="nome_cliente" class="form-label">Nome do Cliente *</label>
-                                            <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
+                                            <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')" required >
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="cpf_cnpj" class="form-label">CPF/CNPJ *</label>
-                                            <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" required>
+                                            <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" oninput="mascaraCPFCNPJ()" required>
                                         </div>
                                     </div>
                                 </div>
@@ -312,7 +313,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="telefone" class="form-label">Telefone</label>
-                                            <input type="text" class="form-control" id="telefone" name="telefone">
+                                            <input type="text" class="form-control" id="telefone" name="telefone" oninput="mascaraTelefone()">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -338,7 +339,7 @@
                                     <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="cep" class="form-label">CEP</label>
-                                            <input type="text" class="form-control" id="cep" name="cep">
+                                            <input type="text" class="form-control" id="cep" name="cep" oninput="mascaraCEP()">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
