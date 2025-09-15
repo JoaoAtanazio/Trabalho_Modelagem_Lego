@@ -1074,7 +1074,7 @@ if (isset($_POST['alterar_ordem'])) {
                         <div id="feedback-${index}" class="form-text"></div>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label small mb-1">Ação</label>z
+                        <label class="form-label small mb-1">Ação</label>
                         <button type="button" class="btn btn-danger btn-sm w-100" onclick="removerPeca(this)">
                             <i class="bi bi-trash"></i> Remover
                         </button>
