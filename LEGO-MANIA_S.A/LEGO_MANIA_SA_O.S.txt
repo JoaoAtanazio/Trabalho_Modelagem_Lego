@@ -2,8 +2,30 @@ LEGO_MANIA_SA_O.S
 
 Funcionalidades a serem arrumadas/feitas:
 
-- Poder alterar o perfil do usuário; Por exemplo, promoção do atendente para administrador.
 
-- Alterar ordens não funfa
 
-- Filtro de status das ordens não funfa
+- Poder alterar o perfil do usuário; Por exemplo, promoção do atendente para administrador;
+
+- Alterar ordens não funfa; 
+
+- Filtro de status das ordens não funfa;
+
+- Pesquisar ordens no pagamento não otimizada(jeito do Sérgio);
+
+- Não é possível alterar forma de pagamento de ordens concluídas;
+
+- Relatório de finanças sem filtro de tempo como abordado pelos professores; 
+
+- Ordens de serviço com lucro negativo;
+
+- Exportar em saída peças no estoque não funfa;
+
+- Editar peça em estoque aparece com dois valores vazios;
+
+- Deletar peça não funfa por causa de FK; 
+
+- Logs registram apenas inserts no banco;
+
+- PHP e JAVAs internos, se der tempo separar em arquivos externos;
+
+- Não tem como conferir a senha do usuário;
