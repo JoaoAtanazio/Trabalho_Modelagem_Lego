@@ -8,10 +8,15 @@ if($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 2 && $_SESSION['perfil'] !
     exit();
 }
 
-/* Consulta SQL que calcula o lucro bruto de ordens concluídas,
-    subtraindo o custo total das peças utilizadas do valor total da ordem, 
-    com informações do cliente e técnico responsável.
-*/
+// Obter parâmetros de filtro se existirem
+$filtro_ano = isset($_GET['ano']) ? $_GET['ano'] : '';
+$filtro_semestre = isset($_GET['semestre']) ? $_GET['semestre'] : '';
+$filtro_trimestre = isset($_GET['trimestre']) ? $_GET['trimestre'] : '';
+$filtro_mes = isset($_GET['mes']) ? $_GET['mes'] : '';
+$filtro_data_inicio = isset($_GET['data_inicio']) ? $_GET['data_inicio'] : '';
+$filtro_data_fim = isset($_GET['data_fim']) ? $_GET['data_fim'] : '';
+
+// Construir a consulta SQL base
 $sql = "
     SELECT 
         no.id_ordem,
@@ -29,9 +34,52 @@ $sql = "
     LEFT JOIN cliente c ON no.id_cliente = c.id_cliente
     LEFT JOIN usuario u ON no.tecnico = u.id_usuario
     WHERE no.status_ordem = 'Concluído'
-    GROUP BY no.id_ordem
-    ORDER BY no.dt_recebimento DESC
 ";
+
+// Adicionar condições de filtro se existirem
+$conditions = [];
+
+if (!empty($filtro_ano)) {
+    $conditions[] = "YEAR(no.dt_recebimento) = " . intval($filtro_ano);
+}
+
+if (!empty($filtro_semestre)) {
+    $semestre = intval($filtro_semestre);
+    if ($semestre == 1) {
+        $conditions[] = "MONTH(no.dt_recebimento) BETWEEN 1 AND 6";
+    } elseif ($semestre == 2) {
+        $conditions[] = "MONTH(no.dt_recebimento) BETWEEN 7 AND 12";
+    }
+}
+
+if (!empty($filtro_trimestre)) {
+    $trimestre = intval($filtro_trimestre);
+    if ($trimestre >= 1 && $trimestre <= 4) {
+        $start_month = (($trimestre - 1) * 3) + 1;
+        $end_month = $start_month + 2;
+        $conditions[] = "MONTH(no.dt_recebimento) BETWEEN $start_month AND $end_month";
+    }
+}
+
+if (!empty($filtro_mes)) {
+    $conditions[] = "MONTH(no.dt_recebimento) = " . intval($filtro_mes);
+}
+
+if (!empty($filtro_data_inicio)) {
+    $conditions[] = "no.dt_recebimento >= '" . $filtro_data_inicio . "'";
+}
+
+if (!empty($filtro_data_fim)) {
+    $conditions[] = "no.dt_recebimento <= '" . $filtro_data_fim . " 23:59:59'";
+}
+
+// Adicionar condições à consulta SQL
+if (!empty($conditions)) {
+    $sql .= " AND " . implode(" AND ", $conditions);
+}
+
+// Finalizar a consulta
+$sql .= " GROUP BY no.id_ordem ORDER BY no.dt_recebimento DESC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -42,7 +90,6 @@ $total_valor_ordens = 0;
 $total_custo_pecas = 0;
 $total_lucro_bruto = 0;
 
-// Este loop soma os valores de cada ordem nos totais de valor, custo e lucro.
 foreach ($ordens as $ordem) {
     $total_valor_ordens += $ordem['valor_ordem'];
     $total_custo_pecas += $ordem['custo_pecas'];
@@ -92,6 +139,12 @@ usort($ordens_lucrativas, function($a, $b) {
     return $b['lucro_bruto'] - $a['lucro_bruto'];
 });
 $top_ordens = array_slice($ordens_lucrativas, 0, 10);
+
+// Obter anos disponíveis para o filtro
+$sql_anos = "SELECT DISTINCT YEAR(dt_recebimento) as ano FROM nova_ordem WHERE status_ordem = 'Concluído' ORDER BY ano DESC";
+$stmt_anos = $pdo->prepare($sql_anos);
+$stmt_anos->execute();
+$anos_disponiveis = $stmt_anos->fetchAll(PDO::FETCH_COLUMN);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -131,6 +184,18 @@ $top_ordens = array_slice($ordens_lucrativas, 0, 10);
         .progress-bar {
             transition: width 1s ease-in-out;
         }
+        .filter-section {
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .filter-row {
+            margin-bottom: 0.5rem;
+        }
+        .filter-badge {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -165,6 +230,121 @@ $top_ordens = array_slice($ordens_lucrativas, 0, 10);
                             <button class="btn btn-primary btn-sm" onclick="window.print()">
                                 <i class="bi bi-printer me-1"></i> Imprimir
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtros</h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="GET" action="" class="filter-form">
+                                <div class="row filter-row">
+                                    <div class="col-md-3 mb-2">
+                                        <label class="form-label">Ano</label>
+                                        <select class="form-select form-select-sm" name="ano" onchange="this.form.submit()">
+                                            <option value="">Todos os anos</option>
+                                            <?php foreach ($anos_disponiveis as $ano): ?>
+                                                <option value="<?= $ano ?>" <?= $filtro_ano == $ano ? 'selected' : '' ?>><?= $ano ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label class="form-label">Semestre</label>
+                                        <select class="form-select form-select-sm" name="semestre" onchange="this.form.submit()">
+                                            <option value="">Todos os semestres</option>
+                                            <option value="1" <?= $filtro_semestre == '1' ? 'selected' : '' ?>>1º Semestre</option>
+                                            <option value="2" <?= $filtro_semestre == '2' ? 'selected' : '' ?>>2º Semestre</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label class="form-label">Trimestre</label>
+                                        <select class="form-select form-select-sm" name="trimestre" onchange="this.form.submit()">
+                                            <option value="">Todos os trimestres</option>
+                                            <option value="1" <?= $filtro_trimestre == '1' ? 'selected' : '' ?>>1º Trimestre</option>
+                                            <option value="2" <?= $filtro_trimestre == '2' ? 'selected' : '' ?>>2º Trimestre</option>
+                                            <option value="3" <?= $filtro_trimestre == '3' ? 'selected' : '' ?>>3º Trimestre</option>
+                                            <option value="4" <?= $filtro_trimestre == '4' ? 'selected' : '' ?>>4º Trimestre</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-2">
+                                        <label class="form-label">Mês</label>
+                                        <select class="form-select form-select-sm" name="mes" onchange="this.form.submit()">
+                                            <option value="">Todos os meses</option>
+                                            <option value="1" <?= $filtro_mes == '1' ? 'selected' : '' ?>>Janeiro</option>
+                                            <option value="2" <?= $filtro_mes == '2' ? 'selected' : '' ?>>Fevereiro</option>
+                                            <option value="3" <?= $filtro_mes == '3' ? 'selected' : '' ?>>Março</option>
+                                            <option value="4" <?= $filtro_mes == '4' ? 'selected' : '' ?>>Abril</option>
+                                            <option value="5" <?= $filtro_mes == '5' ? 'selected' : '' ?>>Maio</option>
+                                            <option value="6" <?= $filtro_mes == '6' ? 'selected' : '' ?>>Junho</option>
+                                            <option value="7" <?= $filtro_mes == '7' ? 'selected' : '' ?>>Julio</option>
+                                            <option value="8" <?= $filtro_mes == '8' ? 'selected' : '' ?>>Agosto</option>
+                                            <option value="9" <?= $filtro_mes == '9' ? 'selected' : '' ?>>Setembro</option>
+                                            <option value="10" <?= $filtro_mes == '10' ? 'selected' : '' ?>>Outubro</option>
+                                            <option value="11" <?= $filtro_mes == '11' ? 'selected' : '' ?>>Novembro</option>
+                                            <option value="12" <?= $filtro_mes == '12' ? 'selected' : '' ?>>Dezembro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row filter-row">
+                                    <div class="col-md-5 mb-2">
+                                        <label class="form-label">Data Início</label>
+                                        <input type="date" class="form-control form-control-sm" name="data_inicio" value="<?= $filtro_data_inicio ?>" onchange="this.form.submit()">
+                                    </div>
+                                    <div class="col-md-5 mb-2">
+                                        <label class="form-label">Data Fim</label>
+                                        <input type="date" class="form-control form-control-sm" name="data_fim" value="<?= $filtro_data_fim ?>" onchange="this.form.submit()">
+                                    </div>
+                                    <div class="col-md-2 mb-2 d-flex align-items-end">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="limparFiltros()">
+                                            <i class="bi bi-x-circle me-1"></i> Limpar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <!-- Badges de filtros ativos -->
+                            <?php if ($filtro_ano || $filtro_semestre || $filtro_trimestre || $filtro_mes || $filtro_data_inicio || $filtro_data_fim): ?>
+                            <div class="mt-2">
+                                <small class="text-muted">Filtros ativos:</small>
+                                <?php if ($filtro_ano): ?>
+                                    <span class="badge bg-primary filter-badge" onclick="removerFiltro('ano')">
+                                        Ano: <?= $filtro_ano ?> <i class="bi bi-x ms-1"></i>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if ($filtro_semestre): ?>
+                                    <span class="badge bg-primary filter-badge" onclick="removerFiltro('semestre')">
+                                        Semestre: <?= $filtro_semestre ?>º <i class="bi bi-x ms-1"></i>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if ($filtro_trimestre): ?>
+                                    <span class="badge bg-primary filter-badge" onclick="removerFiltro('trimestre')">
+                                        Trimestre: <?= $filtro_trimestre ?>º <i class="bi bi-x ms-1"></i>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if ($filtro_mes): ?>
+                                    <span class="badge bg-primary filter-badge" onclick="removerFiltro('mes')">
+                                        Mês: <?= [
+                                            '1' => 'Janeiro', '2' => 'Fevereiro', '3' => 'Março', 
+                                            '4' => 'Abril', '5' => 'Maio', '6' => 'Junho',
+                                            '7' => 'Julho', '8' => 'Agosto', '9' => 'Setembro',
+                                            '10' => 'Outubro', '11' => 'Novembro', '12' => 'Dezembro'
+                                        ][$filtro_mes] ?> <i class="bi bi-x ms-1"></i>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if ($filtro_data_inicio): ?>
+                                    <span class="badge bg-primary filter-badge" onclick="removerFiltro('data_inicio')">
+                                        De: <?= date('d/m/Y', strtotime($filtro_data_inicio)) ?> <i class="bi bi-x ms-1"></i>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if ($filtro_data_fim): ?>
+                                    <span class="badge bg-primary filter-badge" onclick="removerFiltro('data_fim')">
+                                        Até: <?= date('d/m/Y', strtotime($filtro_data_fim)) ?> <i class="bi bi-x ms-1"></i>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -263,21 +443,26 @@ $top_ordens = array_slice($ordens_lucrativas, 0, 10);
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- Me da as top ordens -->
-                                                <?php foreach ($top_ordens as $ordem): 
-                                                    $margem_ordem = $ordem['valor_ordem'] > 0 ? ($ordem['lucro_bruto'] / $ordem['valor_ordem']) * 100 : 0;
-                                                    $margem_class = $margem_ordem >= 20 ? 'text-success' : ($margem_ordem >= 10 ? 'text-warning' : 'text-danger');
-                                                ?>
-                                                <tr>
-                                                    <td><?= $ordem['id_ordem'] ?></td>
-                                                    <td><?= htmlspecialchars($ordem['nome_cliente'] ?: $ordem['nome_client_ordem']) ?></td>
-                                                    <td><?= date('d/m/Y', strtotime($ordem['dt_recebimento'])) ?></td>
-                                                    <td>R$ <?= number_format($ordem['valor_ordem'], 2, ',', '.') ?></td>
-                                                    <td>R$ <?= number_format($ordem['custo_pecas'], 2, ',', '.') ?></td>
-                                                    <td class="positive-value">R$ <?= number_format($ordem['lucro_bruto'], 2, ',', '.') ?></td>
-                                                    <td class="<?= $margem_class ?>"><?= number_format($margem_ordem, 2, ',', '.') ?>%</td>
-                                                </tr>
-                                                <?php endforeach; ?>
+                                                <?php if (!empty($top_ordens)): ?>
+                                                    <?php foreach ($top_ordens as $ordem): 
+                                                        $margem_ordem = $ordem['valor_ordem'] > 0 ? ($ordem['lucro_bruto'] / $ordem['valor_ordem']) * 100 : 0;
+                                                        $margem_class = $margem_ordem >= 20 ? 'text-success' : ($margem_ordem >= 10 ? 'text-warning' : 'text-danger');
+                                                    ?>
+                                                    <tr>
+                                                        <td><?= $ordem['id_ordem'] ?></td>
+                                                        <td><?= htmlspecialchars($ordem['nome_cliente'] ?: $ordem['nome_client_ordem']) ?></td>
+                                                        <td><?= date('d/m/Y', strtotime($ordem['dt_recebimento'])) ?></td>
+                                                        <td>R$ <?= number_format($ordem['valor_ordem'], 2, ',', '.') ?></td>
+                                                        <td>R$ <?= number_format($ordem['custo_pecas'], 2, ',', '.') ?></td>
+                                                        <td class="positive-value">R$ <?= number_format($ordem['lucro_bruto'], 2, ',', '.') ?></td>
+                                                        <td class="<?= $margem_class ?>"><?= number_format($margem_ordem, 2, ',', '.') ?>%</td>
+                                                    </tr>
+                                                    <?php endforeach; ?>
+                                                <?php else: ?>
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">Nenhuma ordem encontrada</td>
+                                                    </tr>
+                                                <?php endif; ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -307,22 +492,29 @@ $top_ordens = array_slice($ordens_lucrativas, 0, 10);
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($ordens as $ordem): 
-                                            $margem_ordem = $ordem['valor_ordem'] > 0 ? ($ordem['lucro_bruto'] / $ordem['valor_ordem']) * 100 : 0;
-                                            $margem_class = $margem_ordem >= 20 ? 'text-success' : ($margem_ordem >= 10 ? 'text-warning' : 'text-danger');
-                                        ?>
-                                        <tr>
-                                            <td><?= $ordem['id_ordem'] ?></td>
-                                            <td><?= htmlspecialchars($ordem['nome_cliente'] ?: $ordem['nome_client_ordem']) ?></td>
-                                            <td><?= htmlspecialchars($ordem['nome_tecnico'] ?: 'Não atribuído') ?></td>
-                                            <td><?= date('d/m/Y', strtotime($ordem['dt_recebimento'])) ?></td>
-                                            <td>R$ <?= number_format($ordem['valor_ordem'], 2, ',', '.') ?></td>
-                                            <td>R$ <?= number_format($ordem['custo_pecas'], 2, ',', '.') ?></td>
-                                            <td class="positive-value">R$ <?= number_format($ordem['lucro_bruto'], 2, ',', '.') ?></td>
-                                            <td class="<?= $margem_class ?>"><?= number_format($margem_ordem, 2, ',', '.') ?>%</td>
-                                        </tr>
-                                        <?php endforeach; ?>
+                                        <?php if (!empty($ordens)): ?>
+                                            <?php foreach ($ordens as $ordem): 
+                                                $margem_ordem = $ordem['valor_ordem'] > 0 ? ($ordem['lucro_bruto'] / $ordem['valor_ordem']) * 100 : 0;
+                                                $margem_class = $margem_ordem >= 20 ? 'text-success' : ($margem_ordem >= 10 ? 'text-warning' : 'text-danger');
+                                            ?>
+                                            <tr>
+                                                <td><?= $ordem['id_ordem'] ?></td>
+                                                <td><?= htmlspecialchars($ordem['nome_cliente'] ?: $ordem['nome_client_ordem']) ?></td>
+                                                <td><?= htmlspecialchars($ordem['nome_tecnico'] ?: 'Não atribuído') ?></td>
+                                                <td><?= date('d/m/Y', strtotime($ordem['dt_recebimento'])) ?></td>
+                                                <td>R$ <?= number_format($ordem['valor_ordem'], 2, ',', '.') ?></td>
+                                                <td>R$ <?= number_format($ordem['custo_pecas'], 2, ',', '.') ?></td>
+                                                <td class="positive-value">R$ <?= number_format($ordem['lucro_bruto'], 2, ',', '.') ?></td>
+                                                <td class="<?= $margem_class ?>"><?= number_format($margem_ordem, 2, ',', '.') ?>%</td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="8" class="text-center">Nenhuma ordem encontrada</td>
+                                            </tr>
+                                        <?php endif; ?>
                                     </tbody>
+                                    <?php if (!empty($ordens)): ?>
                                     <tfoot class="table-dark">
                                         <tr>
                                             <th colspan="4">TOTAL</th>
@@ -332,6 +524,7 @@ $top_ordens = array_slice($ordens_lucrativas, 0, 10);
                                             <th><?= number_format($margem_lucro, 2, ',', '.') ?>%</th>
                                         </tr>
                                     </tfoot>
+                                    <?php endif; ?>
                                 </table>
                             </div>
                         </div>
@@ -517,6 +710,19 @@ $top_ordens = array_slice($ordens_lucrativas, 0, 10);
             });
             
             doc.save('relatorio_lucros_' + new Date().toISOString().slice(0, 10) + '.pdf');
+        }
+
+         // Funções para manipulação de filtros
+         function limparFiltros() {
+            const url = new URL(window.location.href);
+            url.search = '';
+            window.location.href = url.toString();
+        }
+        
+        function removerFiltro(filtro) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete(filtro);
+            window.location.href = url.toString();
         }
 
         // Atualizar relógio
