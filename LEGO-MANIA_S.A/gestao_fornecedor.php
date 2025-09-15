@@ -131,6 +131,7 @@
     <title>Formulário de Cadastro - Lego Mania</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/validacoes_form.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -298,13 +299,14 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="nome_fornecedor" class="form-label">Nome do Fornecedor</label>
-                                            <input type="text" class="form-control" id="nome_fornecedor" name="nome_fornecedor" required>
+                                            <input type="text" class="form-control" id="nome_fornecedor" name="nome_fornecedor" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="cpf_cnpj" class="form-label">CPF/CNPJ</label>
-                                            <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" required>
+                                            <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" oninput="mascaraCPFCNPJ()"
+                                            required>
                                         </div>
                                     </div>
                                 </div>
@@ -319,7 +321,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="telefone" class="form-label">Telefone</label>
-                                            <input type="text" class="form-control" id="telefone" name="telefone">
+                                            <input type="text" class="form-control" id="telefone" name="telefone" oninput="mascaraTelefone()">>
                                         </div>
                                     </div>
                                 </div>
@@ -357,7 +359,7 @@
                                 
                                 <div class="mb-3">
                                     <label for="cep" class="form-label">CEP</label>
-                                    <input type="text" class="form-control" id="cep" name="cep">
+                                    <input type="text" class="form-control" id="cep" name="cep" oninput="mascaraCEP()">>
                                 </div>
                             </div>
                             <div class="modal-footer">
