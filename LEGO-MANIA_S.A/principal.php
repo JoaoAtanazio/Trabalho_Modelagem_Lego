@@ -346,9 +346,9 @@ $ordens_status = $stmtOrdensStatus->fetch(PDO::FETCH_ASSOC);
                   </a>
                 </div>
                 <div class="col-md-3 col-6 mb-3">
-                  <a href="relatorios.php" class="btn btn-outline-warning w-100 d-flex flex-column align-items-center py-3">
-                    <i class="bi bi-graph-up display-6 mb-2"></i>
-                    <span>Relatórios</span>
+                  <a href="logs.php" class="btn btn-outline-warning w-100 d-flex flex-column align-items-center py-3">
+                    <i class="bi bi-clock-history display-6 mb-2"></i>
+                    <span>Logs</span>
                   </a>
                 </div>
               </div>
