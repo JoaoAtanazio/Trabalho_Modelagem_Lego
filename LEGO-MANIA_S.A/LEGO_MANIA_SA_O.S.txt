@@ -14,8 +14,6 @@ Funcionalidades a serem arrumadas/feitas:
 
 - Não é possível alterar forma de pagamento de ordens concluídas;
 
-- Relatório de finanças sem filtro de tempo como abordado pelos professores; 
-
 - Ordens de serviço com lucro negativo;
 
 - Exportar em saída peças no estoque não funfa;
