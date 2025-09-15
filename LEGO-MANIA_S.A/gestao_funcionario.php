@@ -123,6 +123,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/login.css">
+    <script src="js/validacoes_form.js"></script>
 </head>
 <body class="bg-light">
     <div class="d-flex vh-100 bg-light">
@@ -278,13 +279,13 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="nome_funcionario" class="form-label">Nome do Funcionário</label>
-                                            <input type="text" class="form-control" id="nome_funcionario" name="nome_funcionario" required>
+                                            <input type="text" class="form-control" id="nome_funcionario" name="nome_funcionario" oninput="this.value=this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="cpf_funcionario" class="form-label">CPF</label>
-                                            <input type="text" class="form-control" id="cpf_funcionario" name="cpf_funcionario" required>
+                                            <input type="text" class="form-control" id="cpf_funcionario" name="cpf_funcionario" oninput="mascaraCPF_func()" required>
                                         </div>
                                     </div>
                                 </div>
@@ -308,7 +309,8 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="telefone" class="form-label">Telefone</label>
-                                            <input type="text" class="form-control" id="telefone" name="telefone">
+                                            <input type="text" class="form-control" id="telefone" oninput="mascaraTelefone()"
+                                            name="telefone">
                                         </div>
                                     </div>
                                 </div>
@@ -343,7 +345,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="cep" class="form-label">CEP</label>
-                                            <input type="text" class="form-control" id="cep" name="cep">
+                                            <input type="text" class="form-control" id="cep" name="cep" oninput="mascaraCEP()">>
                                         </div>
                                     </div>
                                     <div class="col-md-6">

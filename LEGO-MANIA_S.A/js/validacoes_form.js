@@ -866,6 +866,36 @@ function mascaraCPFCNPJ(){
         e.target.value = value;
     });
 }
+function mascaraCPF_func(){
+    document.getElementById('cpf_funcionario').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        
+        // Verifica se é CPF (até 11 dígitos) ou CNPJ (mais de 11 dígitos)
+        if (value.length <= 11) {
+            // Formatação para CPF
+            if (value.length > 9) {
+                value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+            } else if (value.length > 3) {
+                value = value.replace(/(\d{3})(\d+)/, '$1.$2');
+            }
+        } else {
+            // Formatação para CNPJ (limita a 14 dígitos)
+            if (value.length > 14) value = value.slice(0, 14);
+            
+            if (value.length > 12) {
+                value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+            } else if (value.length > 8) {
+                value = value.replace(/(\d{2})(\d{3})(\d{3})(\d+)/, '$1.$2.$3/$4');
+            } else if (value.length > 5) {
+                value = value.replace(/(\d{2})(\d{3})(\d+)/, '$1.$2.$3');
+            }
+        }
+        e.target.value = value;
+    });
+
+}
 function mascaraTelefone(){
     // Formatação do campo de telefone
     document.getElementById('telefone').addEventListener('input', function(e) {

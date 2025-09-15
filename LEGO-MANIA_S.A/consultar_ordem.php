@@ -196,11 +196,11 @@
     $stmt_pecas = $pdo->query($sql_pecas);
     $pecas_estoque = $stmt_pecas->fetchAll(PDO::FETCH_ASSOC);
 
-    // Processar alteração de ordem (incluindo peças utilizadas)
+// Processar alteração de ordem
 if (isset($_POST['alterar_ordem'])) {
     $id_ordem = $_POST['id_ordem'];
     
-    // Atualizar dados da ordem (código existente mantido)
+    // Atualizar dados da ordem
     $sql_update = "UPDATE nova_ordem SET 
                     nome_client_ordem = :nome_cliente,
                     tecnico = :tecnico,
@@ -226,94 +226,95 @@ if (isset($_POST['alterar_ordem'])) {
     ]);
     
     // Processar peças utilizadas - CÓDIGO CORRIGIDO
-    if (isset($_POST['pecas_utilizadas']) && is_array($_POST['pecas_utilizadas'])) {
-        
-        // 1. Buscar peças atualmente utilizadas na ordem
-        $sql_pecas_atuais = "SELECT id_peca_est, quantidade FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
-        $stmt_pecas_atuais = $pdo->prepare($sql_pecas_atuais);
-        $stmt_pecas_atuais->execute([':id_ordem' => $id_ordem]);
-        $pecas_antigas = $stmt_pecas_atuais->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Converter para formato mais fácil de manipular
-        $pecas_antigas_map = [];
-        foreach ($pecas_antigas as $peca) {
-            $pecas_antigas_map[$peca['id_peca_est']] = (int)$peca['quantidade'];
-        }
-        
-        // 2. Processar novas peças
-        $pecas_novas_map = [];
-        foreach ($_POST['pecas_utilizadas'] as $id_peca_est) {
-            if (empty($id_peca_est)) continue;
+    $sql_pecas_atuais = "SELECT id_peca_est, quantidade FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
+    $stmt_pecas_atuais = $pdo->prepare($sql_pecas_atuais);
+    $stmt_pecas_atuais->execute([':id_ordem' => $id_ordem]);
+    $pecas_antigas = $stmt_pecas_atuais->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Criar mapa das peças antigas
+    $pecas_antigas_map = [];
+    foreach ($pecas_antigas as $peca) {
+        $pecas_antigas_map[$peca['id_peca_est']] = (int)$peca['quantidade'];
+    }
+    
+    // Processar peças novas do formulário
+    $pecas_novas_map = [];
+    
+    // Buscar todos os campos POST que começam com "quantidade_"
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'quantidade_') === 0 && !empty($value)) {
+            $id_peca_est = str_replace('quantidade_', '', $key);
             
-            $campo_quantidade = 'quantidade_' . $id_peca_est;
-            $quantidade = isset($_POST[$campo_quantidade]) ? (int)$_POST[$campo_quantidade] : 1;
-            
-            if ($quantidade > 0) {
-                $pecas_novas_map[$id_peca_est] = $quantidade;
+            // Verificar se é numérico
+            if (is_numeric($id_peca_est) && is_numeric($value) && $value > 0) {
+                $pecas_novas_map[$id_peca_est] = (int)$value;
             }
         }
+    }
+    
+    // Calcular diferenças e atualizar estoque
+    foreach ($pecas_novas_map as $id_peca_est => $quantidade_nova) {
+        $quantidade_antiga = isset($pecas_antigas_map[$id_peca_est]) ? $pecas_antigas_map[$id_peca_est] : 0;
+        $diferenca = $quantidade_nova - $quantidade_antiga;
         
-        // 3. Calcular diferenças e atualizar estoque
-        foreach ($pecas_novas_map as $id_peca_est => $quantidade_nova) {
-            $quantidade_antiga = isset($pecas_antigas_map[$id_peca_est]) ? $pecas_antigas_map[$id_peca_est] : 0;
-            $diferenca = $quantidade_nova - $quantidade_antiga;
+        if ($diferenca != 0) {
+            // Verificar estoque atual
+            $sql_check_stock = "SELECT qtde, nome_peca FROM peca_estoque WHERE id_peca_est = :id_peca_est";
+            $stmt_check_stock = $pdo->prepare($sql_check_stock);
+            $stmt_check_stock->execute([':id_peca_est' => $id_peca_est]);
+            $estoque_info = $stmt_check_stock->fetch(PDO::FETCH_ASSOC);
             
-            if ($diferenca != 0) {
-                // Verificar estoque atual
-                $sql_check_stock = "SELECT qtde, nome_peca FROM peca_estoque WHERE id_peca_est = :id_peca_est";
-                $stmt_check_stock = $pdo->prepare($sql_check_stock);
-                $stmt_check_stock->execute([':id_peca_est' => $id_peca_est]);
-                $estoque_info = $stmt_check_stock->fetch(PDO::FETCH_ASSOC);
-                
-                if ($estoque_info['qtde'] < $diferenca) {
-                    echo "<script>alert('Erro: Estoque insuficiente para a peça \\\"{$estoque_info['nome_peca']}\\\"! Disponível: {$estoque_info['qtde']}, Necessário: $diferenca'); window.location.href='consultar_ordem.php';</script>";
-                    exit();
-                }
-                
-                // Atualizar estoque pela diferença
-                $sql_update_stock = "UPDATE peca_estoque SET qtde = qtde - :diferenca WHERE id_peca_est = :id_peca_est";
-                $stmt_update_stock = $pdo->prepare($sql_update_stock);
-                $stmt_update_stock->execute([
-                    ':diferenca' => $diferenca,
-                    ':id_peca_est' => $id_peca_est
-                ]);
-                
-                // Verificar estoque baixo (código existente mantido)
+            if ($estoque_info && $estoque_info['qtde'] < $diferenca) {
+                echo "<script>alert('Erro: Estoque insuficiente para a peça \\\"{$estoque_info['nome_peca']}\\\"! Disponível: {$estoque_info['qtde']}, Necessário: $diferenca'); window.location.href='consultar_ordem.php';</script>";
+                exit();
+            }
+            
+            // Atualizar estoque pela diferença
+            $sql_update_stock = "UPDATE peca_estoque SET qtde = qtde - :diferenca WHERE id_peca_est = :id_peca_est";
+            $stmt_update_stock = $pdo->prepare($sql_update_stock);
+            $stmt_update_stock->execute([
+                ':diferenca' => $diferenca,
+                ':id_peca_est' => $id_peca_est
+            ]);
+            
+            // Verificar estoque baixo
+            if ($estoque_info) {
                 $novo_estoque = $estoque_info['qtde'] - $diferenca;
                 if ($novo_estoque <= 3) {
                     echo "<script>alert('ATENÇÃO: Estoque da peça \\\"{$estoque_info['nome_peca']}\\\" está baixo ($novo_estoque unidades restantes)!');</script>";
                 }
             }
         }
-        
-        foreach ($pecas_antigas_map as $id_peca_est => $quantidade_antiga) {
-            if (!isset($pecas_novas_map[$id_peca_est])) {
-                // Devolver ao estoque a quantidade que foi removida
-                $sql_update_stock = "UPDATE peca_estoque SET qtde = qtde + :quantidade WHERE id_peca_est = :id_peca_est";
-                $stmt_update_stock = $pdo->prepare($sql_update_stock);
-                $stmt_update_stock->execute([
-                    ':quantidade' => $quantidade_antiga,
-                    ':id_peca_est' => $id_peca_est
-                ]);
-            }
-        }
-        
-        // Primeiro, remover todas as peças anteriores
-        $sql_delete_pecas = "DELETE FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
-        $stmt_delete_pecas = $pdo->prepare($sql_delete_pecas);
-        $stmt_delete_pecas->execute([':id_ordem' => $id_ordem]);
-        
-        // Inserir novas peças utilizadas
-        foreach ($pecas_novas_map as $id_peca_est => $quantidade) {
-            $sql_insert_peca = "INSERT INTO ordem_servico_pecas (id_ordem, id_peca_est, quantidade) 
-                                VALUES (:id_ordem, :id_peca_est, :quantidade)";
-            $stmt_insert_peca = $pdo->prepare($sql_insert_peca);
-            $stmt_insert_peca->execute([
-                ':id_ordem' => $id_ordem,
-                ':id_peca_est' => $id_peca_est,
-                ':quantidade' => $quantidade
+    }
+    
+    // Devolver ao estoque as peças que foram removidas
+    foreach ($pecas_antigas_map as $id_peca_est => $quantidade_antiga) {
+        if (!isset($pecas_novas_map[$id_peca_est])) {
+            // Devolver ao estoque a quantidade que foi removida
+            $sql_update_stock = "UPDATE peca_estoque SET qtde = qtde + :quantidade WHERE id_peca_est = :id_peca_est";
+            $stmt_update_stock = $pdo->prepare($sql_update_stock);
+            $stmt_update_stock->execute([
+                ':quantidade' => $quantidade_antiga,
+                ':id_peca_est' => $id_peca_est
             ]);
         }
+    }
+    
+    // Remover todas as peças anteriores da ordem
+    $sql_delete_pecas = "DELETE FROM ordem_servico_pecas WHERE id_ordem = :id_ordem";
+    $stmt_delete_pecas = $pdo->prepare($sql_delete_pecas);
+    $stmt_delete_pecas->execute([':id_ordem' => $id_ordem]);
+    
+    // Inserir novas peças utilizadas
+    foreach ($pecas_novas_map as $id_peca_est => $quantidade) {
+        $sql_insert_peca = "INSERT INTO ordem_servico_pecas (id_ordem, id_peca_est, quantidade) 
+                            VALUES (:id_ordem, :id_peca_est, :quantidade)";
+        $stmt_insert_peca = $pdo->prepare($sql_insert_peca);
+        $stmt_insert_peca->execute([
+            ':id_ordem' => $id_ordem,
+            ':id_peca_est' => $id_peca_est,
+            ':quantidade' => $quantidade
+        ]);
     }
     
     echo "<script>alert('Ordem atualizada com sucesso!'); window.location.href='consultar_ordem.php';</script>";
@@ -1045,51 +1046,54 @@ if (isset($_POST['alterar_ordem'])) {
         }
 
         // Função para adicionar uma nova peça à lista
-        function adicionarPeca(idPeca = '', quantidade = 1) {
-            const listaPecas = document.getElementById('lista-pecas');
-            const index = Date.now(); // ID único para a peça
+function adicionarPeca(idPeca = '', quantidade = 1) {
+    const listaPecas = document.getElementById('lista-pecas');
+    const index = Date.now(); // ID único para a peça
 
-            const pecaItem = document.createElement('div');
-            pecaItem.className = 'peca-item mb-3 p-3 border rounded';
-            pecaItem.setAttribute('data-index', index);
+    const pecaItem = document.createElement('div');
+    pecaItem.className = 'peca-item mb-3 p-3 border rounded';
+    pecaItem.setAttribute('data-index', index);
 
-            pecaItem.innerHTML = `
-                <div class="row align-items-center">
-                    <div class="col-md-5">
-                        <label class="form-label small mb-1">Peça</label>
-                        <select name="pecas_utilizadas[]" class="form-select" onchange="atualizarQuantidadeMaxima(this, '${index}')">
-                            <option value="">Selecione uma peça</option>
-                            ${pecasDisponiveis.map(peca => `
-                                <option value="${peca.id_peca_est}" ${peca.id_peca_est == idPeca ? 'selected' : ''}
-                                        data-preco="${peca.preco}" data-estoque="${peca.qtde}">
-                                    ${peca.nome_peca} (Estoque: ${peca.qtde})
-                                </option>
-                            `).join('')}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small mb-1">Quantidade</label>
-                        <input type="number" name="quantidade_${idPeca || 'new'}" class="form-control" 
-                               id="quantidade-${index}" value="${quantidade}" min="1" 
-                               onchange="validarQuantidade('${index}')" />
-                        <div id="feedback-${index}" class="form-text"></div>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small mb-1">Ação</label>z
-                        <button type="button" class="btn btn-danger btn-sm w-100" onclick="removerPeca(this)">
-                            <i class="bi bi-trash"></i> Remover
-                        </button>
-                    </div>
-                </div>
-            `;
-            listaPecas.appendChild(pecaItem);
+    // Usar o ID da peça no nome do campo de quantidade
+    const fieldName = idPeca ? `quantidade_${idPeca}` : `quantidade_new_${index}`;
+    
+    pecaItem.innerHTML = `
+        <div class="row align-items-center">
+            <div class="col-md-5">
+                <label class="form-label small mb-1">Peça</label>
+                <select name="pecas_utilizadas[]" class="form-select" onchange="atualizarQuantidadeMaxima(this, '${index}')">
+                    <option value="">Selecione uma peça</option>
+                    ${pecasDisponiveis.map(peca => `
+                        <option value="${peca.id_peca_est}" ${peca.id_peca_est == idPeca ? 'selected' : ''}
+                                data-preco="${peca.preco}" data-estoque="${peca.qtde}">
+                            ${peca.nome_peca} (Estoque: ${peca.qtde})
+                        </option>
+                    `).join('')}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small mb-1">Quantidade</label>
+                <input type="number" name="${fieldName}" class="form-control" 
+                       id="quantidade-${index}" value="${quantidade}" min="1" 
+                       onchange="validarQuantidade('${index}')" />
+                <div id="feedback-${index}" class="form-text"></div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Ação</label>
+                <button type="button" class="btn btn-danger btn-sm w-100" onclick="removerPeca(this)">
+                    <i class="bi bi-trash"></i> Remover
+                </button>
+            </div>
+        </div>
+    `;
+    listaPecas.appendChild(pecaItem);
 
-            // Se já tiver uma peça selecionada, atualizar a quantidade máxima
-            const selectEl = pecaItem.querySelector('select[name="pecas_utilizadas[]"]');
-            if (idPeca) {
-                atualizarQuantidadeMaxima(selectEl, index);
-            }
-        }
+    // Se já tiver uma peça selecionada, atualizar a quantidade máxima
+    const selectEl = pecaItem.querySelector('select[name="pecas_utilizadas[]"]');
+    if (idPeca) {
+        atualizarQuantidadeMaxima(selectEl, index);
+    }
+}
 
         // Adicionar evento ao botão de adicionar peça
         document.getElementById('btnAdicionarPeca').addEventListener('click', function() {
