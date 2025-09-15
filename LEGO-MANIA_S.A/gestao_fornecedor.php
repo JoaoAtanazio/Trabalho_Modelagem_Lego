@@ -291,7 +291,7 @@
                             <h5 class="modal-title">Alterar Fornecedor</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form method="POST" action="alterar_fornecedor.php">
+                        <form method="POST" action="php/alterar_fornecedor.php">
                             <div class="modal-body">
                                 <input type="hidden" id="id_fornecedor" name="id_fornecedor">
                                 

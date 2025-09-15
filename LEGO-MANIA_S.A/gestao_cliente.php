@@ -290,7 +290,7 @@
                             <h5 class="modal-title">Alterar Cliente</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form method="POST" action="alterar_cliente.php">
+                        <form method="POST" action="php/alterar_cliente.php">
                             <div class="modal-body">
                                 <input type="hidden" id="id_cliente" name="id_cliente">
                                 

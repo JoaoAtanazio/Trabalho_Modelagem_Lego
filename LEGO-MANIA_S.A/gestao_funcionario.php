@@ -271,7 +271,7 @@
                             <h5 class="modal-title">Alterar Funcionário</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form method="POST" action="alterar_funcionario.php">
+                        <form method="POST" action="php/alterar_funcionario.php">
                             <div class="modal-body">
                                 <input type="hidden" id="id_funcionario" name="id_funcionario">
                                 
