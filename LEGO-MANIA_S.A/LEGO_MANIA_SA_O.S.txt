@@ -18,12 +18,6 @@ Funcionalidades a serem arrumadas/feitas:
 
 - Ordens de serviço com lucro negativo;
 
-- Exportar em saída peças no estoque não funfa;
-
-- Editar peça em estoque aparece com dois valores vazios;
-
-- Deletar peça não funfa por causa de FK; 
-
 - Logs registram apenas inserts no banco;
 
 - PHP e JAVAs internos, se der tempo separar em arquivos externos;
