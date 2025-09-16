@@ -1,5 +1,7 @@
 <?php
-require_once 'conexao.php';
+session_start();
+require_once '../conexao.php';
+require_once 'permissoes.php';
 
 // Verifica se o formulário foi enviado e se não está vazio
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['alterar_cliente'])) {
@@ -61,13 +63,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['alterar_cliente'])) {
     
     // Executa a query preparada e retorna mensagens
     if ($stmt->execute()) {
-        echo "<script>alert('Cliente atualizado com sucesso!');window.location.href='gestao_cliente.php';</script>";
+        // REGISTRAR LOG - APÓS UPDATE BEM-SUCEDIDO
+        $acao = "Alteração de cliente: " . $nome . " (" . $email . ")";
+        if (function_exists('registrarLog')) {
+            registrarLog($_SESSION['id_usuario'], $acao, "cliente", $id);
+        }
+        
+        echo "<script>alert('Cliente atualizado com sucesso!');window.location.href='../gestao_cliente.php';</script>";
     } else {
         echo "<script>alert('Erro ao atualizar o cliente!');window.history.back();</script>";
     }
 // Se o formulário não for enviado ou a variável estiver vazia, redireciona á página
 } else {
-    header("Location: gestao_cliente.php");
+    header("Location: ../gestao_cliente.php");
     exit();
 }
 ?>

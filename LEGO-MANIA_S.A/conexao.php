@@ -32,36 +32,38 @@ try {
 }
 
 // Função para registrar logs no sistema - VERSÃO CORRIGIDA
-function registrarLog($id_usuario, $acao, $tabela_afetada, $id_registro = null) {
-    global $pdo;
-    
-    // Verifica se a sessão está ativa e tem os dados necessários
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-    
-    if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['perfil'])) {
-        error_log("Tentativa de registrar log sem sessão de usuário válida");
-        return false;
-    }
-    
-    try {
-        $sql = "INSERT INTO log_acao (id_usuario, id_perfil, acao, tabela_afetada, id_registro) 
-                VALUES (:id_usuario, :id_perfil, :acao, :tabela_afetada, :id_registro)";
+if (!function_exists('registrarLog')) {
+    function registrarLog($id_usuario, $acao, $tabela_afetada, $id_registro = null) {
+        global $pdo;
         
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':id_usuario' => $id_usuario,
-            ':id_perfil' => $_SESSION['perfil'],
-            ':acao' => $acao,
-            ':tabela_afetada' => $tabela_afetada,
-            ':id_registro' => $id_registro
-        ]);
+        // Verifica se a sessão está ativa e tem os dados necessários
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         
-        return true;
-    } catch (PDOException $e) {
-        error_log("Erro ao registrar log: " . $e->getMessage());
-        return false;
+        if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['perfil'])) {
+            error_log("Tentativa de registrar log sans sessão de usuário válida");
+            return false;
+        }
+        
+        try {
+            $sql = "INSERT INTO log_acao (id_usuario, id_perfil, acao, tabela_afetada, id_registro) 
+                    VALUES (:id_usuario, :id_perfil, :acao, :tabela_afetada, :id_registro)";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':id_usuario' => $id_usuario,
+                ':id_perfil' => $_SESSION['perfil'],
+                ':acao' => $acao,
+                ':tabela_afetada' => $tabela_afetada,
+                ':id_registro' => $id_registro
+            ]);
+            
+            return true;
+        } catch (PDOException $e) {
+            error_log("Erro ao registrar log: " . $e->getMessage());
+            return false;
+        }
     }
 }
 ?>

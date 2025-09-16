@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once 'conexao.php';
+require_once '../conexao.php';
+require_once 'permissoes.php';
 
 // Verificar se o usuário tem permissão de admin ou secretária
 if($_SESSION['perfil'] != 1 && $_SESSION['perfil'] != 3){
@@ -54,12 +55,18 @@ if(isset($_POST['alterar_funcionario'])) {
     
     // Executa a query preparada e retorna mensagens
     if($stmt->execute()) {
-        echo "<script>alert('Funcionário atualizado com sucesso!');window.location.href='gestao_funcionario.php';</script>";
+        // REGISTRAR LOG - APÓS UPDATE BEM-SUCEDIDO
+        $acao = "Alteração de funcionário: " . $nome . " (" . $email . ")";
+        if (function_exists('registrarLog')) {
+            registrarLog($_SESSION['id_usuario'], $acao, "funcionario", $id);
+        }
+        
+        echo "<script>alert('Funcionário atualizado com sucesso!');window.location.href='../gestao_funcionario.php';</script>";
     } else {
         echo "<script>alert('Erro ao atualizar funcionário!');window.history.back();</script>";
     }
 // Se o formulário não for enviado, redireciona á página
 } else {
-    header('Location: gestao_funcionario.php');
+    header('Location: ../gestao_funcionario.php');
 }
 ?>

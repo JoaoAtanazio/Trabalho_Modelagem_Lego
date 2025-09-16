@@ -1,10 +1,47 @@
 <?php
 // permissoes.php
+
+// FUNÇÃO PARA REGISTRAR LOGS (ADICIONAR ESTA FUNÇÃO)
+if (!function_exists('registrarLog')) {
+    function registrarLog($id_usuario, $acao, $tabela_afetada, $id_registro = null) {
+        global $pdo;
+        
+        try {
+            // Obter o perfil do usuário
+            $sql_perfil = "SELECT id_perfil FROM usuario WHERE id_usuario = :id_usuario";
+            $stmt_perfil = $pdo->prepare($sql_perfil);
+            $stmt_perfil->bindParam(':id_usuario', $id_usuario);
+            $stmt_perfil->execute();
+            $usuario = $stmt_perfil->fetch(PDO::FETCH_ASSOC);
+            
+            if ($usuario) {
+                $sql = "INSERT INTO log_acao (id_usuario, id_perfil, acao, tabela_afetada, id_registro) 
+                        VALUES (:id_usuario, :id_perfil, :acao, :tabela_afetada, :id_registro)";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':id_usuario', $id_usuario);
+                $stmt->bindParam(':id_perfil', $usuario['id_perfil']);
+                $stmt->bindParam(':acao', $acao);
+                $stmt->bindParam(':tabela_afetada', $tabela_afetada);
+                $stmt->bindParam(':id_registro', $id_registro);
+                
+                return $stmt->execute();
+            }
+            return false;
+        } catch (PDOException $e) {
+            error_log("Erro ao registrar log: " . $e->getMessage());
+            return false;
+        }
+    }
+}
+
+
 // Verificar se o usuário está logado
 if (!isset($_SESSION['id_usuario'])) {
     header('Location: index.php');
     exit();
 }
+
 
 // Definição das permissões por perfil
 $permissoes = [

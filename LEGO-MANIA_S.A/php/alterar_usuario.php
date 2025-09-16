@@ -1,5 +1,8 @@
 <?php
+session_start();
 require_once '../conexao.php';
+require_once 'permissoes.php';
+
 
 // Verifica se o formulário foi enviado e se não está vazio
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['alterar_usuario'])) {
@@ -47,12 +50,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['alterar_usuario'])) {
 
     // Executa a query preparada e retorna mensagens
     if ($stmt->execute()) {
+        // REGISTRAR LOG - APÓS UPDATE BEM-SUCEDIDO
+        $acao = "Alteração de usuário: " . $nome . " (" . $email . ")";
+        if (function_exists('registrarLog')) {
+            registrarLog($_SESSION['id_usuario'], $acao, "usuario", $id);
+        }
+        
         echo "<script>alert('Usuário atualizado com sucesso!');window.location.href='../gestao_usuario.php';</script>";
     } else {
         echo "<script>alert('Erro ao atualizar o usuário!');window.history.back();</script>";
     }
 } else {
-    header("Location: gestao_usuario.php");
+    header("Location: ../gestao_usuario.php");
     exit();
 }
 ?>
