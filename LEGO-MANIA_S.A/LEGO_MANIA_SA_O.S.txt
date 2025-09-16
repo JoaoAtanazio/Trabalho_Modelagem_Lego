@@ -16,7 +16,7 @@ Funcionalidades a serem arrumadas/feitas:
 
 - Logs registram apenas inserts no banco;
 
-- PHP e JAVAs internos, se der tempo separar em arquivos externos; Gustavo
+- PHP e JAVAs internos, se der tempo separar em arquivos externos; Gustavo ULTIMO A SER FEITO
 
 - Não tem como conferir a senha do usuário;
 
