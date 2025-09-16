@@ -25,23 +25,23 @@
 
      // Construir a query de seleção
     $sql = "SELECT no.id_ordem, 
-                   no.nome_client_ordem,
-                   u.nome_usuario AS nome_tecnico,  
-                   u.id_usuario AS id_tecnico,
-                   no.problema, 
-                   no.dt_recebimento, 
-                   no.valor_total,
-                   no.marca_aparelho,
-                   no.prioridade,
-                   no.observacao,
-                   no.status_ordem AS statuss,
-                   c.nome_cliente,
-                   no.id_cliente,
-                   f.nome_funcionario
-            FROM nova_ordem no
-            LEFT JOIN cliente c ON no.id_cliente = c.id_cliente
-            LEFT JOIN funcionario f ON no.id_funcionario = f.id_funcionario
-            LEFT JOIN usuario u ON no.tecnico = u.id_usuario";
+    no.nome_client_ordem,
+    u.nome_usuario AS nome_tecnico,  
+    u.id_usuario AS id_tecnico,
+    no.problema, 
+    no.dt_recebimento, 
+    no.valor_total,
+    no.marca_aparelho,
+    no.prioridade,
+    no.observacao,
+    no.status_ordem AS statuss,
+    c.nome_cliente,
+    no.id_cliente,
+    f.nome_funcionario
+    FROM nova_ordem no
+    LEFT JOIN cliente c ON no.id_cliente = c.id_cliente
+    LEFT JOIN funcionario f ON no.id_funcionario = f.id_funcionario
+    LEFT JOIN usuario u ON no.tecnico = u.id_usuario";
 
     // Inicializa variáveis
     $where_conditions = [];
@@ -57,6 +57,12 @@
             $where_conditions[] = "(c.nome_cliente LIKE :busca_nome OR no.nome_client_ordem LIKE :busca_nome)";
             $params[':busca_nome'] = "$busca%";
         }
+    }
+
+    // ADICIONAR FILTRO POR STATUS - NOVO CÓDIGO
+    if (isset($_GET['statuss']) && !empty($_GET['statuss'])) {
+        $where_conditions[] = "no.status_ordem = :status";
+        $params[':status'] = $_GET['statuss'];
     }
 
     // Combinar conditions se houver
