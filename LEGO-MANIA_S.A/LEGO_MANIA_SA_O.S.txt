@@ -4,8 +4,6 @@ Funcionalidades a serem arrumadas/feitas:
 
 
 
-- Poder alterar o perfil do usuário; Por exemplo, promoção do atendente para administrador; ----------- Gustavo
-
 - Filtro de status das ordens não funfa; ----------- Márcio estupradores
 
 - Pesquisar ordens no pagamento não otimizada(jeito do Sérgio); ----------- Márcio estupradores
