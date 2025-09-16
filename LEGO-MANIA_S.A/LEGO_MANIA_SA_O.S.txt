@@ -8,8 +8,6 @@ Funcionalidades a serem arrumadas/feitas:
 
 - Não é possível alterar forma de pagamento de ordens concluídas; ----------- Márcio estupradores
 
-- Ordens de serviço com lucro negativo; -----------  Dalton
-
 - Logs registram apenas inserts no banco; -----------  Dalton
 
 - PHP e JAVAs internos, se der tempo separar em arquivos externos; Gustavo
