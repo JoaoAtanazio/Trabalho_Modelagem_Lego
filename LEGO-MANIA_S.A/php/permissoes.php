@@ -64,6 +64,7 @@ $permissoes = [
         ],
         "Logs" => ["logs.php"],
     ],
+    // Nível 2: Funcionário
     2 => [
         "Início" => ["principal.php"],
         "Perfil" => ["perfil.php"],
@@ -77,6 +78,7 @@ $permissoes = [
             "relatorio_saida.php", "relatorio_pecas_estoque.php"
         ],
     ],
+    // Nível 3: Secretária
     3 => [
         "Início" => ["principal.php"],
         "Perfil" => ["perfil.php"],
@@ -84,6 +86,7 @@ $permissoes = [
         "Gestão de Pessoas" => ["gestao_cliente.php"],
         "Ordem de Serviços" => ["nova_ordem.php", "consultar_ordem.php", "pagamento.php"],
     ],
+    // Nível 4: Técnico
     4 => [
         "Início" => ["principal.php"],
         "Perfil" => ["perfil.php"],
