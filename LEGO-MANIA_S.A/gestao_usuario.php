@@ -289,6 +289,21 @@ $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
                                     <label for="email" class="form-label">E-mail</label>
                                     <input type="email" class="form-control" id="email" name="email" required>
                                 </div>
+
+                                <!-- Perfil -->
+                                <div class="mb-2">
+                                        <label for="id_perfil" class="form-label">Perfil</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="bi bi-person-rolodex"></i></span>
+                                            <select class="form-select" id="id_perfil" name="id_perfil" required>
+                                                <option value="" selected disabled>Selecione o perfil</option>
+                                                <option value="1" id="adminoption">Administrador</option>
+                                                <option value="2" id="funcoption">Funcionario</option>
+                                                <option value="3" id="secretariaoption">Secretaria</option>
+                                                <option value="4" id="tecoption">Técnico</option>
+                                            </select>
+                                        </div>
+                                </div>
                                 
                                 <div class="mb-3">
                                     <label for="senha" class="form-label">Nova Senha (deixe em branco para manter a atual)</label>

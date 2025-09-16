@@ -1,5 +1,5 @@
 <?php
-require_once 'conexao.php';
+require_once '../conexao.php';
 
 // Verifica se o formulário foi enviado e se não está vazio
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['alterar_usuario'])) {
@@ -8,6 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['alterar_usuario'])) {
     // TRIM retira os espaços de uma string
     $nome = trim($_POST['nome_usuario']);
     $email = trim($_POST['email']);
+    $id_perfil = $_POST['id_perfil']; 
     
     // Verifica se o email já existe para outro usuário
     $sql_check = "SELECT id_usuario FROM usuario WHERE email = :email AND id_usuario != :id";
@@ -24,8 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['alterar_usuario'])) {
     }
     
     // Construir a query de atualização
-    $sql = "UPDATE usuario SET nome_usuario = :nome, email = :email";
-    $params = [':nome' => $nome, ':email' => $email, ':id' => $id];
+    $sql = "UPDATE usuario SET nome_usuario = :nome, email = :email, id_perfil = :id_perfil";
+    $params = [':nome' => $nome, ':email' => $email, ':id_perfil' => $id_perfil, ':id' => $id];
     
     // Se uma nova senha foi fornecida, adicionar à query
     if (!empty($_POST['senha'])) {
@@ -46,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['alterar_usuario'])) {
 
     // Executa a query preparada e retorna mensagens
     if ($stmt->execute()) {
-        echo "<script>alert('Usuário atualizado com sucesso!');window.location.href='gestao_usuario.php';</script>";
+        echo "<script>alert('Usuário atualizado com sucesso!');window.location.href='../gestao_usuario.php';</script>";
     } else {
         echo "<script>alert('Erro ao atualizar o usuário!');window.history.back();</script>";
     }
