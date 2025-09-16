@@ -6,9 +6,9 @@ Funcionalidades a serem arrumadas/feitas:
 
 - Poder alterar o perfil do usuário; Por exemplo, promoção do atendente para administrador;
 
-- Filtro de status das ordens não funfa;
+- Filtro de status das ordens não funfa; Márcio estupradores
 
-- Pesquisar ordens no pagamento não otimizada(jeito do Sérgio);
+- Pesquisar ordens no pagamento não otimizada(jeito do Sérgio); Márcio estupradores
 
 - Não é possível alterar forma de pagamento de ordens concluídas;
 
@@ -16,7 +16,7 @@ Funcionalidades a serem arrumadas/feitas:
 
 - Logs registram apenas inserts no banco;
 
-- PHP e JAVAs internos, se der tempo separar em arquivos externos;
+- PHP e JAVAs internos, se der tempo separar em arquivos externos; Gustavo
 
 - Não tem como conferir a senha do usuário;
 
