@@ -180,7 +180,7 @@ $menu_html = '
     <ul class="nav flex-column">
         ' . gerarMenu($opcoes_menu, $icones_menu) . '
         <li class="nav-item">
-            <a id="menu-sair" href="php/logout.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
+            <a id="menu-sair" href="php/index.php" class="nav-link text-white"><i class="bi bi-box-arrow-right me-2"></i> Sair</a>
         </li>
     </ul>
 </nav>
