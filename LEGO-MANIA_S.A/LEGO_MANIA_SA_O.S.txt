@@ -4,24 +4,23 @@ Funcionalidades a serem arrumadas/feitas:
 
 
 
-- Poder alterar o perfil do usuário; Por exemplo, promoção do atendente para administrador;
+- Poder alterar o perfil do usuário; Por exemplo, promoção do atendente para administrador; ----------- Gustavo
 
-- Filtro de status das ordens não funfa; Márcio estupradores
+- Filtro de status das ordens não funfa; ----------- Márcio estupradores
 
-- Pesquisar ordens no pagamento não otimizada(jeito do Sérgio); Márcio estupradores
+- Pesquisar ordens no pagamento não otimizada(jeito do Sérgio); ----------- Márcio estupradores
 
-- Não é possível alterar forma de pagamento de ordens concluídas;
+- Não é possível alterar forma de pagamento de ordens concluídas; ----------- Márcio estupradores
 
-- Ordens de serviço com lucro negativo;
+- Ordens de serviço com lucro negativo; -----------  Dalton
 
-- Logs registram apenas inserts no banco;
+- Logs registram apenas inserts no banco; -----------  Dalton
 
-- PHP e JAVAs internos, se der tempo separar em arquivos externos; Gustavo
+- PHP e JAVAs internos, se der tempo separar em arquivos externos; ----------- Gustavo
 
-- Não tem como conferir a senha do usuário;
+- Não tem como conferir a senha do usuário; ----------- Atanazio
 
-- Mascara de formulários faltando;
+- Mascara de formulários faltando; ----------- Atanazio
 
-- Casos de documentação;
+- Casos de documentação; ----------- Atanazio/Márcio estupradores
 
--
