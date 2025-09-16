@@ -4,8 +4,6 @@ Funcionalidades a serem arrumadas/feitas:
 
 
 
-- Filtro de status das ordens não funfa; ----------- Márcio estupradores
-
 - Pesquisar ordens no pagamento não otimizada(jeito do Sérgio); ----------- Márcio estupradores
 
 - Não é possível alterar forma de pagamento de ordens concluídas; ----------- Márcio estupradores
