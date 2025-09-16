@@ -8,13 +8,9 @@ Funcionalidades a serem arrumadas/feitas:
 
 - Não é possível alterar forma de pagamento de ordens concluídas; ----------- Márcio estupradores
 
-- Logs registram apenas inserts no banco; -----------  Dalton
-
 - PHP e JAVAs internos, se der tempo separar em arquivos externos; Gustavo
 
 - Não tem como conferir a senha do usuário; ----------- Atanazio
-
-- Mascara de formulários faltando; ----------- Atanazio
 
 - Casos de documentação; ----------- Atanazio/Márcio estupradores
 
